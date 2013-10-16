@@ -17,7 +17,7 @@ CREATE TABLE Tournament (
 	PRIMARY KEY (tournamentID));
 
 CREATE TABLE Official (
-	officialID INTEGER NOT NULL AUTO_INCREMENT
+	officialID INTEGER NOT NULL AUTO_INCREMENT,
 	name_first VARCHAR(30) NOT NULL,
 	name_last VARCHAR(50) NOT NULL,
 	email VARCHAR(100),
