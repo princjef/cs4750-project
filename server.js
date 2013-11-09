@@ -5,6 +5,10 @@ app.get('/', function(req, res) {
 	res.sendfile('./app/index.html');
 });
 
+app.get('/app.js', function(req, res) {
+	res.sendfile('./app/app.js');
+});
+
 app.get('/partials/:template', function(req, res) {
 	res.sendfile('./app/partials/' + req.params.template + '.html');
 });
