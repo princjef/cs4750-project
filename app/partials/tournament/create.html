@@ -1,8 +1,9 @@
 <form class="tournament-form">
 	<div class="form-row">
 		<div class="form-label">Date</div>
-		<div class="form-entry form-horizontal">
-			<input type="text" class="form-control" datepicker-popup="MMM dd, yyyy" show-weeks="false" ng-model="date" />
+		<div class="form-entry form-horizontal" ng-init="open = false;">
+			<input type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="date" ng-focus="open = true" ng-blur="open = false" />
+			<button class="btn btn-default" ng-click="open = true"><i class="fa fa-calendar"></i>
 		</div>
 	</div>
 	<div class="form-row">
@@ -14,7 +15,7 @@
 	<div class="form-row">
 		<div class="form-label">Level</div>
 		<div class="form-entry">
-			<button class="btn" ng-click="create()">Create</button>
+			<button class="btn btn-primary" ng-click="create()">Create</button>
 		</div>
 	</div>
 </form>

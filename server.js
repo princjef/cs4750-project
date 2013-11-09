@@ -6,7 +6,11 @@ var config = require('./config.json');
 var connection = mysql.createConnection(config);
 
 // Compression
-app.use(express.compress());
+// app.use(express.compress());
+
+app.get('/js/app.js', function(req, res) {
+	res.sendfile('./app/js/app.js');
+});
 
 // Static Server
 app.use('/js', express.static(__dirname + '/app/js'));
