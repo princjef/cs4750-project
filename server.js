@@ -5,12 +5,11 @@ var app = express();
 var config = require('./config.json');
 var connection = mysql.createConnection(config);
 
-// Compression
-// app.use(express.compress());
+// MIME Types
+express.static.mime.define({'text/javascript': ['js']});
 
-app.get('/js/app.js', function(req, res) {
-	res.sendfile('./app/js/app.js');
-});
+// Compression
+app.use(express.compress());
 
 // Static Server
 app.use('/js', express.static(__dirname + '/app/js'));

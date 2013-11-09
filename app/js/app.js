@@ -15,6 +15,6 @@ app.controller('PageCtrl', ['$scope', function($scope) {
 	console.log('Hello World');
 }]);
 
-app.contorller('TournamentCreateCtrl', ['$scope', function($scope) {
+app.controller('TournamentCreateCtrl', ['$scope', function($scope) {
 
 }]);
