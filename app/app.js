@@ -1,4 +1,4 @@
-var app = angular.module('scoreApp', []);
+var app = angular.module('scoreApp', ['ui.bootstrap']);
 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	// Routes will go here
