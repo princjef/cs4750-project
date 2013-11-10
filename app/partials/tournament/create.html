@@ -2,19 +2,20 @@
 	<div class="form-row">
 		<div class="form-label">Date</div>
 		<div class="form-entry input-append" ng-init="open = false;">
-			<input type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="date" ng-focus="open = true" ng-blur="open = false" />
+			<input type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="form.date" ng-focus="open = true" ng-blur="open = false" />
 		</div>
 	</div>
 	<div class="form-row">
 		<div class="form-label">Location</div>
 		<div class="form-entry">
-			<input type="text" class="form-control" ng-model="location" />
+			<input type="text" class="form-control" ng-model="form.location" />
 		</div>
 	</div>
 	<div class="form-row">
-		<div class="form-label">Level</div>
+		<div class="form-label">Type</div>
 		<div class="form-entry">
+			<select ng-model="form.type" required ng-options="label for label in types" class="form-control"></select>
 		</div>
 	</div>
-	<button class="btn btn-primary" ng-click="create()">Create</button>
+	<button class="btn btn-primary" ng-click="createTournament()">Create</button>
 </form>

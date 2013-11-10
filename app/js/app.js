@@ -29,12 +29,25 @@ app.service('$dropdowns', ['$q', '$http', function($q, $http) {
 }]);
 
 app.controller('PageCtrl', ['$scope', function($scope) {
-	$scope.text = 'Hello World';
-	console.log('Hello World');
 }]);
 
-app.controller('TournamentCreateCtrl', ['$scope', '$dropdowns', function($scope, $dropdowns) {
+app.controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
+	$scope.form = {};
+
 	$dropdowns.getTournamentLevels().then(function(data) {
-		$scope.levels = data;
+		$scope.types = data;
+		$scope.form.type = data[0];
 	});
+
+	$scope.createTournament = function() {
+		$http({
+			method: 'POST',
+			url: '/tournament/new',
+			data: $scope.form
+		}).success(function(res) {
+			$window.alert('Successfully created tournament');
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
 }]);

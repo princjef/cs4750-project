@@ -11,6 +11,9 @@ express.static.mime.define({'text/javascript': ['js']});
 // Compression
 app.use(express.compress());
 
+// Parser
+app.use(express.bodyParser());
+
 // Static Server
 app.use('/js', express.static(__dirname + '/app/js'));
 app.use('/partials', express.static(__dirname + '/app/partials'));
@@ -26,6 +29,16 @@ app.get('/tournament/levels', function(req, res) {
 			res.json(levels);
 		}
 	});
+});
+app.post('/tournament/new', function(req, res) {
+	console.log(req.body);
+	connection.query("INSERT INTO Tournament (tournamentType, location, tournamentDate) VALUES (?, ?, ?)",
+		[req.body.type, req.body.location, req.body.date], function(err, rows) {
+			if(err) {
+				console.log('ERR', err);
+				res.send(500);
+			}
+		});
 });
 
 // All other routes
