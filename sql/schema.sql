@@ -11,7 +11,7 @@ CREATE TABLE Organization (
 
 CREATE TABLE Tournament (
 	tournamentID INTEGER NOT NULL AUTO_INCREMENT,
-	tournamentType ENUM('Invitational, Regional, State, National, Other') NOT NULL,
+	tournamentType ENUM('Invitational', 'Regional', 'State', 'National', 'Other') NOT NULL,
 	location VARCHAR(100),
 	tournamentDate DATE,
 	PRIMARY KEY (tournamentID));
