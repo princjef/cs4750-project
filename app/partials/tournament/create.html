@@ -1,7 +1,13 @@
 <form class="tournament-form">
 	<div class="form-row">
+		<div class="form-label">Name</div>
+		<div class="form-entry">
+			<input class="form-control" type="text" ng-model="form.name" />
+		</div>
+	</div>
+	<div class="form-row">
 		<div class="form-label">Date</div>
-		<div class="form-entry input-append" ng-init="open = false;">
+		<div class="form-entry" ng-init="open = false;">
 			<input type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="form.date" ng-focus="open = true" ng-blur="open = false" />
 		</div>
 	</div>

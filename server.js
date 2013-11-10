@@ -32,8 +32,8 @@ app.get('/tournament/levels', function(req, res) {
 });
 app.post('/tournament/new', function(req, res) {
 	console.log(req.body);
-	connection.query("INSERT INTO Tournament (tournamentType, location, tournamentDate) VALUES (?, ?, ?)",
-		[req.body.type, req.body.location, req.body.date], function(err, rows) {
+	connection.query("INSERT INTO Tournament (tournamentName, tournamentType, location, tournamentDate) VALUES (?, ?, ?, ?)",
+		[req.body.name, req.body.type, req.body.location, req.body.date], function(err, rows) {
 			if(err) {
 				console.log('ERR', err);
 				res.send(500);

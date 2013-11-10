@@ -13,6 +13,7 @@ CREATE TABLE Tournament (
 	tournamentID INTEGER NOT NULL AUTO_INCREMENT,
 	tournamentType ENUM('Invitational', 'Regional', 'State', 'National', 'Other') NOT NULL,
 	location VARCHAR(100),
+	tournamentName VARCHAR(100) NOT NULL,
 	tournamentDate DATE,
 	PRIMARY KEY (tournamentID));
 
