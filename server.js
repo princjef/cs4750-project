@@ -17,6 +17,7 @@ app.use(express.bodyParser());
 // Static Server
 app.use('/js', express.static(__dirname + '/app/js'));
 app.use('/partials', express.static(__dirname + '/app/partials'));
+app.use('/assets', express.static(__dirname + '/app/assets'));
 
 app.get('/tournament/levels', function(req, res) {
 	connection.query("SHOW COLUMNS FROM Tournament LIKE 'tournamentType'", function(err, rows) {
