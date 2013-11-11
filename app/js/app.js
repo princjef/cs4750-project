@@ -2,8 +2,8 @@ var app = angular.module('scoreApp', ['ui.bootstrap', 'ngCookies']);
 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$routeProvider
-		.when('/tournament/create', {
-				templateUrl: '/partials/tournament/create.html',
+		.when('/tournament/new', {
+				templateUrl: '/partials/tournament/new.html',
 				controller: 'TournamentCreateCtrl'
 			});
 
@@ -42,7 +42,7 @@ app.controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$windo
 	$scope.createTournament = function() {
 		$http({
 			method: 'POST',
-			url: '/tournament/new',
+			url: '/tournament/create',
 			data: $scope.form
 		}).success(function(res) {
 			$window.alert('Successfully created tournament');
