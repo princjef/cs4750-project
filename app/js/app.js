@@ -5,6 +5,10 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		.when('/tournament/new', {
 				templateUrl: '/partials/tournament/new.html',
 				controller: 'TournamentCreateCtrl'
+			})
+		.when('/organization/new', {
+				templateUrl: '/partials/organization/new.html',
+				controller: 'OrganizationCreateCtrl'
 			});
 
 	$locationProvider.html5Mode(true).hashPrefix('!');
@@ -46,6 +50,21 @@ app.controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$windo
 			data: $scope.form
 		}).success(function(res) {
 			$window.alert('Successfully created tournament');
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+}]);
+
+app.controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
+	$scope.form = {};
+	$scope.createOrganization = function() {
+		$http({
+			method: 'POST',
+			url: '/organization/create',
+			data: $scope.form
+		}).success(function(res) {
+			console.log('Successfully created organization');
 		}).error(function(err) {
 			console.log(err);
 		});
