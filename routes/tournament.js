@@ -1,4 +1,3 @@
-var tournamentSession = require('../sql/tournament');
 var Tournament = require('../model/Tournament');
 
 exports.create = function(req, res) {
@@ -9,17 +8,17 @@ exports.create = function(req, res) {
 		date: req.body.date
 	});
 
-	tournamentSession.create(tournament, function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	tournament.create(function(err) {
+		if(err) {
+			res.send(500, err);
 		} else {
-			res.send(200, 'Created Tournament with ID: ' + result);
+			res.json(tournament.toJson());
 		}
 	});
 };
 
 exports.levels = function(req, res) {
-	tournamentSession.getLevels(function(result) {
+	Tournament.getLevels(function(result) {
 		if(result.err) {
 			res.send(500, result.err);
 		} else {
