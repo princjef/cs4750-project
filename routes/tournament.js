@@ -1,26 +1,29 @@
-var connection = require('./../includes/connection');
+var tournamentSession = require('../sql/tournament');
+var Tournament = require('../model/Tournament');
 
 exports.create = function(req, res) {
-	connection.query("INSERT INTO Tournament (tournamentName, tournamentType, location, tournamentDate) VALUES (?, ?, ?, ?)",
-			[req.body.name, req.body.type, req.body.location, req.body.date], function(err, rows) {
-		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+	var tournament = new Tournament({
+		name: req.body.name,
+		type: req.body.type,
+		location: req.body.location,
+		date: req.body.date
+	});
+
+	tournamentSession.create(tournament, function(result) {
+		if(result.err) {
+			res.send(500, result.err);
 		} else {
-			res.send(200, 'Tournament successfully created');
+			res.send(200, 'Created Tournament with ID: ' + result);
 		}
 	});
 };
 
 exports.levels = function(req, res) {
-	connection.query("SHOW COLUMNS FROM Tournament LIKE 'tournamentType'", function(err, rows) {
-		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+	tournamentSession.getLevels(function(result) {
+		if(result.err) {
+			res.send(500, result.err);
 		} else {
-			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
-			var levels = match.split('\',\'');
-			res.json(levels);
+			res.json(result);
 		}
 	});
 };

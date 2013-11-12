@@ -1,4 +1,4 @@
-var connection = require('./../includes/connection');
+var connection = require('../sql/connection');
 
 exports.create = function(req, res) {
 	connection.query("INSERT INTO Organization (orgName) VALUES (?)",
