@@ -23,6 +23,7 @@ app.use('/assets', express.static(__dirname + '/app/assets'));
 // Tournament Routes
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
+app.post('/tournament/update', tournament.update);
 
 // Organization Routes
 app.post('/organization/create', organization.create);

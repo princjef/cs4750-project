@@ -52,6 +52,26 @@ Tournament.prototype.create = function(callback) {
 	});
 };
 
+/*
+ * Updates a Tournament in the database
+ * 
+ * Params: callback function
+ * Returns: error (if there is one)
+ */
+Tournament.prototype.update = function(callback) {
+	var that = this;
+	connection.query("UPDATE Tournament SET tournamentName=?, tournamentType=?, location=?, tournamentDate=? WHERE tournamentID=?",
+			[this.name, this.type, this.location, this.date], function(err, row) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			console.log('INFO', 'Updated Tournament with ID:', that.id);
+			callback();
+		}
+	});
+};
+
 // Setters
 Tournament.prototype.setID = function(id) {
 	this.id = id;
