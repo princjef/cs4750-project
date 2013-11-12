@@ -52,27 +52,6 @@ Tournament.prototype.create = function(callback) {
 	});
 };
 
-// Getters
-Tournament.prototype.getID = function() {
-	return this.id;
-};
-
-Tournament.prototype.getName = function() {
-	return this.name;
-};
-
-Tournament.prototype.getType = function() {
-	return this.type;
-};
-
-Tournament.prototype.getLocation = function() {
-	return this.location;
-};
-
-Tournament.prototype.getDate = function() {
-	return this.date;
-};
-
 // Setters
 Tournament.prototype.setID = function(id) {
 	this.id = id;
