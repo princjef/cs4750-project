@@ -8,7 +8,7 @@ var Organization = function(obj) {
 // Instance Functions
 
 /*
- * Creates a new organization from the current object
+ * Creates a new Organization from the current object
  *
  * Params: callback function
  * Returns: error (if there is one)
@@ -22,6 +22,26 @@ Organization.prototype.create = function(callback) {
 		} else {
 			this.id = info.insertId;
 			console.log('INFO', 'Organization created with ID:', info.insertId);
+			callback();
+		}
+	});
+};
+
+/*
+ * Updates the current Organization in the database
+ * 
+ * Params: callback function
+ * Returns: error (if there is one)
+ */
+Organization.prototype.update = function() {
+	var that = this;
+	connection.query("UPDATE Organization SET orgName=? WHERE orgID=?",
+			[this.name, this.id], function(err, info) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			console.log('INFO', 'Updated Organization with ID: ', that.id);
 			callback();
 		}
 	});

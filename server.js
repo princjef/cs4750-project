@@ -26,6 +26,7 @@ app.post('/tournament/create', tournament.create);
 
 // Organization Routes
 app.post('/organization/create', organization.create);
+app.post('/organization/update', organization.update);
 
 // All other routes
 app.all('/*', function(req, res) {
