@@ -1,13 +1,16 @@
-var connection = require('../sql/connection');
+var Organization = require('../model/Organization');
 
 exports.create = function(req, res) {
-	connection.query("INSERT INTO Organization (orgName) VALUES (?)",
-			[req.body.name], function(err, rows) {
+	var organization = new Organization({
+		name: req.body.name
+	});
+	
+	organization.create(function(err) {
 		if(err) {
 			console.log('ERR', err);
 			res.send(500);
 		} else {
-			res.send(200, 'Organization successfully created');
+			res.json(organization.toJson());
 		}
 	});
 };
