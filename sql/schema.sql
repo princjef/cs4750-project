@@ -89,5 +89,5 @@ CREATE TABLE ConsistsOf (
 	PRIMARY KEY (tournamentID, eventName, division),
 	FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID) ON DELETE CASCADE,
 	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
-	FOREIGN KEY (supervisor_officialID) REFERENCES Official(officialID),
-	FOREIGN KEY (writer_officialID) REFERENCES Official(officialID));
+	FOREIGN KEY (supervisor_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT,
+	FOREIGN KEY (writer_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT);
