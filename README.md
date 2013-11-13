@@ -26,7 +26,7 @@ For security reasons, the MySQL configuration information used for this project 
 }
 ```
 
-If you want to create a new database that is compatible with this application, simply run the SQL commands located in `sql/schema.sql` on your database. This should leave you with an empty database that contains the appropriate schema for this application.
+If you want to create a new database that is compatible with this application, simply run the SQL commands located in `sql/schema.sql` on your database. This should leave you with an empty database that contains the appropriate schema for this application. To populate the database with some sample data, run the commands in `sql/populate.sql`.
 
 Running the Server
 ------------
