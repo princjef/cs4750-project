@@ -79,12 +79,15 @@ CREATE TABLE ParticipatesIn (
 CREATE TABLE ConsistsOf (
 	tournamentID INTEGER NOT NULL,
 	eventName VARCHAR(50) NOT NULL,
+	division ENUM('A', 'B', 'C'),
 	supervisor_officialID INTEGER,
 	writer_officialID INTEGER,
 	eventType ENUM('Standard', 'Trial') NOT NULL DEFAULT 'Standard', -- Standard corresponds to normally scored events, while Trial corresponds to trial events
 	scored BOOLEAN NOT NULL DEFAULT 0,
 	highScoreWins BOOLEAN NOT NULL DEFAULT 1,
 	highTiebreakWins BOOLEAN NOT NULL DEFAULT 1,
-	PRIMARY KEY (tournamentID, eventName),
+	PRIMARY KEY (tournamentID, eventName, division),
 	FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID) ON DELETE CASCADE,
-	FOREIGN KEY (eventName) REFERENCES Event(eventName) ON DELETE CASCADE);
+	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
+	FOREIGN KEY (supervisor_officialID) REFERENCES Official(officialID),
+	FOREIGN KEY (writer_officialID) REFERENCES Official(officialID));
