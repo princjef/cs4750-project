@@ -27,3 +27,8 @@ For security reasons, the MySQL configuration information used for this project 
 ```
 
 If you want to create a new database that is compatible with this application, simply run the SQL commands located in `sql/schema.sql` on your database. This should leave you with an empty database that contains the appropriate schema for this application.
+
+Running the Server
+------------
+
+To run the application server, simply navigate to the project root in the shell and type `node server.js`. When you get the message *Listening on port 8080* in the terminal, you're ready to go. Open up a web browser and navigate to `127.0.0.1:8080` to view the application. If you are not developing locally, replace `127.0.0.1` with your hostname.
