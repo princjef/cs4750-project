@@ -32,3 +32,8 @@ Running the Server
 ------------
 
 To run the application server, simply navigate to the project root in the shell and type `node server.js`. When you get the message *Listening on port 8080* in the terminal, you're ready to go. Open up a web browser and navigate to `127.0.0.1:8080` to view the application. If you are not developing locally, replace `127.0.0.1` with your hostname.
+
+Using Compass
+----------
+
+All of the styles for this project are written in scss compiled into css using [Compass](http://compass-style.org/). In order to compile the styles for this project, you must have Compass installed. If you don't already have it installed, run `gem install compass`. Once that is done, simply open a new tab in the terminal, navigate to the project root and run `compass watch`. Compass will start polling for changes and automatically compile the styles when a change is detected.
