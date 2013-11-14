@@ -19,6 +19,7 @@ app.use(express.bodyParser());
 app.use('/js', express.static(__dirname + '/app/js'));
 app.use('/partials', express.static(__dirname + '/app/partials'));
 app.use('/assets', express.static(__dirname + '/app/assets'));
+app.use('/css', express.static(__dirname + '/app/css'));
 
 // Tournament Routes
 app.get('/tournament/levels', tournament.levels);
