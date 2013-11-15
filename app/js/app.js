@@ -1,41 +1,34 @@
-var app = angular.module('scoreApp', ['ui.bootstrap', 'ngCookies']);
+angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
+	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+		$routeProvider
+			.when('/tournament/new', {
+					templateUrl: '/partials/tournament/new.html',
+					controller: 'TournamentCreateCtrl'
+				})
+			.when('/organization/new', {
+					templateUrl: '/partials/organization/new.html',
+					controller: 'OrganizationCreateCtrl'
+				});
 
-app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-	$routeProvider
-		.when('/tournament/new', {
-				templateUrl: '/partials/tournament/new.html',
-				controller: 'TournamentCreateCtrl'
-			})
-		.when('/organization/new', {
-				templateUrl: '/partials/organization/new.html',
-				controller: 'OrganizationCreateCtrl'
-			});
-
-	$locationProvider.html5Mode(true).hashPrefix('!');
+		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
-
-app.service('$dropdowns', ['$q', '$http', function($q, $http) {
-	return {
-		getTournamentLevels: function() {
-			var d = $q.defer();
-			$http({
-				method: 'GET',
-				url: '/tournament/levels',
-				cache: true
-			}).success(function(data) {
-				d.resolve(data);
-			}).error(function(err) {
-				d.reject(err);
-			});
-			return d.promise;
-		}
+angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
+}]);
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
+	$scope.form = {};
+	$scope.createOrganization = function() {
+		$http({
+			method: 'POST',
+			url: '/organization/create',
+			data: $scope.form
+		}).success(function(res) {
+			console.log('Successfully created organization');
+		}).error(function(err) {
+			console.log(err);
+		});
 	};
 }]);
-
-app.controller('PageCtrl', ['$scope', function($scope) {
-}]);
-
-app.controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
 	$scope.form = {};
 
 	$dropdowns.getTournamentLevels().then(function(data) {
@@ -55,19 +48,21 @@ app.controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$windo
 		});
 	};
 }]);
-
-app.controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.form = {};
-	$scope.createOrganization = function() {
-		$http({
-			method: 'POST',
-			url: '/organization/create',
-			data: $scope.form
-		}).success(function(res) {
-			console.log('Successfully created organization');
-		}).error(function(err) {
-			console.log(err);
-		});
+angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $http) {
+	return {
+		getTournamentLevels: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/tournament/levels',
+				cache: true
+			}).success(function(data) {
+				d.resolve(data);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
+		}
 	};
 }]);
 
