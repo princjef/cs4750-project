@@ -13,9 +13,16 @@ module.exports = function(grunt) {
 		watch: {
 			scripts: {
 				files: ['app/js/**/*.js', '!app/js/app.js'],
-				tasks: ['concat'],
+				tasks: ['concat', 'notify:concat'],
 				options: {
 					interrupt: true
+				}
+			}
+		},
+		notify: {
+			concat: {
+				options: {
+					message: 'All client JavaScript files compiled.'
 				}
 			}
 		}
@@ -23,4 +30,5 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-notify');
 };
