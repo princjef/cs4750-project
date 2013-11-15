@@ -33,6 +33,25 @@ Running the Server
 
 To run the application server, simply navigate to the project root in the shell and type `node server.js`. When you get the message *Listening on port 8080* in the terminal, you're ready to go. Open up a web browser and navigate to `127.0.0.1:8080` to view the application. If you are not developing locally, replace `127.0.0.1` with your hostname.
 
+Using Grunt
+-----------
+
+In order to better handle scaling in the client side application, this application uses [Grunt](http://gruntjs.com) to build the various JavaScript files into a single file that is served to the web browser. Grunt must be running for this to work properly.
+
+To install Grunt, open up the shell and run
+
+```
+npm install -g grunt-cli
+```
+
+Now, navigate to the root directory of this repository in the shell and enter
+
+```
+grunt watch
+```
+
+This will set up Grunt to watch for changes in the repository and recompile the client application JavaScript files whenever it is needed. This command should be left running whenever you are editing files in the repository (particularly those in the `app/js` folder).
+
 Using Compass
 ----------
 
