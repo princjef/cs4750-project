@@ -1,14 +1,15 @@
 {
-	"name": "cs4750-project",
-	"description": "Scoring application for Science Olympiad",
-	"version": "0.0.1",
-	"private": "true",
-	"dependencies": {
-		"express": "3.4.4",
-		"mysql": "2.0.0-alpha9"
-	},
-	"devDependencies": {
-		"grunt": "~0.4.1",
-		"grunt-contrib-concat": "~0.3.0"
-	}
+  "name": "cs4750-project",
+  "description": "Scoring application for Science Olympiad",
+  "version": "0.0.1",
+  "private": "true",
+  "dependencies": {
+    "express": "3.4.4",
+    "mysql": "2.0.0-alpha9"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.3"
+  }
 }

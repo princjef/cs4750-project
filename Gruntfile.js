@@ -6,11 +6,21 @@ module.exports = function(grunt) {
 				stripBanners: true
 			},
 			dist: {
-				src: ['app/js/main.js', 'app/js/**/*.js'],
+				src: ['app/js/main.js', 'app/js/**/*.js', '!app/js/app.js'],
 				dest: 'app/js/app.js'
+			}
+		},
+		watch: {
+			scripts: {
+				files: ['app/js/**/*.js', '!app/js/app.js'],
+				tasks: ['concat'],
+				options: {
+					interrupt: true
+				}
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 };
