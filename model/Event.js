@@ -19,8 +19,7 @@ Event.create = function(callback) {
 };
 
 Event.update = function(callback) {
-	connection.query("UPDATE Event SET eventName=?, division=? 
-		WHERE eventName=? AND division=?",
+	connection.query("UPDATE Event SET eventName=?, division=? WHERE eventName=? AND division=?",
 		[obj.eventName, obj.division, this.eventName, this.division], 
 		function(err, row) {
 			if(err) {
