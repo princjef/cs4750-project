@@ -10,9 +10,9 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					controller: 'OrganizationCreateCtrl'
 				})
 			.when('/event/new', {
-					templateUrl: '/partials/event/new.html'
+					templateUrl: '/partials/event/new.html',
 					controller: 'EventCreateCtrl'
-				});
+				}); 
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);

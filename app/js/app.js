@@ -8,12 +8,21 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
-				});
+				})
+			.when('/event/new', {
+					templateUrl: '/partials/event/new.html',
+					controller: 'EventCreateCtrl'
+				}); 
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
+angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
+	$scope.divisions = ['A', 'B', 'C'];
+}]);
+
+
 angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.form = {};
 	$scope.createOrganization = function() {
