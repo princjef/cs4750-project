@@ -19,7 +19,12 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.divisions = ['A', 'B', 'C'];
+	$scope.divisions = [
+	{value:'A'}, 
+	{value:'B'}, 
+	{value:'C'}
+	];
+	$scope.division = $scope.divisions[0];
 }]);
 
 

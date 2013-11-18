@@ -1,4 +1,9 @@
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.divisions = ['A', 'B', 'C'];
+	$scope.divisions = [
+	{value:'A'}, 
+	{value:'B'}, 
+	{value:'C'}
+	];
+	$scope.division = $scope.divisions[0];
 }]);
 

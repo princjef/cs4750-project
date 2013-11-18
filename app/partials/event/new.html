@@ -1,7 +1,11 @@
 <h3>Create an Event</h3>
-<!--<form class="event-form">
-	Division: <select name="divisions">
-		<option data-ng-repeat="division in divisons"> {{ division }} </option>
-	</select><br />
-	Event Name: <input type="text">
-</form> -->
+<form class="event-form">
+	<div class="form-label">Division:</div>
+	<div>
+		<select ng-model="division" data-ng-options="d.value for d in divisions"></select>
+	</div>
+	<div class="form-label">Event Name:</div>
+	 <div class="form-entry">
+		 <input type="text">
+	 </div>
+</form>
