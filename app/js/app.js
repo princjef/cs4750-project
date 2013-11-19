@@ -18,6 +18,21 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 }]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
+angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', function($scope, $http) {
+	$scope.form = {};
+	$scope.createAccount = function() {
+		$http({
+			method: 'POST',
+			url: '/account/create',
+			data: $scope.form
+		}).success(function(res) {
+			console.log('Successfully created account');
+		}).error(function(err) {
+			console.log(err):
+		});
+	};
+}]);
+
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.divisions = [
 	{value:'A'}, 
