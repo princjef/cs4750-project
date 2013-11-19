@@ -50,10 +50,16 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$
 	$scope.login = function() {
 		$http({
 			method: 'POST',
-			url: '/login',
+			url: '/account/login',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully logged in!');
+			if (res.status) {
+				$window.alert('Successfully logged in!');
+				console.log(res.user);
+			}
+			else {
+				$window.alert('Invalid login!');
+			}
 		}).error(function(err) {
 			console.log(err);
 		});
