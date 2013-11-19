@@ -17,7 +17,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/account/new.html',
 					controller: 'AccountCreateCtrl'
 				})
-			.when('/account/login', {
+			.when('/login', {
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
@@ -43,6 +43,7 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 		});
 	};
 }]);
+
 
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.form = {};
