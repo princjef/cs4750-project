@@ -12,17 +12,18 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 			.when('/event/new', {
 					templateUrl: '/partials/event/new.html',
 					controller: 'EventCreateCtrl'
-				});
+				})
 			.when('/account/new', {
 					templateUrl: '/partials/account/new.html',
 					controller: 'AccountCreateCtrl'
-				})
+				});
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
+
 angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', function($scope, $http) {
 	$scope.form = {};
 
