@@ -18,23 +18,10 @@ Event.prototype.create = function(callback) {
 	});
 };
 
-Event.prototype.update = function(callback) {
-	connection.query("UPDATE Event SET eventName=?, division=? WHERE eventName=? AND division=?",
-		[obj.name, obj.division, this.name, this.division], 
-		function(err, row) {
-			if(err) {
-				console.log('ERR:', err);
-				callback(err);
-			} else {
-				console.log('INFO: Updated event');
-				callback();
-			}
-		});
-};
-
 Event.prototype.toJson = function() {
 	return {
 		name: this.name,
 		division: this.division
 	}
 }
+
