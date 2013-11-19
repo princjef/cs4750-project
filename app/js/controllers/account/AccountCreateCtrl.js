@@ -5,12 +5,12 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', f
 	$scope.createAccount = function() {
 		$http({
 			method: 'POST',
-			url: '/tournament/create',
+			url: '/account/create',
 			data: $scope.form
 		}).success(function(res) {
 			console.log('Successfully created account');
 		}).error(function(err) {
-			console.log(err):
+			console.log(err);
 		});
 	};
 }]);
