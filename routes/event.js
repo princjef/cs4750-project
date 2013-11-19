@@ -1,31 +1,31 @@
-var Event = require("../model/Event")
+var Event = require('../model/Event');
 
-exports.create = function(req, res) {
-	var event = new Event ({
+exports.createEvent = function(req, res) {
+	var eevent = new Event({
 		division: req.body.division,
-		eventName: req.body.eventName
+		name: req.body.name
 	});
 	
-	event.create(function(err) {
+	eevent.create(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			res.json(event.toJson());
+			res.json(eevent.toJson());
 		}
 	});
 };
 
-exports.update = function(req, res) {
-	var event = new Event ({
+exports.updateEvent = function(req, res) {
+	var eevent = new Event ({
 		division: req.body.division,
-		eventName: req.body.eventName
+		name: req.body.name
 	});
 	
-	event.update(function(err) {
+	eevent.update(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			res.json(event.toJson());
+			res.json(eevent.toJson());
 		}
 	});
 };
