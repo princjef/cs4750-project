@@ -59,15 +59,15 @@ Account.prototype.update = function(callback) {
 	[this.username, this.password], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
-			callback(err);
+			callback(err, null);
 		} else {
 			if (row.length > 0) {
 				console.log('INFO', 'Logged in with username:', that.username);
 				that.email = row[0].email;
-				return true;
+				callback(null, true);
 			}
 			console.log('INFO', 'User', that.username, 'does not exist!');
-			return false;
+			callback(null, false);
 		}
 	});
  };
@@ -84,7 +84,7 @@ Account.prototype.setPassword = function(password) {
 };
 
 Account.prototype.setEmail = function(email) {
-	this.email = email
+	ths.email = email;
 	return this;
 };
 
@@ -92,8 +92,7 @@ Account.prototype.setEmail = function(email) {
 Account.prototype.toJson = function() {
 	return {
 		username: this.username,
-		email: this.email,
-		password: this.password
+		email: this.email
 	};
 };
 

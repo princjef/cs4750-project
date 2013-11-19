@@ -41,12 +41,12 @@ exports.login= function(req, res) {
 		password: req.body.password
 	});
 
-	account.login(function(err) {
+	account.login(function(err, successful) {
 		if(err) {
 			console.log('ERR', err);
 			res.send(500);
 		} else {
-			
+			res.json(account.toJson());
 		}
 	});
 };
