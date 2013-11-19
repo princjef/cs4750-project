@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.form = {};
 
 	$scope.createAccount = function() {
@@ -13,4 +13,3 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', '
 		});
 	};
 }]);
-
