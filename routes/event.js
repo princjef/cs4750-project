@@ -2,7 +2,7 @@ var Event = require('../model/Event');
 
 exports.createEvent = function(req, res) {
 	var eevent = new Event({
-		division: req.body.division,
+		division: req.body.division.value,
 		name: req.body.name
 	});
 	
@@ -17,7 +17,7 @@ exports.createEvent = function(req, res) {
 
 exports.updateEvent = function(req, res) {
 	var eevent = new Event ({
-		division: req.body.division,
+		division: req.body.division.value,
 		name: req.body.name
 	});
 	
