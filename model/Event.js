@@ -1,13 +1,13 @@
-var connection = require('../sql/connection')
+var connection = require('../sql/connection');
 
 var Event = function(obj) {
-	this.eventName = obj.eventName;
+	this.name = obj.name;
 	this.division = obj.division;
 };
 
-Event.create = function(callback) {
+Event.prototype.create = function(callback) {
 	connection.query("INSERT INTO Event(eventName, division) VALUES (?, ?)",
-	[this.eventName, this.division], function(err, row) {
+	[this.name, this.division], function(err, row) {
 		if(err) {
 			console.log('ERR:', err);
 			callback(err);
@@ -18,9 +18,9 @@ Event.create = function(callback) {
 	});
 };
 
-Event.update = function(callback) {
+Event.prototype.update = function(callback) {
 	connection.query("UPDATE Event SET eventName=?, division=? WHERE eventName=? AND division=?",
-		[obj.eventName, obj.division, this.eventName, this.division], 
+		[obj.name, obj.division, this.name, this.division], 
 		function(err, row) {
 			if(err) {
 				console.log('ERR:', err);
@@ -31,3 +31,10 @@ Event.update = function(callback) {
 			}
 		});
 };
+
+Event.prototype.toJson = function() {
+	return {
+		name: this.name,
+		division: this.division
+	}
+}
