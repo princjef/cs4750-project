@@ -46,7 +46,16 @@ exports.login= function(req, res) {
 			console.log('ERR', err);
 			res.send(500);
 		} else {
-			res.json(account.toJson());
+			if (successful) {
+				res.json({
+					status: true,
+					user: account.toJson()
+				});
+			} else {
+				res.json({
+					status: false
+				});
+			}
 		}
 	});
 };
