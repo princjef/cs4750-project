@@ -34,3 +34,19 @@ exports.update = function(req, res) {
 		}
 	});
 };
+
+exports.login= function(req, res) {
+	var account = new Account({
+		username: req.body.username,
+		password: req.body.password
+	});
+
+	account.login(function(err) {
+		if(err) {
+			console.log('ERR', err);
+			res.send(500);
+		} else {
+			
+		}
+	});
+};

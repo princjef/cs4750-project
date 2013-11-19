@@ -16,7 +16,7 @@ var Account = function(obj) {
  */
 Account.prototype.create = function(callback) {
 	connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)", 
-	[this.username, this.email, this.password], function(err, row) {
+	[this.username, this.email, this.password], function(err) {
 		if(err) {
 			console.log('ERR', err);
 			callback(err);
@@ -36,7 +36,7 @@ Account.prototype.create = function(callback) {
 Account.prototype.update = function(callback) {
 	var that = this;
 	connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
-	[this.email, this.password, this.username], function(err, row) {
+	[this.email, this.password, this.username], function(err) {
 		if(err) {
 			console.log('ERR', err);
 			callback(err);
@@ -46,6 +46,32 @@ Account.prototype.update = function(callback) {
 		}
 	});
 };
+
+/*
+ * Logs a user into the system
+ *
+ * Params: callback function
+ * Returns: error (if there is one)
+ */
+ Account.prototype.login = function(callback) {
+	var that = this;
+	connection.query("SELECT * FROM Account WHERE username=? AND password=?",
+	[this.username, this.password], function(err, row) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			if (row.length > 0) {
+				console.log('INFO', 'Logged in with username:', that.username);
+				that.email = row[0].email;
+				return true;
+			}
+			console.log('INFO', 'User', that.username, 'does not exist!');
+			return false;
+		}
+	});
+ };
+
 
 Account.prototype.setUsername = function(username) {
 	this.username = username;

@@ -44,6 +44,21 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 	};
 }]);
 
+angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	$scope.form = {};
+
+	$scope.login = function() {
+		$http({
+			method: 'POST',
+			url: '/login',
+			data: $scope.form
+		}).success(function(res) {
+			$window.alert('Successfully logged in!');
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+}]);
 
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.form = {};
