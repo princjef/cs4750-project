@@ -65,9 +65,10 @@ Account.prototype.update = function(callback) {
 				console.log('INFO', 'Logged in with username:', that.username);
 				that.email = row[0].email;
 				callback(null, true);
+			} else {
+				console.log('INFO', 'Invalid username and/or password!');
+				callback(null, false);
 			}
-			console.log('INFO', 'User', that.username, 'does not exist!');
-			callback(null, false);
 		}
 	});
  };
