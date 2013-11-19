@@ -1,6 +1,7 @@
 var Account = require('../model/Account')
 
 exports.create = function(req, res) {
+	console.log('Test');
 	var account = new Account({
 		username: req.body.username,
 		email: req.body.email,
