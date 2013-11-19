@@ -32,8 +32,7 @@ app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 
 // Event Routes
-app.post('/event/create', Event.create);
-app.post('/event/update', Event.update);
+app.post('/event/create', Event.createEvent);
 
 // All other routes
 app.all('/*', function(req, res) {
