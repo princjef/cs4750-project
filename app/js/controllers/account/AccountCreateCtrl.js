@@ -4,7 +4,7 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', f
 	$scope.createAccount = function() {
 		$http({
 			method: 'POST',
-			url: '/account/create',
+			url: '/tournament/create',
 			data: $scope.form
 		}).success(function(res) {
 			console.log('Successfully created account');
@@ -13,3 +13,4 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', f
 		});
 	};
 }]);
+
