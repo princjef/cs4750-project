@@ -25,3 +25,4 @@ Event.prototype.toJson = function() {
 	}
 }
 
+module.exports = Event;
