@@ -1,5 +1,6 @@
 angular.module('scoreApp').controller('AccountCreateCtrl', ['%scope', '$http', function($scope, $http) {
 	$scope.form = {};
+
 	$scope.createAccount = function() {
 		$http({
 			method: 'POST',
