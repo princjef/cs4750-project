@@ -1,0 +1,14 @@
+<h3>Create an Event</h3>
+<form class="event-form">
+	<div class="form-label">Division:</div>
+	<div>
+		<select ng-model="form.division" ng-options="d.value for d in divisions"></select>
+	</div>
+	<div class="form-label">Event Name:</div>
+	 <div class="form-entry">
+		 <input type="text" ng-model="form.name">
+	 </div>
+	 <div>
+		 <button class="btn btn-primary" data-ng-click="create()"> Create </button>
+	 </div>
+</form>

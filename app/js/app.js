@@ -8,12 +8,89 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
-				});
+				})
+			.when('/event/new', {
+					templateUrl: '/partials/event/new.html',
+					controller: 'EventCreateCtrl'
+				})
+			.when('/account/new', {
+					templateUrl: '/partials/account/new.html',
+					controller: 'AccountCreateCtrl'
+				})
+			.when('/login', {
+					templateUrl: '/partials/account/login.html',
+					controller: 'AccountLoginCtrl'
+				})
+			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
+
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
+angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	$scope.form = {};
+
+	$scope.createAccount = function() {
+		$http({
+			method: 'POST',
+			url: '/account/create',
+			data: $scope.form
+		}).success(function(res) {
+			$window.alert('Successfully created account');
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+}]);
+
+angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	$scope.form = {};
+
+	$scope.login = function() {
+		$http({
+			method: 'POST',
+			url: '/account/login',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				$window.alert('Successfully logged in!');
+				console.log(res.user);
+			}
+			else {
+				$window.alert('Invalid login!');
+			}
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+}]);
+
+angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	$scope.form = {};
+	
+	$scope.divisions = [
+	{value:'A'}, 
+	{value:'B'}, 
+	{value:'C'}
+	];
+	
+	$scope.form.division = $scope.divisions[0];
+	
+	$scope.create = function() {
+		$http({
+			method:'POST',
+			url:'/event/create',
+			data:$scope.form})
+			.success(function (res) {
+				$window.alert('Successfully created event');})
+			.error(function (error) {
+				console.log(err);
+			});
+	};
+}]);
+
+
 angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.form = {};
 	$scope.createOrganization = function() {

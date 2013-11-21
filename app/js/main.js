@@ -8,7 +8,20 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
-				});
+				})
+			.when('/event/new', {
+					templateUrl: '/partials/event/new.html',
+					controller: 'EventCreateCtrl'
+				})
+			.when('/account/new', {
+					templateUrl: '/partials/account/new.html',
+					controller: 'AccountCreateCtrl'
+				})
+			.when('/login', {
+					templateUrl: '/partials/account/login.html',
+					controller: 'AccountLoginCtrl'
+				})
+			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
