@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 			},
 			server: {
 				files: ['server.js', 'routes/**/*.js', 'model/**/*.js'],
-				tasks: ['shell:server'],
+				tasks: ['shell:server', 'notify:server'],
 				options: {
 					interrupt: true
 				}
@@ -70,6 +70,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-shell-spawn');
 
 	grunt.task.run('notify_hooks');
-	
+
 	grunt.registerTask('default', ['shell:compass', 'notify:compass', 'shell:server', 'notify:server', 'watch']);
 };
