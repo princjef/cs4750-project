@@ -46,5 +46,22 @@ ConsistsOf.prototype.updateEventInTournament = function(callback) {
 		});
 };
 
+ConsistsOf.prototype.toJSON = function() {
+	return {
+		tournamentID:this.tournamentID,
+		eventName:this.eventName,
+		division:this.division,
+		eventType:this.eventType,
+	
+		tiebreak:this.tiebreak,
+		highScoreWins:this.highScoreWins,
+		highTiebreakWins:this.highTiebreakWins,
+		scored:this.scored,
+
+		supervisorID:this.supervisorID,
+		writerID:this.writerID	
+	};
+};
+
 
 module.exports = ConsistsOf;
