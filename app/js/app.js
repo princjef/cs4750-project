@@ -66,7 +66,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$
 	};
 }]);
 
-angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.form = {};
 	
 	$scope.divisions = [
@@ -81,7 +81,12 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', fun
 		$http({
 			method:'POST',
 			url:'/event/create',
-			data:$scope.form});
+			data:$scope.form})
+			.success(function (res) {
+				$window.alert('Successfully created event');})
+			.error(function (error) {
+				console.log(err);
+			});
 	};
 }]);
 
