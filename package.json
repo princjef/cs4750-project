@@ -11,6 +11,9 @@
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-notify": "~0.2.16"
+    "grunt-notify": "~0.2.16",
+    "grunt-shell": "~0.6.0",
+    "shelljs": "~0.2.6",
+    "grunt-shell-spawn": "~0.3.0"
   }
 }

@@ -28,11 +28,6 @@ For security reasons, the MySQL configuration information used for this project 
 
 If you want to create a new database that is compatible with this application, simply run the SQL commands located in `sql/schema.sql` on your database. This should leave you with an empty database that contains the appropriate schema for this application. To populate the database with some sample data, run the commands in `sql/populate.sql`.
 
-Running the Server
-------------
-
-To run the application server, simply navigate to the project root in the shell and type `node server.js`. When you get the message *Listening on port 8080* in the terminal, you're ready to go. Open up a web browser and navigate to `127.0.0.1:8080` to view the application. If you are not developing locally, replace `127.0.0.1` with your hostname.
-
 Using Grunt
 -----------
 
@@ -47,12 +42,17 @@ npm install -g grunt-cli
 Now, navigate to the root directory of this repository in the shell and enter
 
 ```
-grunt watch
+grunt
 ```
 
-This will set up Grunt to watch for changes in the repository and recompile the client application JavaScript files whenever it is needed. This command should be left running whenever you are editing files in the repository (particularly those in the `app/js` folder).
+This will set up Grunt to automatically do a few things. First, it will start Compass and the node.js server. Next, it will watch for changes in the repository and recompile the client application JavaScript files whenever it is needed. It will also watch for changes the server JavaScript and rerun the server process when necessary. This command should be left running whenever you are editing files in the repository or running the server.
+
+Running the Server
+------------
+
+To run the application server, you simply need to run `grunt` as mentioned earlier. Once you get a notification *Server is Running*, open up a web browser and navigate to `127.0.0.1:8080` to view the application. If you are not developing locally, replace `127.0.0.1` with your hostname.
 
 Using Compass
 ----------
 
-All of the styles for this project are written in scss compiled into css using [Compass](http://compass-style.org/). In order to compile the styles for this project, you must have Compass installed. If you don't already have it installed, run `gem install compass`. Once that is done, simply open a new tab in the terminal, navigate to the project root and run `compass watch`. Compass will start polling for changes and automatically compile the styles when a change is detected.
+All of the styles for this project are written in scss compiled into css using [Compass](http://compass-style.org/). In order to compile the styles for this project, you must have Compass installed. If you don't already have it installed, run `gem install compass`. Once that is done, simply open a new tab in the terminal, navigate to the project root. When you run the `grunt` command, compass will start polling for changes and automatically compile the styles when a change is detected.
