@@ -39,9 +39,15 @@
 		</div>
 	</header>
 
+	<div class="alert alert-dismissable" ng-class="message.type" ng-show="message.text">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		{{message.text}}
+	</div>
+
 	<div ng-view></div>
 	
 	<!-- Scripts -->
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	<script type="text/javascript" src="/js/app.js"></script>

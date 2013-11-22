@@ -105,10 +105,10 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
 	$scope.form = {};
 
-	$dropdowns.getTournamentLevels().then(function(data) {
+	dropdowns.getTournamentLevels().then(function(data) {
 		$scope.types = data;
 		$scope.form.type = data[0];
 	});
@@ -119,13 +119,75 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 			url: '/tournament/create',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully created tournament');
+			alert.success('Successfully created tournament');
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
-angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $http) {
+angular.module('scoreApp').directive('animationShowHide', function() {
+	return {
+		scope: {
+			showAnimation: '&',
+			hideAnimation: '&',
+			trigger: '=animationShowHide'
+		},
+		link: function(scope, element, attrs) {
+			if(scope.trigger) {
+				console.log(scope.trigger);
+				element.removeClass('no-display');
+			} else {
+				element.addClass('no-display');
+			}
+
+			scope.$watch('trigger', function(newVal, oldVal) {
+				if(newVal) {
+					element.removeClass(scope.hideAnimation);
+					element.addClass(scope.showAnimation);
+				} else {
+					element.removeClass(scope.showAnimation);
+					element.addClass(scope.hideAnimation);
+				}
+			});
+
+			element.on('animationstart', function() {
+				if(element.hasClass(scope.showAnimation)) {
+					element.removeClass('no-display');
+				}
+			});
+
+			element.on('animationend', function() {
+				if(element.hasClass(scope.hideAnimation)) {
+					element.addClass('no-display');
+				}
+			});
+		}
+	};
+});
+angular.module('scoreApp').service('alert', ['$rootScope', function($rootScope) {
+	var createMessage = function(type, message, timeout) {
+		$rootScope.message = {
+			type: type,
+			text: message
+		};
+	};
+
+	return {
+		success: function(message, timeout) {
+			createMessage('alert-success', message, timeout);
+		},
+		info: function(message, timeout) {
+			createMessage('alert-info', message, timeout);
+		},
+		warning: function(message, timeout) {
+			createMessage('alert-info', message, timeout);
+		},
+		danger: function(message, timeout) {
+			createMessage('alert-danger', message, timeout);
+		}
+	};
+}]);
+angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $http) {
 	return {
 		getTournamentLevels: function() {
 			var d = $q.defer();
