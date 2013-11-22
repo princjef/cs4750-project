@@ -18,7 +18,6 @@ angular.module('scoreApp').directive('animationShowHide', function() {
 		});
 
 		element.on('animationend webkitAnimationEnd onanimationend MSAnimationEnd', function() {
-			console.log('ending');
 			if(element.hasClass(attrs.hideAnimation)) {
 				element.addClass('no-display');
 			}
