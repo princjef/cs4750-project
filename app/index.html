@@ -39,8 +39,7 @@
 		</div>
 	</header>
 
-	<div class="alert alert-dismissable" ng-class="message.type" ng-show="message.text">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<div class="animated alert" ng-class="message.type" animation-show-hide="message.show" show-animation="slideInLeft" hide-animation="slideOutRight">
 		{{message.text}}
 	</div>
 

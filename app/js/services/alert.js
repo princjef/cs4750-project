@@ -1,9 +1,14 @@
-angular.module('scoreApp').service('alert', ['$rootScope', function($rootScope) {
-	var createMessage = function(type, message, timeout) {
+angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+	var createMessage = function(type, text, timeout) {
 		$rootScope.message = {
 			type: type,
-			text: message
+			text: text,
+			show: true
 		};
+
+		$timeout(function() {
+			$rootScope.message.show = false;
+		}, timeout || 5000);
 	};
 
 	return {

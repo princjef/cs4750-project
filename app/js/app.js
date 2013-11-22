@@ -91,7 +91,7 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$w
 }]);
 
 
-angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
 	$scope.form = {};
 	$scope.createOrganization = function() {
 		$http({
@@ -99,9 +99,9 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 			url: '/organization/create',
 			data: $scope.form
 		}).success(function(res) {
-			console.log('Successfully created organization');
+			alert.success('Successfully created organization');
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
@@ -126,50 +126,43 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
-	return {
-		scope: {
-			showAnimation: '&',
-			hideAnimation: '&',
-			trigger: '=animationShowHide'
-		},
-		link: function(scope, element, attrs) {
-			if(scope.trigger) {
-				console.log(scope.trigger);
+	return function(scope, element, attrs) {
+		if(attrs.animationShowHide) {
+			element.removeClass('no-display');
+		} else {
+			element.addClass('no-display');
+		}
+
+		scope.$watch(attrs.animationShowHide, function(newVal, oldVal) {
+			if(newVal) {
+				element.removeClass(attrs.hideAnimation);
+				element.addClass(attrs.showAnimation);
 				element.removeClass('no-display');
 			} else {
+				element.removeClass(attrs.showAnimation);
+				element.addClass(attrs.hideAnimation);
+			}
+		});
+
+		element.on('animationend webkitAnimationEnd onanimationend MSAnimationEnd', function() {
+			console.log('ending');
+			if(element.hasClass(attrs.hideAnimation)) {
 				element.addClass('no-display');
 			}
-
-			scope.$watch('trigger', function(newVal, oldVal) {
-				if(newVal) {
-					element.removeClass(scope.hideAnimation);
-					element.addClass(scope.showAnimation);
-				} else {
-					element.removeClass(scope.showAnimation);
-					element.addClass(scope.hideAnimation);
-				}
-			});
-
-			element.on('animationstart', function() {
-				if(element.hasClass(scope.showAnimation)) {
-					element.removeClass('no-display');
-				}
-			});
-
-			element.on('animationend', function() {
-				if(element.hasClass(scope.hideAnimation)) {
-					element.addClass('no-display');
-				}
-			});
-		}
+		});
 	};
 });
-angular.module('scoreApp').service('alert', ['$rootScope', function($rootScope) {
-	var createMessage = function(type, message, timeout) {
+angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+	var createMessage = function(type, text, timeout) {
 		$rootScope.message = {
 			type: type,
-			text: message
+			text: text,
+			show: true
 		};
+
+		$timeout(function() {
+			$rootScope.message.show = false;
+		}, timeout || 5000);
 	};
 
 	return {

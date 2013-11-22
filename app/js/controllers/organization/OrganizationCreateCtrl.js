@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
 	$scope.form = {};
 	$scope.createOrganization = function() {
 		$http({
@@ -6,9 +6,9 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 			url: '/organization/create',
 			data: $scope.form
 		}).success(function(res) {
-			console.log('Successfully created organization');
+			alert.success('Successfully created organization');
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
