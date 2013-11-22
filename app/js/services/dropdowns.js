@@ -1,4 +1,4 @@
-angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $http) {
+angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $http) {
 	return {
 		getTournamentLevels: function() {
 			var d = $q.defer();

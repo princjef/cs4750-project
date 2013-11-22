@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', '$window', function($scope, $http, dropdowns, $window) {
 	$scope.form = {};
 
 	$dropdowns.getTournamentLevels().then(function(data) {
