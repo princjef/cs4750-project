@@ -39,11 +39,12 @@
 		</div>
 	</header>
 
-	<div class="animated alert" ng-class="message.type" animation-show-hide="message.show" show-animation="slideInLeft" hide-animation="slideOutRight">
-		{{message.text}}
+	<div class="container">
+		<div class="animated alert" ng-class="message.type" animation-show-hide="message.show" show-animation="flipInX" hide-animation="flipOutX">
+			{{message.text}}
+		</div>
+		<div ng-view></div>
 	</div>
-
-	<div ng-view></div>
 	
 	<!-- Scripts -->
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

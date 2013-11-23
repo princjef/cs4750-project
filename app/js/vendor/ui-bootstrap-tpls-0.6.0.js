@@ -3362,7 +3362,7 @@ angular.module("template/datepicker/datepicker.html", []).run(["$templateCache",
     "    <tr class=\"text-center\">\n" +
     "      <th><button type=\"button\" class=\"btn fa fa-chevron-left pull-left\" ng-click=\"move(-1)\"><i class=\"icon-chevron-left\"></i></button></th>\n" +
     "      <th colspan=\"{{rows[0].length - 2 + showWeekNumbers}}\"><button type=\"button\" class=\"btn btn-block\" ng-click=\"toggleMode()\"><strong>{{title}}</strong></button></th>\n" +
-    "      <th><button type=\"button\" class=\"btn fa fa-chevron-right pull-left\" ng-click=\"move(1)\"><i class=\"icon-chevron-right\"></i></button></th>\n" +
+    "      <th><button type=\"button\" class=\"btn fa fa-chevron-right pull-right\" ng-click=\"move(1)\"><i class=\"icon-chevron-right\"></i></button></th>\n" +
     "    </tr>\n" +
     "    <tr class=\"text-center\" ng-show=\"labels.length > 0\">\n" +
     "      <th ng-show=\"showWeekNumbers\">#</th>\n" +
