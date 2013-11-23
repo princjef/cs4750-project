@@ -5,7 +5,8 @@
   "private": "true",
   "dependencies": {
     "express": "3.4.4",
-    "mysql": "2.0.0-alpha9"
+    "mysql": "2.0.0-alpha9",
+    "passport": "~0.1.17"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
