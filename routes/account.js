@@ -1,4 +1,4 @@
-var Account = require('../model/Account')
+var Account = require('../model/Account');
 
 exports.create = function(req, res) {
 	console.log('Test');
@@ -35,7 +35,7 @@ exports.update = function(req, res) {
 	});
 };
 
-exports.login= function(req, res) {
+exports.login = function(req, res) {
 	var account = new Account({
 		username: req.body.username,
 		password: req.body.password
@@ -58,4 +58,9 @@ exports.login= function(req, res) {
 			}
 		}
 	});
+};
+
+exports.current = function(req, res) {
+	
+
 };

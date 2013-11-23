@@ -39,6 +39,7 @@ app.post('/event/create', Event.createEvent);
 app.post('/account/create', account.create);
 app.post('/account/update', account.update);
 app.post('/account/login', account.login);
+app.get('/account/current', account.current);
 
 // All other routes
 app.all('/*', function(req, res) {
