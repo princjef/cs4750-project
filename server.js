@@ -35,6 +35,7 @@ app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 
 // Event Routes
+app.get('/event/all', Event.getAllEvents);
 app.post('/event/create', Event.createEvent);
 
 // Account Routes

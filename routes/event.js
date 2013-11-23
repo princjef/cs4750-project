@@ -29,3 +29,13 @@ exports.updateEvent = function(req, res) {
 		}
 	});
 };
+
+exports.getAllEvents = function(req, res) {
+	Event.getAllEvents(function(result) {
+		if(result.err) {
+			res.send(500, result.err);
+		} else {
+			res.json(result);
+		}
+	});
+};
