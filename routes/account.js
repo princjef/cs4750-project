@@ -47,9 +47,12 @@ exports.login = function(req, res) {
 			res.send(500);
 		} else {
 			if (successful) {
+				req.login(account, function(err) {
+					if (err) { return next(err); }
+				});
 				res.json({
 					status: true,
-					user: account.toJson()
+					user: account
 				});
 			} else {
 				res.json({
@@ -61,6 +64,5 @@ exports.login = function(req, res) {
 };
 
 exports.current = function(req, res) {
-	
-
+	return req.user.toJson();
 };

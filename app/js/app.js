@@ -28,6 +28,15 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 
 angular.module('scoreApp').controller('PageCtrl', ['$scope', function($scope) {
 }]);
+
+$http({
+	method: 'POST',
+	url: '/account/current',
+}).success(function(res) {
+	$scope.username = res.username;
+}).error(function(err) {
+	console.log(err);
+});
 angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.form = {};
 
