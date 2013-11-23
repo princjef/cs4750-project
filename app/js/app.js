@@ -105,7 +105,13 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$dropdowns', function($window, $scope, $dropdowns) {
+	$scope.form = {};
+	$dropdowns.getTournamentEvents.then(function(data) {
+		$scope.events = data;
+		$scope.form.eventToAdd = data[0];
+	});
+}]);
 angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
 	$scope.form = {};
 
@@ -140,6 +146,19 @@ angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $h
 				d.reject(err);
 			});
 			return d.promise;
+		},
+		getTournamentEvents: function() {
+			var deferred = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/event/all',
+				cache: true
+			}).success(function(data) {
+				deferred.resolve(data);
+			}).error(function(err) {
+				deferred.reject(data);
+			});
+			return deferred.promise();
 		}
 	};
 }]);

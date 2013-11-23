@@ -12,6 +12,19 @@ angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $h
 				d.reject(err);
 			});
 			return d.promise;
+		},
+		getTournamentEvents: function() {
+			var deferred = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/event/all',
+				cache: true
+			}).success(function(data) {
+				deferred.resolve(data);
+			}).error(function(err) {
+				deferred.reject(data);
+			});
+			return deferred.promise();
 		}
 	};
 }]);
