@@ -57,7 +57,7 @@ exports.login = function(req, res) {
 					status: true,
 					user: account
 				});
-				console.log(account);
+				console.log(account);	// Should this be here? Not sure if it was just for testing...
 			} else {
 				res.json({
 					status: false
@@ -68,5 +68,6 @@ exports.login = function(req, res) {
 };
 
 exports.current = function(req, res) {
-	return req.user.toJson();
+	//return req.user.toJson(); THIS DIDN'T WORK, FIGURE OUT WHY
+	return req.user;
 };

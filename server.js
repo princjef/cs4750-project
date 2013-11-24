@@ -29,7 +29,7 @@ passport.serializeUser(function(user, done) {
     done(null, JSON.stringify(user.toJson()));
 });
 passport.deserializeUser(function(user, done) {
-    done(err, JSON.parse(user));
+    done(null, JSON.parse(user));
 });
 
 // Initialize passport
