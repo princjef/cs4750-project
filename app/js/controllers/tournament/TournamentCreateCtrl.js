@@ -1,7 +1,7 @@
-angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$dropdowns', '$window', function($scope, $http, $dropdowns, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
 	$scope.form = {};
 
-	$dropdowns.getTournamentLevels().then(function(data) {
+	dropdowns.getTournamentLevels().then(function(data) {
 		$scope.types = data;
 		$scope.form.type = data[0];
 	});
@@ -12,9 +12,9 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 			url: '/tournament/create',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully created tournament');
+			alert.success('Successfully created tournament');
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);

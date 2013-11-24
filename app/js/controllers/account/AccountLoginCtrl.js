@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
 	$scope.form = {};
 
 	$scope.login = function() {
@@ -8,11 +8,11 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', '$
 			data: $scope.form
 		}).success(function(res) {
 			if (res.status) {
-				$window.alert('Successfully logged in!');
+				alert.success('Successfully logged in!');
 				console.log(res.user);
 			}
 			else {
-				$window.alert('Invalid login!');
+				alert.danger('Invalid login!');
 			}
 		}).error(function(err) {
 			console.log(err);
