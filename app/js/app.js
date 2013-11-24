@@ -219,9 +219,22 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 			}).success(function(data) {
 				deferred.resolve(data);
 			}).error(function(err) {
-				deferred.reject(data);
+				deferred.reject(err);
 			});
 			return deferred.promise;
+		},
+		getOfficials: function() {
+			var deferred = $q.defer();
+			$http({
+				method:'GET',
+				url:'/official/all',
+				cache:true
+			}).success(function(data) {
+				deferred.resolve(data);
+			}).error(function(err) {
+				deferred.reject(err);
+			});
+			return deferred.promise();
 		}
 	};
 }]);
