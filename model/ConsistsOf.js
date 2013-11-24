@@ -6,7 +6,6 @@ var ConsistsOf = function(obj) {
 	this.division = obj.division;
 	this.eventType = obj.eventType;
 	
-	this.tiebreak = obj.tiebreak;
 	this.highScoreWins = obj.highScoreWins;
 	this.highTiebreakWins = obj.highTiebreakWins;
 	this.scored = obj.scored;
@@ -17,9 +16,9 @@ var ConsistsOf = function(obj) {
 
 ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
-		' tiebreak, highScoreWins, highTiebreakWins, scored, supervisor_officialID, writer_officialID)'+
-		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
-		this.tiebreak, this.highScoreWins, this.highTiebreakWins, this.scored, this.supervisorID, this.writerID],
+		' highScoreWins, highTiebreakWins, scored, supervisor_officialID, writer_officialID)'+
+		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
+		this.highScoreWins, this.highTiebreakWins, this.scored, this.supervisorID, this.writerID],
 		function(err, row) {
 			if(err) {
 				console.log(err);
@@ -33,8 +32,8 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 
 ConsistsOf.prototype.updateEventInTournament = function(callback) {
 	connection.query('UPDATE ConsistsOf SET tournamentID=?, eventName=?, division=?, eventType=?,'+
-		' tiebreak=?, highScoreWins=?, highTiebreakWins=?, scored=?, supervisor_officialID=?, writer_officialID=?)',
-		[this.tournamentID, this.eventName, this.division, this.eventType, this.tiebreak, this.highScoreWins, 
+		' highScoreWins=?, highTiebreakWins=?, scored=?, supervisor_officialID=?, writer_officialID=?)',
+		[this.tournamentID, this.eventName, this.division, this.eventType, this.highScoreWins, 
 		this.highTiebreakWins, this.scored, this.supervisorID, this.writerID], function(err, row) {
 			if(err) {
 				console.log(err);
@@ -46,7 +45,7 @@ ConsistsOf.prototype.updateEventInTournament = function(callback) {
 		});
 };
 
-ConsistsOf.prototype.toJSON = function() {
+ConsistsOf.prototype.toJson = function() {
 	return {
 		tournamentID:this.tournamentID,
 		eventName:this.eventName,
