@@ -57,7 +57,6 @@ exports.login = function(req, res) {
 					status: true,
 					user: account
 				});
-				console.log(account);	// Should this be here? Not sure if it was just for testing...
 			} else {
 				res.json({
 					status: false
