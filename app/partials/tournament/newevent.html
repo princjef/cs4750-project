@@ -10,22 +10,28 @@
 	</div>
 	<div class="form-label"> High Score Wins: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" model="form.highScoreWins">
+		<input class="form-entry" type="checkbox" ng-model="form.highScoreWins">
 	</div>
 	<div class="form-label"> High Tiebreak Wins: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" model="form.highTiebreakWins">
+		<input class="form-entry" type="checkbox" ng-model="form.highTiebreakWins">
 	</div>
 	<div class="form-label"> Scoring Finished: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" model="form.scored">
+		<input class="form-entry" type="checkbox" ng-model="form.scored">
 	</div>
 	<div class="form-label"> Supervisor: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="text" model="form.supervisorID">
+		<input class="form-entry" type="text" ng-model="form.supervisorID" list="supervisors">
+		<datalist id="supervisors" >
+			<option ng-repeat="o in officials">{{o.name}}</option>
+		</datalist>
 	</div>
-	<div class="form-label"> Official: </div>
+	<div class="form-label"> Writer: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="text" model="form.officialID">
+		<input class="form-entry" type="text" ng-model="form.officialID" list="writers">
+		<datalist id="writers" >
+			<option ng-repeat="o in officials">{{o.name}}</option>
+		</datalist>
 	</div>
 </form>
