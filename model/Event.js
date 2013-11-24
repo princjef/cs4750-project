@@ -22,7 +22,28 @@ Event.prototype.toJson = function() {
 	return {
 		name: this.name,
 		division: this.division
-	}
-}
+	};
+};
 
+Event.prototype.setName = function(name) {
+	this.name = name;
+	return this;
+};
+
+Event.prototype.setDivision = function(division) {
+	this.division = division;
+	return this;
+};
+
+Event.getAllEvents = function(callback) {
+	connection.query("SELECT eventName, division FROM Event", [], function(err, row) {
+		if(err) {
+			console.log('ERR: ', err);
+			callback(err);
+		} else {
+			console.log('INFO: Returned all events');
+			callback(row);
+		}
+	});
+};
 module.exports = Event;

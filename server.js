@@ -8,6 +8,7 @@ var organization = require('./routes/organization');
 var tournament = require('./routes/tournament');
 var Event = require('./routes/event'); // Lowercase event is a keyword
 var account = require('./routes/account');
+var consistsOf = require('./routes/consistsOf');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -32,12 +33,14 @@ app.use('/css', express.static(__dirname + '/app/css'));
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
+app.post('/tournament/addevent', consistsOf.addEventToTournament);
 
 // Organization Routes
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 
 // Event Routes
+app.get('/event/all', Event.getAllEvents);
 app.post('/event/create', Event.createEvent);
 
 // Account Routes

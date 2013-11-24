@@ -1,0 +1,31 @@
+<h3>Add an event to a tournament</h3>
+<form class="newevent-form">
+	<div class="form-label"> Event to add: </div>
+	<div class="form-entry">
+		<select class="form-control" ng-model="form.eventToAdd" ng-options="e.eventName for e in events"> </select>
+	</div>
+	<div class="form-label"> Event Type: </div>
+	<div class="form-entry">
+		<select class="form-control" ng-options="t.value for t in eventTypes" ng-model="form.eventType"> </select>
+	</div>
+	<div class="form-label"> High Score Wins: </div>
+	<div class="form-entry">
+		<input class="form-entry" type="checkbox" model="form.highScoreWins">
+	</div>
+	<div class="form-label"> High Tiebreak Wins: </div>
+	<div class="form-entry">
+		<input class="form-entry" type="checkbox" model="form.highTiebreakWins">
+	</div>
+	<div class="form-label"> Scoring Finished: </div>
+	<div class="form-entry">
+		<input class="form-entry" type="checkbox" model="form.scored">
+	</div>
+	<div class="form-label"> Supervisor: </div>
+	<div class="form-entry">
+		<input class="form-entry" type="text" model="form.supervisorID">
+	</div>
+	<div class="form-label"> Official: </div>
+	<div class="form-entry">
+		<input class="form-entry" type="text" model="form.officialID">
+	</div>
+</form>

@@ -5,6 +5,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/new.html',
 					controller: 'TournamentCreateCtrl'
 				})
+			.when('/tournament/newevent', {
+					templateUrl: '/partials/tournament/newevent.html',
+					controller: 'TournamentAddEventCtrl' 
+			})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
@@ -128,6 +132,18 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', 'dropdowns', function($window, $scope, dropdowns) {
+	$scope.form = {};
+	dropdowns.getTournamentEvents().then(function(data) {
+		$scope.events = data;
+		$scope.form.eventToAdd = data[0];
+	});
+	$scope.eventTypes = [
+		{value:'Standard'}, 
+		{value:'Trial'}
+	];
+	$scope.form.eventType = $scope.eventTypes[0];
+}]);
 angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
 	$scope.form = {};
 
@@ -216,6 +232,19 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				d.reject(err);
 			});
 			return d.promise;
+		},
+		getTournamentEvents: function() {
+			var deferred = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/event/all',
+				cache: true
+			}).success(function(data) {
+				deferred.resolve(data);
+			}).error(function(err) {
+				deferred.reject(data);
+			});
+			return deferred.promise;
 		}
 	};
 }]);
