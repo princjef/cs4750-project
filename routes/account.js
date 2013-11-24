@@ -69,5 +69,6 @@ exports.login = function(req, res) {
 
 exports.current = function(req, res) {
 	//return req.user.toJson(); THIS DIDN'T WORK, FIGURE OUT WHY
-	return req.user;
+	//return req.user;
+	res.json(req.user);
 };

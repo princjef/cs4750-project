@@ -30,13 +30,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('PageCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
 	$http({
-		method: 'POST',
+		method: 'GET',
 		url: '/account/current'
 	}).success(function(res) {
-		$scope.username = res.username;
+		$rootScope.username = res.username;
 	}).error(function(err) {
 		console.log(err);
 	});
@@ -79,10 +79,8 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 				}).success(function(res) {
 					$rootScope.username = res.username;
 				}).error(function(err) {
-					console.log(err);
+					console.log(err);	// Don't know if you can log to console from here? Ask Jeff.
 				});
-
-				console.log(res.user);
 			}
 			else {
 				alert.danger('Invalid login!');

@@ -1,10 +1,10 @@
-angular.module('scoreApp').controller('PageCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
 	$http({
-		method: 'POST',
+		method: 'GET',
 		url: '/account/current'
 	}).success(function(res) {
-		$scope.username = res.username;
+		$rootScope.username = res.username;
 	}).error(function(err) {
 		console.log(err);
 	});
