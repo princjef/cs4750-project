@@ -24,6 +24,14 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'eiuhiuhsnlkuah' }));
 
+// Setup passport serialization/deserialization
+passport.serializeUser(function(user, done) {
+    done(null, JSON.stringify(user.toJson()));
+});
+passport.deserializeUser(function(user, done) {
+    done(err, JSON.parse(user));
+});
+
 // Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
