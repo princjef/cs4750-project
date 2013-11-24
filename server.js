@@ -20,6 +20,10 @@ app.use(express.compress());
 // Parser
 app.use(express.bodyParser());
 
+// Pre-passport initialization
+app.use(express.cookieParser());
+app.use(express.session({ secret: 'eiuhiuhsnlkuah' }));
+
 // Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
