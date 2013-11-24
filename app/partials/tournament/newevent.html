@@ -2,7 +2,7 @@
 <form class="newevent-form">
 	<div class="form-label"> Event to add: </div>
 	<div class="form-entry">
-		<select class="form-control" ng-model="form.eventToAdd" ng-options="e.name for e in events"> </select>
+		<select class="form-control" ng-model="form.eventToAdd" ng-options="e.value as e.name for e in events"> </select>
 	</div>
 	<div class="form-label"> Event Type: </div>
 	<div class="form-entry">
@@ -10,28 +10,31 @@
 	</div>
 	<div class="form-label"> High Score Wins: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" ng-model="form.highScoreWins">
+		<input class="form-entry" type="checkbox" ng-model="form.highScoreWins" ng-true-value="1" ng-false-value="0">
 	</div>
 	<div class="form-label"> High Tiebreak Wins: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" ng-model="form.highTiebreakWins">
+		<input class="form-entry" type="checkbox" ng-model="form.highTiebreakWins" ng-true-value="1" ng-false-value="0">
 	</div>
 	<div class="form-label"> Scoring Finished: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="checkbox" ng-model="form.scored">
+		<input class="form-entry" type="checkbox" ng-model="form.scored" ng-true-value="1" ng-false-value="0">
 	</div>
 	<div class="form-label"> Supervisor: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="text" ng-model="form.supervisorID" list="supervisors">
+		<input class="form-entry" type="text" ng-model="supervisorName" list="supervisors">
 		<datalist id="supervisors" >
 			<option ng-repeat="o in officials">{{o.name}}</option>
 		</datalist>
 	</div>
 	<div class="form-label"> Writer: </div>
 	<div class="form-entry">
-		<input class="form-entry" type="text" ng-model="form.officialID" list="writers">
+		<input class="form-entry" type="text" ng-model="writerName" list="writers">
 		<datalist id="writers" >
 			<option ng-repeat="o in officials">{{o.name}}</option>
 		</datalist>
+	</div>
+	<div class="form-group">
+		<button class="btn btn-primary" ng-click="addEvent()">Add</button>
 	</div>
 </form>
