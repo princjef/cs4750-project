@@ -1,4 +1,5 @@
 var express = require('express');
+var passport = require('passport');
 
 var app = express();
 
@@ -16,6 +17,10 @@ app.use(express.compress());
 
 // Parser
 app.use(express.bodyParser());
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Static Server
 app.use('/js', express.static(__dirname + '/app/js'));

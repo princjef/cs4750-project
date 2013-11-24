@@ -1,4 +1,6 @@
-angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
+angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope', '$http', 'alert',
+	function($scope, $rootScope, $http, alert) {
+	
 	$scope.form = {};
 
 	$scope.login = function() {
@@ -9,6 +11,17 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$http', 'a
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
+				
+				// FIX THIS WITH A SERVICE LATER
+				$http({
+					method: 'GET',
+					url: '/account/current'
+				}).success(function(res) {
+					$rootScope.username = res.username;
+				}).error(function(err) {
+					console.log(err);
+				});
+
 				console.log(res.user);
 			}
 			else {

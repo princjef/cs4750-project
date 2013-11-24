@@ -1,4 +1,5 @@
 var Account = require('../model/Account');
+var passport = require('passport');
 
 exports.create = function(req, res) {
 	console.log('Test');
@@ -47,13 +48,24 @@ exports.login = function(req, res) {
 			res.send(500);
 		} else {
 			if (successful) {
+				passport.serializeUser(function(account, done) {
+					done(null, account.username);
+				});
+
+//				passport.deserializeUser(function(account, done) {
+//					done(err, account.username);
+//				});
+
 				req.login(account, function(err) {
-					if (err) { return next(err); }
+					if (err) {
+						res.send(500, err);
+					}
 				});
 				res.json({
 					status: true,
 					user: account
 				});
+				console.log(account);
 			} else {
 				res.json({
 					status: false
