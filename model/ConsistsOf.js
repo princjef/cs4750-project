@@ -63,5 +63,38 @@ ConsistsOf.prototype.toJSON = function() {
 	};
 };
 
+ConsistsOf.prototype.setEventType = function(eventType) {
+	this.eventType = eventType;
+	return this;
+};
+
+ConsistsOf.prototype.setTiebreak = function(tiebreak) {
+	this.tiebreak = tiebreak;
+	return this;
+};
+
+ConsistsOf.prototype.setHighScoreWins = function(highScoreWins) {
+	this.highScoreWins = highScoreWins;
+	return this;
+};
+
+ConsistsOf.prototype.setHighTiebreakWins = function(highTiebreakWins) {
+	this.highTiebreakWins = highTiebreakWins;
+	return this;
+};
+
+ConsistsOf.prototype.setScored = function(scored) {
+	this.scored = scored;
+	return this;
+};
+
+ConsistsOf.prototype.setSupervisorID = function(supervisorID) {
+	this.supervisorID = supervisorID;
+};
+
+ConsistsOf.prototype.setOfficialID = function(officialID) {
+	this.officialID = officialID;
+	return this;
+};
 
 module.exports = ConsistsOf;

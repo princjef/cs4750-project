@@ -25,6 +25,16 @@ Event.prototype.toJson = function() {
 	};
 };
 
+Event.prototype.setName = function(name) {
+	this.name = name;
+	return this;
+};
+
+Event.prototype.setDivision = function(division) {
+	this.division = division;
+	return this;
+};
+
 Event.getAllEvents = function(callback) {
 	connection.query("SELECT eventName, division FROM Event", [], function(err, row) {
 		if(err) {
