@@ -112,8 +112,16 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', 'dropdowns', function($window, $scope, dropdowns) {
 	$scope.form = {};
 	dropdowns.getTournamentEvents().then(function(data) {
-		$scope.events = data;
-		$scope.form.eventToAdd = data[0];
+		eventNames = [];
+		data.forEach(function(entry) {
+			var entryName = entry.eventName + ' (Div: ' + entry.division + ')';
+			eventNames.push({
+				name:entryName,
+				value:entry
+			});	
+		});
+		$scope.events = eventNames;
+		$scope.form.eventToAdd = eventNames[0];
 	});
 	
 	dropdowns.getOfficials().then(function(data) {
