@@ -24,7 +24,7 @@ angular.module('scoreApp').service('$dropdowns', ['$q', '$http', function($q, $h
 			}).error(function(err) {
 				deferred.reject(data);
 			});
-			return deferred.promise();
+			return deferred.promise;
 		}
 	};
 }]);
