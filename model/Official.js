@@ -58,6 +58,16 @@ Official.prototype.setPhone = function(phone) {
 	return this;
 };
 
+Official.prototype.toJson = function() {
+	return {
+		officialID:this.officialID,
+		name_first:this.name_first,
+		name_last:this.name_last,
+		email:this.email,
+		phone:this.phone
+	};
+};
+
 Official.getOfficials = function(callback) {
 	connection.query('SELECT * FROM Official', [], function(err, rows) {
 		if(err) {
