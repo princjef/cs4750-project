@@ -66,6 +66,13 @@ exports.login = function(req, res) {
 	});
 };
 
+exports.logout = function(req, res) {
+	req.logout();
+	res.json({
+		status: false
+	});
+};
+
 exports.current = function(req, res) {
 	//return req.user.toJson(); THIS DIDN'T WORK, FIGURE OUT WHY
 	//return req.user;

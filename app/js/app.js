@@ -92,6 +92,34 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 			console.log(err);
 		});
 	};
+
+	$scope.logout = function() {
+		$http({
+			method: 'POST',
+			url: '/account/logout',
+			data: $scope.form
+		}).success(function(res) {
+			if (!res.status) {
+				alert.success('Successfully logged out!');
+
+				// FIX THIS WITH A SERVICE LATER
+				$http({
+					method: 'GET',
+					url: '/account/current'
+				}).success(function(res) {
+					$rootScope.username = res.username;
+				}).error(function(err) {
+					console.log(err);	// Don't know if you can log to console from here? Ask Jeff.
+				});
+			}
+			else {
+				alert.danger('Logout not successful!');
+			}
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+
 }]);
 
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
