@@ -22,7 +22,7 @@ CREATE TABLE Official (
 	name_first VARCHAR(30) NOT NULL,
 	name_last VARCHAR(50) NOT NULL,
 	email VARCHAR(100),
-	phone INTEGER(10),
+	phone VARCHAR(15),
 	PRIMARY KEY (officialID));
 
 CREATE TABLE Event (
