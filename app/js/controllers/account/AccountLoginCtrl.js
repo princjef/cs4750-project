@@ -5,8 +5,6 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 	$scope.form = {};
 
 	$scope.login = function() {
-		$scope.logout();	// Force logout before attemped login.
-
 		$http({
 			method: 'POST',
 			url: '/account/login',
