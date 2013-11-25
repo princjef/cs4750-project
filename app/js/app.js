@@ -25,7 +25,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
-			;
+			.when('/official/new', {
+					templateUrl: '/partials/official/new.html',
+					controller: 'OfficialCreateCtrl'	
+				});
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
@@ -116,6 +119,9 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$w
 }]);
 
 
+angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', function($scope, $window) {
+	$scope.form = {};
+}]);
 angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
 	$scope.form = {};
 	$scope.createOrganization = function() {

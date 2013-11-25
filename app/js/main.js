@@ -25,7 +25,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
-			;
+			.when('/official/new', {
+					templateUrl: '/partials/official/new.html',
+					controller: 'OfficialCreateCtrl'	
+				});
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
