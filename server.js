@@ -10,6 +10,7 @@ var Event = require('./routes/event'); // Lowercase event is a keyword
 var account = require('./routes/account');
 var consistsOf = require('./routes/consistsOf');
 var official = require('./routes/official');
+var belongsTo = require('./routes/belongsTo');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -64,6 +65,7 @@ app.post('/official/create', official.createOfficial);
 app.post('/account/create', account.create);
 app.post('/account/update', account.update);
 app.post('/account/login', account.login);
+app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
 
 // All other routes
