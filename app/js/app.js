@@ -9,6 +9,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/newevent.html',
 					controller: 'TournamentAddEventCtrl' 
 			})
+			.when('/tournament/dashboard', {
+					templateUrl: '/partials/tournament/dashboard.html',
+					controller: 'TournamentDashCtrl'
+				})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
@@ -226,6 +230,9 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 			alert.danger(err);
 		});
 	};
+}]);
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', function($scope, $rootScope, $window, dropdowns, $hhtp) {
+	
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {

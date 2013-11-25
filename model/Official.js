@@ -16,8 +16,8 @@ Official.prototype.create = function(callback) {
 			console.log('ERR', err);
 			callback(err);
 		} else {
-			that.officialID = row.officialID;
-			console.log('INFO: Creates a new official with ID:', that.officalID);
+			that.officialID = row.insertId;
+			console.log('INFO: Creates a new official with ID:', that.officialID);
 			callback();
 		}
 	});
