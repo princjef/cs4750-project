@@ -51,6 +51,19 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				d.reject(err);
 			});
 			return d.promise;
+		},
+		getTiers: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/scoring/tiers',
+				cache: true
+			}).success(function(data) {
+				d.resolve(data);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
 		}
 	};
 }]);

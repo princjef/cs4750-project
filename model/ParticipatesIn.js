@@ -8,7 +8,7 @@ var ParticipatesIn = function(obj) {
 	this.scoreCode = obj.scoreCode;
 	this.score = obj.score;
 	this.tiebreak = obj.tiebreak;
-	this.tier = obj.tire;
+	this.tier = obj.tier;
 };
 
 /*
@@ -69,6 +69,18 @@ ParticipatesIn.getScoreCodes = function(callback) {
 	});
 };
 
+ParticipatesIn.getTiers = function(callback) {
+	connection.query("SHOW COLUMNS FROM ParticipatesIn LIKE 'tier'", function(err, rows) {
+		if(err) {
+			console.log('ERR', err);
+			callback({err: 'Could not complete query'});
+		} else {
+			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
+			callback(match.split('\',\''));
+		}
+	});
+};
+
 // Setters
 ParticipatesIn.prototype.setTeam = function(team) {
 	this.team = team;
@@ -101,7 +113,7 @@ ParticipatesIn.prototype.toJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		ties: this.tier
+		tier: this.tier
 	};
 };
 
@@ -111,7 +123,7 @@ ParticipatesIn.prototype.toParticipatorJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		ties: this.tier
+		tier: this.tier
 	};
 };
 
