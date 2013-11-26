@@ -1,21 +1,17 @@
-angular.module('scoreApp').service('user', ['$rootScope', '$http', function($rootScope, $http) {
-	var getUser = function() {
-		if ($rootscope.username !== res.username) {
-			$http({
-				method: 'GET',
-				url: '/account/current'
-			}).success(function(res) {
-				$rootScope.username = res.username;
-			}).error(function(err) {
-				console.log(err);	// Don't know if you can log to console from here? Ask Jeff.
-			});
-		}
-	};
-
+angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
 	return {
 		current: function() {
-			$rootscope.console.log('hello');
-			getUser();
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/account/current',
+				cache: true
+			}).success(function(user) {
+				$rootScope.username = user.username;
+				d.resolve(user);
+			}).error(function(err) {
+				d.reject(err);
+			});
 		}
 	};
 }]);
