@@ -394,6 +394,9 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			}).error(function(err) {
 				d.reject(err);
 			});
+		},
+		clear: function() {
+			$rootScope.username = null;
 		}
 	};
 }]);
