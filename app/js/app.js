@@ -258,18 +258,25 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 
 	$scope.updateRankings = function() {
 		var teams = $scope.participators.slice(0);
+		var started = false;
+		var finished = true;
 		for(var i = teams.length - 1; i >= 0; i--) {
 			teams[i].index = i;
 			if(teams[i].scoreCode === null ||
 					(teams[i].scoreCode === 'participated' && teams[i].score === null)) {
 				$scope.participators[i].place = null;
 				teams.splice(i, 1);
+				finished = false;
 			} else if(teams[i].scoreCode === 'NS') {
 				$scope.participators[i].place = $scope.participators.length + 1;
 				teams.splice(i, 1);
+				started = true;
 			} else if(teams[i].scoreCode === 'DQ') {
 				$scope.participators[i].place = $scope.participators.length + 2;
 				teams.splice(i, 1);
+				started = true;
+			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null) {
+				started = true;
 			}
 		}
 		teams.sort(compareParticipators);
@@ -278,6 +285,19 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		teams.forEach(function(team) {
 			$scope.participators[team.index].place = currentPlace++;
 		});
+
+		var oldStatus = $scope.event.status;
+		if(!started) {
+			$scope.event.status = 'Not Started';
+		} else if(started && !finished) {
+			$scope.event.status = 'In Progress';
+		} else {
+			$scope.event.status = 'Completed';
+		}
+
+		if($scope.event.status !== oldStatus) {
+			$scope.saveEvent();
+		}
 	};
 
 	$scope.saveScores = function() {

@@ -50,5 +50,12 @@ exports.statuses = function(req, res) {
 };
 
 exports.save = function(req, res) {
-
+	var consistsOf = new ConsistsOf(req.body);
+	consistsOf.save(function(err) {
+		if(err) {
+			res.send(500);
+		} else {
+			res.send(200);
+		}
+	});
 };
