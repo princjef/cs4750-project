@@ -128,6 +128,9 @@ Account.hashSaltPass = function(password) {
 Account.comparePass = function(password, hash) {
 	console.log('hash is', hash);
 	console.log('password is', password);
+
+	console.log(bcrypt.hashSync(password, hash));
+
 	console.log(bcrypt.compareSync(password, hash));
 	return bcrypt.compareSync(password, hash);
 };
