@@ -5,7 +5,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/new.html',
 					controller: 'TournamentCreateCtrl'
 				})
-			.when('/tournament/newevent', {
+			.when('/tournament/:tournamentID/newevent', {
 					templateUrl: '/partials/tournament/newevent.html',
 					controller: 'TournamentAddEventCtrl'
 			})
@@ -194,8 +194,9 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		alert.danger(err);
 	});
 }]);
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', function($window, $scope, $http, dropdowns) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', '$routeParams', function($window, $scope, $http, dropdowns, $routeParams) {
 	$scope.form = {};
+	$scope.form.tournamentID = $routeParams.tournamentID;
 	dropdowns.getTournamentEvents().then(function(data) {
 		eventNames = [];
 		data.forEach(function(entry) {
@@ -240,8 +241,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 				$scope.form.writerID = entry.value;
 			}
 		});
-		
-		$scope.form.tournamentID = 45;
+	
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
