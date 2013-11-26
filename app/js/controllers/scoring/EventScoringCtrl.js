@@ -93,7 +93,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		for(var i = teams.length - 1; i >= 0; i--) {
 			teams[i].index = i;
 			if(teams[i].scoreCode === null ||
-					(teams[i].scoreCode === 'participated' && teams[i].score === null)) {
+					(teams[i].scoreCode === 'participated' && (teams[i].score === null || teams[i].score.length === 0))) {
 				$scope.participators[i].place = null;
 				teams.splice(i, 1);
 				finished = false;
@@ -105,7 +105,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 				$scope.participators[i].place = $scope.participators.length + 2;
 				teams.splice(i, 1);
 				started = true;
-			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null) {
+			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null && teams[i].score.length === 0) {
 				started = true;
 			}
 		}
