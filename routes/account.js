@@ -5,31 +5,37 @@ exports.create = function(req, res) {
 	var account = new Account({
 		username: req.body.username,
 		email: req.body.email,
-		password: req.body.password
+		password: req.body.password,
 	});
 
-	account.create(function(err, successful) {
-		if(err) {
-			if (err.code == 'ER_DUP_ENTRY') {
-				console.log('ERR', err);
-				res.send(500, 'ERROR: Duplicate account name exists.');
+	if (req.body.password != req.body.passwordReentered) {
+		res.send(500, 'ERROR: Passwords do not match.');
+	}
+
+	else {
+		account.create(function(err, successful) {
+			if(err) {
+				if (err.code == 'ER_DUP_ENTRY') {
+					console.log('ERR', err);
+					res.send(500, 'ERROR: Duplicate account name exists.');
+				} else {
+					console.log('Err', err);
+					res.send(500, 'ERROR: The server encountered an error.');
+				}
 			} else {
-				console.log('Err', err);
-				res.send(500, 'ERROR: The server encountered an error.');
+				if (successful) {
+					res.json({
+						status: true,
+						user: account.toJson()
+					});
+				} else {
+					res.json({
+						status: false
+					});
+				}
 			}
-		} else {
-			if (successful) {
-				res.json({
-					status: true,
-					user: account.toJson()
-				});
-			} else {
-				res.json({
-					status: false
-				});
-			}
-		}
-	});
+		});
+	}
 };
 
 exports.update = function(req, res) {

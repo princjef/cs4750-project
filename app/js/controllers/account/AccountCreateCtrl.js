@@ -1,5 +1,5 @@
 angular.module('scoreApp').controller('AccountCreateCtrl',
-	['$scope', '$http', 'alert', function($scope, $http, alert) {
+	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
 
 	$scope.form = {};
 
