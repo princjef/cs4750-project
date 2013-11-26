@@ -81,6 +81,18 @@ ParticipatesIn.getTiers = function(callback) {
 	});
 };
 
+ParticipatesIn.prototype.save = function(callback) {
+	var that = this;
+	connection.query("UPDATE ParticipatesIn SET scoreCode=?, score=?, tiebreak=?, tier=? WHERE " +
+			"tournamentID=? AND teamNumber=? AND division=? AND eventName=?",
+			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err) {
+		if(err) {
+			console.log('ERR', err);
+			callback('Could not complete query');
+		}
+	});
+};
+
 // Setters
 ParticipatesIn.prototype.setTeam = function(team) {
 	this.team = team;

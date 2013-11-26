@@ -1,7 +1,19 @@
 var ParticipatesIn = require('../model/ParticipatesIn');
+var Team = require('../model/Team');
+var Event = require('../model/Event');
 
 exports.scoreCodes = function(req, res) {
 	ParticipatesIn.getScoreCodes(function(result) {
+		if(result.err) {
+			res.send(500, result.err);
+		} else {
+			res.json(result);
+		}
+	});
+};
+
+exports.tiers = function(req, res) {
+	ParticipatesIn.getTiers(function(result) {
 		if(result.err) {
 			res.send(500, result.err);
 		} else {
@@ -29,12 +41,23 @@ exports.participators = function(req, res) {
 	});
 };
 
-exports.tiers = function(req, res) {
-	ParticipatesIn.getTiers(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
-		} else {
-			res.json(result);
-		}
+exports.update = function(req, res) {
+	var participants = [];
+	req.body.participants.forEach(function(entry) {
+		var participant = new ParticipatesIn({
+			team: new Team(entry.team),
+			event: new Event(req.body.event),
+			scoreCode: entry.scoreCode,
+			score: entry.score,
+			tiebreak: entry.tiebreak,
+			tier: entry.tier
+		});
+		participant.save(function(err) {
+			if(err) {
+				res.send(500);
+			}
+		});
 	});
+
+	res.send(200);
 };

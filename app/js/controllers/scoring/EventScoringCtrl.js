@@ -28,7 +28,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 	}).success(function(res) {
 		$scope.event = res.event;
 		$scope.participators = res.participators;
-		console.log($scope.participators);
+		$scope.updateRankings();
 	}).error(function(err) {
 		alert.danger(err);
 	});
@@ -92,6 +92,21 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 
 		teams.forEach(function(team) {
 			$scope.participators[team.index].place = currentPlace++;
+		});
+	};
+
+	$scope.saveScores = function() {
+		$http({
+			method: 'POST',
+			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
+			data: {
+				participants: $scope.participators,
+				event: $scope.event
+			}
+		}).success(function(res) {
+			alert.success('Scoring information successfully saved');
+		}).error(function(err) {
+			alert.danger(err);
 		});
 	};
 }]);

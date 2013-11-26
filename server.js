@@ -54,6 +54,7 @@ app.post('/tournament/addevent', consistsOf.addEventToTournament);
 
 // Scoring Routes
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
+app.post('/scoring/:tournamentID/:division/:eventName/save', scoring.update);
 app.get('/scoring/scoreCodes', scoring.scoreCodes);
 app.get('/scoring/tiers', scoring.tiers);
 
