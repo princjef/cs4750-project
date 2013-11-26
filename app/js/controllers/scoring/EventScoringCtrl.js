@@ -124,4 +124,14 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			alert.danger(err);
 		});
 	};
+
+	$scope.saveEvent = function() {
+		$http({
+			method: 'POST',
+			url: '/event/save',
+			data: $scope.event
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
 }]);

@@ -8,7 +8,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			eventNames.push({
 				name:entryName,
 				value:entry
-			});	
+			});
 		});
 		$scope.events = eventNames;
 		$scope.form.eventToAdd = eventNames[0].value;
@@ -24,17 +24,16 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			});
 		});
 		$scope.officials = names;
-		
 	});
+
 	$scope.eventTypes = [
-		{value:'Standard'}, 
+		{value:'Standard'},
 		{value:'Trial'}
 	];
 	$scope.form.eventType = $scope.eventTypes[0];
 	
 	$scope.form.highTiebreakWins = "1";
 	$scope.form.highScoreWins = "1";
-	$scope.form.scored = "0";
 	
 	$scope.addEvent = function() {
 		$scope.officials.forEach(function(entry) {

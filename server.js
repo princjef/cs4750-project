@@ -69,6 +69,8 @@ app.post('/organization/addtournament', runBy.create);
 app.get('/event/all', Event.getAllEvents);
 app.post('/event/create', Event.createEvent);
 app.get('/event/info', consistsOf.info);
+app.get('/event/save', consistsOf.save);
+app.get('/event/statuses', consistsOf.statuses);
 
 //Official Routes
 app.get('/official/all', official.getAllOfficials);

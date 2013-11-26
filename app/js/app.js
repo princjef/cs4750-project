@@ -294,6 +294,16 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			alert.danger(err);
 		});
 	};
+
+	$scope.saveEvent = function() {
+		$http({
+			method: 'POST',
+			url: '/event/save',
+			data: $scope.event
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', '$routeParams', function($window, $scope, $http, dropdowns, $routeParams) {
 	$scope.form = {};
@@ -305,7 +315,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			eventNames.push({
 				name:entryName,
 				value:entry
-			});	
+			});
 		});
 		$scope.events = eventNames;
 		$scope.form.eventToAdd = eventNames[0].value;
@@ -321,17 +331,16 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			});
 		});
 		$scope.officials = names;
-		
 	});
+
 	$scope.eventTypes = [
-		{value:'Standard'}, 
+		{value:'Standard'},
 		{value:'Trial'}
 	];
 	$scope.form.eventType = $scope.eventTypes[0];
 	
 	$scope.form.highTiebreakWins = "1";
 	$scope.form.highScoreWins = "1";
-	$scope.form.scored = "0";
 	
 	$scope.addEvent = function() {
 		$scope.officials.forEach(function(entry) {
@@ -493,6 +502,19 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				cache: true
 			}).success(function(tiers) {
 				d.resolve(tiers);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
+		},
+		getEventStatuses: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/event/statuses',
+				cache: true
+			}).success(function(statuses) {
+				d.resolve(statuses);
 			}).error(function(err) {
 				d.reject(err);
 			});

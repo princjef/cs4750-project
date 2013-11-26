@@ -8,7 +8,7 @@ var ConsistsOf = function(obj) {
 	
 	this.highScoreWins = obj.highScoreWins;
 	this.highTiebreakWins = obj.highTiebreakWins;
-	this.scored = obj.scored;
+	this.status = obj.status;
 	
 	this.supervisorID = obj.supervisorID;
 	this.writerID = obj.writerID;
@@ -23,7 +23,7 @@ ConsistsOf.prototype.get = function(callback) {
 			callback(err);
 		} else {
 			that.eventType = rows[0].eventType;
-			that.scored = rows[0].scored;
+			that.status = rows[0].status;
 			that.highScoreWins = rows[0].highScoreWins;
 			that.highTiebreakWins = rows[0].highTiebreakWins;
 			that.writerID = rows[0].writer_officialID;
@@ -35,9 +35,9 @@ ConsistsOf.prototype.get = function(callback) {
 
 ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
-		' highScoreWins, highTiebreakWins, scored, supervisor_officialID, writer_officialID)'+
+		' highScoreWins, highTiebreakWins, status, supervisor_officialID, writer_officialID)'+
 		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
-		this.highScoreWins, this.highTiebreakWins, this.scored, this.supervisorID, this.writerID],
+		this.highScoreWins, this.highTiebreakWins, 'Not Started', this.supervisorID, this.writerID],
 		function(err, row) {
 			if(err) {
 				console.log(err);
@@ -51,9 +51,9 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 
 ConsistsOf.prototype.updateEventInTournament = function(callback) {
 	connection.query('UPDATE ConsistsOf SET tournamentID=?, eventName=?, division=?, eventType=?,'+
-		' highScoreWins=?, highTiebreakWins=?, scored=?, supervisor_officialID=?, writer_officialID=?)',
+		' highScoreWins=?, highTiebreakWins=?, status=?, supervisor_officialID=?, writer_officialID=?)',
 		[this.tournamentID, this.eventName, this.division, this.eventType, this.highScoreWins, 
-		this.highTiebreakWins, this.scored, this.supervisorID, this.writerID], function(err, row) {
+		this.highTiebreakWins, this.status, this.supervisorID, this.writerID], function(err, row) {
 			if(err) {
 				console.log(err);
 				callback(err);
@@ -62,6 +62,18 @@ ConsistsOf.prototype.updateEventInTournament = function(callback) {
 				callback();
 			}
 		});
+};
+
+ConsistsOf.getStatuses = function(callback) {
+	connection.query("SHOW COLUMNS FROM ConsistsOf LIKE 'status'", function(err, rows) {
+		if(err) {
+			console.log('ERR', err);
+			callback({err: 'Could not complete query'});
+		} else {
+			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
+			callback(match.split('\',\''));
+		}
+	});
 };
 
 ConsistsOf.prototype.toJson = function() {
@@ -74,7 +86,7 @@ ConsistsOf.prototype.toJson = function() {
 		tiebreak:this.tiebreak,
 		highScoreWins:this.highScoreWins,
 		highTiebreakWins:this.highTiebreakWins,
-		scored:this.scored,
+		status:this.status,
 
 		supervisorID:this.supervisorID,
 		writerID:this.writerID	
@@ -101,8 +113,8 @@ ConsistsOf.prototype.setHighTiebreakWins = function(highTiebreakWins) {
 	return this;
 };
 
-ConsistsOf.prototype.setScored = function(scored) {
-	this.scored = scored;
+ConsistsOf.prototype.setStatus = function(scored) {
+	this.status = status;
 	return this;
 };
 
