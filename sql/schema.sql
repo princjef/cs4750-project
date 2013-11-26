@@ -74,7 +74,7 @@ CREATE TABLE ParticipatesIn (
 	tier ENUM('1', '2', '3', '4'),
 	PRIMARY KEY (tournamentID, teamNumber, division, eventName),
 	FOREIGN KEY (tournamentID, teamNumber, division) REFERENCES Team(tournamentID, teamNumber, division) ON DELETE CASCADE,
-	FOREIGN KEY (eventName) REFERENCES Event(eventName) ON DELETE CASCADE);
+	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE);
 
 CREATE TABLE ConsistsOf (
 	tournamentID INTEGER NOT NULL,

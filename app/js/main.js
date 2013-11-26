@@ -7,7 +7,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 				})
 			.when('/tournament/newevent', {
 					templateUrl: '/partials/tournament/newevent.html',
-					controller: 'TournamentAddEventCtrl' 
+					controller: 'TournamentAddEventCtrl'
 			})
 			.when('/tournament/dashboard', {
 					templateUrl: '/partials/tournament/dashboard.html',
@@ -31,8 +31,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 				})
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
-					controller: 'OfficialCreateCtrl'	
-				});
+					controller: 'OfficialCreateCtrl'
+				})
+			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
+					templateUrl: '/partials/scoring/event.html',
+					controller: 'EventScoringCtrl'
+				})
+			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);

@@ -7,7 +7,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 				})
 			.when('/tournament/newevent', {
 					templateUrl: '/partials/tournament/newevent.html',
-					controller: 'TournamentAddEventCtrl' 
+					controller: 'TournamentAddEventCtrl'
 			})
 			.when('/tournament/dashboard', {
 					templateUrl: '/partials/tournament/dashboard.html',
@@ -31,8 +31,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 				})
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
-					controller: 'OfficialCreateCtrl'	
-				});
+					controller: 'OfficialCreateCtrl'
+				})
+			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
+					templateUrl: '/partials/scoring/event.html',
+					controller: 'EventScoringCtrl'
+				})
+			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
@@ -65,8 +70,9 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 	};
 }]);
 
-angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope', '$http', 'alert',
-	function($scope, $rootScope, $http, alert) {
+angular.module('scoreApp').controller('AccountLoginCtrl',
+	['$scope', '$rootScope', '$http', 'alert', 'user',
+		function($scope, $rootScope, $http, alert, user) {
 	
 	$scope.form = {};
 
@@ -78,16 +84,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
-				
-				// FIX THIS WITH A SERVICE LATER
-				$http({
-					method: 'GET',
-					url: '/account/current'
-				}).success(function(res) {
-					$rootScope.username = res.username;
-				}).error(function(err) {
-					console.log(err);	// Don't know if you can log to console from here? Ask Jeff.
-				});
+				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Invalid login!');
@@ -96,6 +93,25 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 			console.log(err);
 		});
 	};
+
+	$scope.logout = function() {
+		$http({
+			method: 'POST',
+			url: '/account/logout',
+			data: $scope.form
+		}).success(function(res) {
+			if (!res.status) {
+				alert.success('Successfully logged out!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Logout not successful!');
+			}
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+
 }]);
 
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
@@ -151,6 +167,32 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 			alert.danger(err);
 		});
 	};
+}]);
+angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
+	$scope.form = {};
+	
+	dropdowns.getScoreCodes().then(function(data) {
+		$scope.scoreCodes = data;
+	});
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/info',
+	}).success(function(res) {
+		$scope.tournament = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
+	}).success(function(res) {
+		$scope.event = res.event;
+		$scope.participators = res.participators;
+	}).error(function(err) {
+		alert.danger(err);
+	});
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', function($window, $scope, $http, dropdowns) {
 	$scope.form = {};
@@ -328,10 +370,40 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				deferred.reject(err);
 			});
 			return deferred.promise;
+		},
+		getScoreCodes: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/scoring/scoreCodes',
+				cache: true
+			}).success(function(data) {
+				d.resolve(data);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
 		}
 	};
 }]);
 
+angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
+	return {
+		current: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/account/current',
+				cache: true
+			}).success(function(user) {
+				$rootScope.username = user.username;
+				d.resolve(user);
+			}).error(function(err) {
+				d.reject(err);
+			});
+		}
+	};
+}]);
 (function(m,f,l){'use strict';f.module("ngCookies",["ng"]).factory("$cookies",["$rootScope","$browser",function(d,b){var c={},g={},h,i=!1,j=f.copy,k=f.isUndefined;b.addPollFn(function(){var a=b.cookies();h!=a&&(h=a,j(a,g),j(a,c),i&&d.$apply())})();i=!0;d.$watch(function(){var a,e,d;for(a in g)k(c[a])&&b.cookies(a,l);for(a in c)e=c[a],f.isString(e)?e!==g[a]&&(b.cookies(a,e),d=!0):f.isDefined(g[a])?c[a]=g[a]:delete c[a];if(d)for(a in e=b.cookies(),c)c[a]!==e[a]&&(k(e[a])?delete c[a]:c[a]=e[a])});return c}]).factory("$cookieStore",
 ["$cookies",function(d){return{get:function(b){return(b=d[b])?f.fromJson(b):b},put:function(b,c){d[b]=f.toJson(c)},remove:function(b){delete d[b]}}}])})(window,window.angular);
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);

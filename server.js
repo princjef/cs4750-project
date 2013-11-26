@@ -11,6 +11,8 @@ var account = require('./routes/account');
 var consistsOf = require('./routes/consistsOf');
 var official = require('./routes/official');
 var belongsTo = require('./routes/belongsTo');
+var team = require('./routes/team');
+var scoring = require('./routes/scoring');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -44,10 +46,16 @@ app.use('/assets', express.static(__dirname + '/app/assets'));
 app.use('/css', express.static(__dirname + '/app/css'));
 
 // Tournament Routes
+app.get('/tournament/:id/info', tournament.info);
+app.get('/tournament/:id/teams', team.getByTournamentID);
+app.get('/tournament/:tournamentID/:division/:eventName/participators', tournament.participators);
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
 app.post('/tournament/addevent', consistsOf.addEventToTournament);
+
+// Scoring Routes
+app.get('/scoring/scoreCodes', scoring.scoreCodes);
 
 // Organization Routes
 app.post('/organization/create', organization.create);
@@ -67,6 +75,7 @@ app.post('/account/update', account.update);
 app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
+app.post('/account/logout', account.logout);
 
 // All other routes
 app.all('/*', function(req, res) {

@@ -1,5 +1,6 @@
-angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope', '$http', 'alert',
-	function($scope, $rootScope, $http, alert) {
+angular.module('scoreApp').controller('AccountLoginCtrl',
+	['$scope', '$rootScope', '$http', 'alert', 'user',
+		function($scope, $rootScope, $http, alert, user) {
 	
 	$scope.form = {};
 
@@ -11,16 +12,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
-				
-				// FIX THIS WITH A SERVICE LATER
-				$http({
-					method: 'GET',
-					url: '/account/current'
-				}).success(function(res) {
-					$rootScope.username = res.username;
-				}).error(function(err) {
-					console.log(err);	// Don't know if you can log to console from here? Ask Jeff.
-				});
+				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Invalid login!');
@@ -29,4 +21,23 @@ angular.module('scoreApp').controller('AccountLoginCtrl', ['$scope', '$rootScope
 			console.log(err);
 		});
 	};
+
+	$scope.logout = function() {
+		$http({
+			method: 'POST',
+			url: '/account/logout',
+			data: $scope.form
+		}).success(function(res) {
+			if (!res.status) {
+				alert.success('Successfully logged out!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Logout not successful!');
+			}
+		}).error(function(err) {
+			console.log(err);
+		});
+	};
+
 }]);
