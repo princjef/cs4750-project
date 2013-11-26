@@ -30,7 +30,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		}).success(function(res) {
 			if (!res.status) {
 				alert.success('Successfully logged out!');
-				user.current();	// Update current user.
+				user.clear();	// Clear current user.
 			}
 			else {
 				alert.danger('Logout not successful!');
