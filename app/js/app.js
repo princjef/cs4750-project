@@ -201,7 +201,6 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			division: $routeParams.eventDivision
 		}
 	}).success(function(res) {
-		console.log(res);
 		$scope.event = res;
 	}).error(function(err) {
 		alert.danger(err);
@@ -212,7 +211,6 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
 	}).success(function(res) {
 		$scope.participators = res.participators;
-		console.log($scope.participators);
 		$scope.updateRankings();
 	}).error(function(err) {
 		alert.danger(err);
@@ -283,7 +281,6 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 	};
 
 	$scope.saveScores = function() {
-		console.log($scope.participators);
 		$http({
 			method: 'POST',
 			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
