@@ -25,10 +25,18 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
+<<<<<<< Updated upstream
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
 					controller: 'OfficialCreateCtrl'	
 				});
+=======
+			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
+					templateUrl: '/partials/scoring/event.html',
+					controller: 'EventScoringCtrl'
+				})
+			;
+>>>>>>> Stashed changes
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
@@ -161,6 +169,7 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
+<<<<<<< Updated upstream
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', function($window, $scope, $http, dropdowns) {
 	$scope.form = {};
 	dropdowns.getTournamentEvents().then(function(data) {
@@ -219,6 +228,33 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 				console.log(err);
 			});
 	};
+=======
+angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
+	$scope.form = {};
+	
+	dropdowns.getScoreCodes().then(function(data) {
+		$scope.scoreCodes = data;
+	});
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/info',
+	}).success(function(res) {
+		$scope.tournament = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
+	}).success(function(res) {
+		$scope.event = res.event;
+		$scope.participators = res.participators;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+>>>>>>> Stashed changes
 }]);
 angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
 	$scope.form = {};
@@ -309,6 +345,7 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 			});
 			return d.promise;
 		},
+<<<<<<< Updated upstream
 		getTournamentEvents: function() {
 			var deferred = $q.defer();
 			$http({
@@ -334,6 +371,20 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				deferred.reject(err);
 			});
 			return deferred.promise;
+=======
+		getScoreCodes: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/scoring/scoreCodes',
+				cache: true
+			}).success(function(data) {
+				d.resolve(data);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
+>>>>>>> Stashed changes
 		}
 	};
 }]);

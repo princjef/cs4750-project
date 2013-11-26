@@ -1,0 +1,25 @@
+<h3>{{event.name}} ({{event.division}}) <small>{{tournament.name}}</small></h3>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Team Name (State)</th>
+			<th>Score Code</th>
+			<th>Raw Score</th>
+			<th>Tier</th>
+			<th>Tie Break</th>
+			<th>Place</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="participator in participators|orderBy:team.number">
+			<td>{{participator.team.number}}</td>
+			<td>{{participator.team.name}} ({{participator.team.state}})</td>
+			<td><select type="text" class="form-control" ng-model="participator.scoreCode" ng-options="code for code in scoreCodes"></select></td>
+			<td><input type="text" class="form-control" ng-model="participator.score" /></td>
+			<td><input type="text" class="form-control" ng-model="participator.tier" /></td>
+			<td><input type="text" class="form-control" ng-model="participator.tiebreak" /></td>
+			<td>{{participator.team.place}}</td>
+		</tr>
+	</tbody>
+</table>

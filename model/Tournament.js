@@ -31,6 +31,40 @@ Tournament.getLevels = function(callback) {
 
 // Instance Functions
 
+/*
+ * Gets a Tournament using the ID provided
+ * 
+ * Params: callback function
+ * Returns: error (if there is one)
+ */
+Tournament.prototype.getByID = function(callback) {
+	var that = this;
+	connection.query("SELECT * FROM Tournament WHERE tournamentID=?",
+			[this.id], function(err, rows) {
+		if(err) {
+			console.log('ERR:', err);
+			callback({
+				err: err
+			});
+		} else {
+			if(rows.length === 0) {
+				callback({
+					response: {
+						code: 404,
+						message: 'The tournament you requested does not exist'
+					}
+				});
+			} else {
+				that.type = rows[0].tournamentType;
+				that.location = rows[0].location;
+				that.name = rows[0].tournamentName;
+				that.date = rows[0].tournamentDate;
+				callback();
+			}
+		}
+	});
+};
+
 /* 
  * Creates a Tournament in the database
  * 
