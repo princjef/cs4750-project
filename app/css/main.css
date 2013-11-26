@@ -4879,3 +4879,8 @@ body {
   -o-animation-duration: 0.25s;
   animation-duration: 0.25s;
 }
+
+/* line 1, ../scss/base/_tables.scss */
+.table-vertically-centered > tbody > tr > td {
+  vertical-align: middle;
+}

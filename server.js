@@ -10,8 +10,10 @@ var Event = require('./routes/event'); // Lowercase event is a keyword
 var account = require('./routes/account');
 var consistsOf = require('./routes/consistsOf');
 var official = require('./routes/official');
+var belongsTo = require('./routes/belongsTo');
 var team = require('./routes/team');
 var scoring = require('./routes/scoring');
+var runBy = require('./routes/runBy');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -47,18 +49,21 @@ app.use('/css', express.static(__dirname + '/app/css'));
 // Tournament Routes
 app.get('/tournament/:id/info', tournament.info);
 app.get('/tournament/:id/teams', team.getByTournamentID);
-app.get('/tournament/:tournamentID/:division/:eventName/participators', tournament.participators);
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
 app.post('/tournament/addevent', consistsOf.addEventToTournament);
 
 // Scoring Routes
+app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
+app.post('/scoring/:tournamentID/:division/:eventName/save', scoring.update);
 app.get('/scoring/scoreCodes', scoring.scoreCodes);
+app.get('/scoring/tiers', scoring.tiers);
 
 // Organization Routes
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
+app.post('/organization/addtournament', runBy.create);
 
 // Event Routes
 app.get('/event/all', Event.getAllEvents);
@@ -72,6 +77,7 @@ app.post('/official/create', official.createOfficial);
 app.post('/account/create', account.create);
 app.post('/account/update', account.update);
 app.post('/account/login', account.login);
+app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
 app.post('/account/logout', account.logout);
 

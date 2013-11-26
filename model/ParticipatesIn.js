@@ -8,7 +8,7 @@ var ParticipatesIn = function(obj) {
 	this.scoreCode = obj.scoreCode;
 	this.score = obj.score;
 	this.tiebreak = obj.tiebreak;
-	this.tier = obj.tire;
+	this.tier = obj.tier;
 };
 
 /*
@@ -69,6 +69,34 @@ ParticipatesIn.getScoreCodes = function(callback) {
 	});
 };
 
+ParticipatesIn.getTiers = function(callback) {
+	connection.query("SHOW COLUMNS FROM ParticipatesIn LIKE 'tier'", function(err, rows) {
+		if(err) {
+			console.log('ERR', err);
+			callback({err: 'Could not complete query'});
+		} else {
+			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
+			var tiers = match.split('\',\'');
+			for(var i = 0; i < tiers.length; i++) {
+				tiers[i] = Number(tiers[i]);
+			}
+			callback(tiers);
+		}
+	});
+};
+
+ParticipatesIn.prototype.save = function(callback) {
+	var that = this;
+	connection.query("UPDATE ParticipatesIn SET scoreCode=?, score=?, tiebreak=?, tier=? WHERE " +
+			"tournamentID=? AND teamNumber=? AND division=? AND eventName=?",
+			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err) {
+		if(err) {
+			console.log('ERR', err);
+			callback('Could not complete query');
+		}
+	});
+};
+
 // Setters
 ParticipatesIn.prototype.setTeam = function(team) {
 	this.team = team;
@@ -101,7 +129,7 @@ ParticipatesIn.prototype.toJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		ties: this.tier
+		tier: this.tier
 	};
 };
 
@@ -111,7 +139,7 @@ ParticipatesIn.prototype.toParticipatorJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		ties: this.tier
+		tier: this.tier
 	};
 };
 
