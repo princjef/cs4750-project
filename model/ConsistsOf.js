@@ -14,6 +14,25 @@ var ConsistsOf = function(obj) {
 	this.writerID = obj.writerID;
 };
 
+ConsistsOf.prototype.get = function(callback) {
+	var that = this;
+	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=? AND eventName=? AND division=?",
+			[this.tournamentID, this.eventName, this.division], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			that.eventType = rows[0].eventType;
+			that.scored = rows[0].scored;
+			that.highScoreWins = rows[0].highScoreWins;
+			that.highTiebreakWins = rows[0].highTiebreakWins;
+			that.writerID = rows[0].writer_officialID;
+			that.supervisorID = rows[0].supervisor_officialID;
+			callback();
+		}
+	});
+};
+
 ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
 		' highScoreWins, highTiebreakWins, scored, supervisor_officialID, writer_officialID)'+

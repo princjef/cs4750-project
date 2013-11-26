@@ -23,3 +23,19 @@ exports.addEventToTournament = function(req, res) {
 		}
 	});
 };
+
+exports.info = function(req, res) {
+	var consistsOf = new ConsistsOf({
+		tournamentID: req.query.tournamentID,
+		eventName: req.query.name,
+		division: req.query.division,
+	});
+
+	consistsOf.get(function(err) {
+		if(err) {
+			res.send(500);
+		} else {
+			res.json(consistsOf.toJson());
+		}
+	});
+};

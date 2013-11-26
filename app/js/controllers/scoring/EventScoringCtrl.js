@@ -24,9 +24,23 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 
 	$http({
 		method: 'GET',
+		url: '/event/info',
+		params: {
+			tournamentID: $routeParams.tournamentID,
+			name: $routeParams.eventName,
+			division: $routeParams.eventDivision
+		}
+	}).success(function(res) {
+		console.log(res);
+		$scope.event = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
 		url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
 	}).success(function(res) {
-		$scope.event = res.event;
 		$scope.participators = res.participators;
 		console.log($scope.participators);
 		$scope.updateRankings();
