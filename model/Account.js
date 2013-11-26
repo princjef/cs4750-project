@@ -16,14 +16,19 @@ var Account = function(obj) {
  * Returns: error (if there is one)
  */
 Account.prototype.create = function(callback) {
+	var that = this;
 	connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
-	[this.username, this.email, Account.hashSaltPass(this.password)], function(err) {
+	[this.username, this.email, Account.hashSaltPass(this.password)], function(err, result) {
+		console.log(result);
 		if(err) {
 			console.log('ERR', err);
-			callback(err);
+			callback(err, false);
+		} else if (result.affectedRows > 0) {
+			console.log('INFO', 'Created Account', that.username);
+			callback(null, true);
 		} else {
-			console.log('INFO: Created Account');
-			callback();
+			console.log('INFO', 'User', that.username, 'does not exist!');
+			callback(null, false);
 		}
 	});
 };
@@ -37,13 +42,16 @@ Account.prototype.create = function(callback) {
 Account.prototype.update = function(callback) {
 	var that = this;
 	connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
-	[this.email, Account.hashSaltPass(this.password), this.username], function(err) {
+	[this.email, Account.hashSaltPass(this.password), this.username], function(err, result) {
 		if(err) {
 			console.log('ERR', err);
-			callback(err);
-		} else {
+			callback(err, false);
+		} else if(result.affectedRows > 0) {
 			console.log('INFO', 'Updated Account with username:', that.username);
-			callback();
+			callback(null, true);
+		} else {
+			console.log('INFO', 'User', that.username, 'does not exist!');
+			callback(null, false);
 		}
 	});
 };
@@ -73,26 +81,12 @@ Account.prototype.update = function(callback) {
 					console.log('INFO', 'Invalid username and/or password!');
 					callback(null, false);
 				}
-			}
-		}
-	});
-
-	/*connection.query("SELECT * FROM Account WHERE username=? AND password=?",
-	[this.username, Account.hashSaltPass(this.password)], function(err, row) {
-		if(err) {
-			console.log('ERR', err);
-			callback(err, null);
-		} else {
-			if (row.length > 0) {
-				console.log('INFO', 'Logged in with username:', that.username);
-				that.email = row[0].email;
-				callback(null, true);
 			} else {
-				console.log('INFO', 'Invalid username and/or password!');
+				console.log('INFO', 'User', that.username, 'does not exist!');
 				callback(null, false);
 			}
 		}
-	});*/
+	});
  };
 
 
@@ -120,8 +114,8 @@ Account.prototype.toJson = function() {
 };
 
 Account.hashSaltPass = function(password) {
-	//var salt = bcrypt.genSaltSync(10);
-	var hash = bcrypt.hashSync(password, 8);
+	var salt = bcrypt.genSaltSync(10);
+	var hash = bcrypt.hashSync(password, salt);
 	return hash;
 };
 

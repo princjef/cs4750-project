@@ -54,7 +54,9 @@ angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$htt
 	});
 
 }]);
-angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('scoreApp').controller('AccountCreateCtrl',
+	['$scope', '$http', 'alert', function($scope, $http, alert) {
+
 	$scope.form = {};
 
 	$scope.createAccount = function() {
@@ -63,13 +65,18 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 			url: '/account/create',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully created account');
+			if (res.status) {
+				alert.success('Successfully created account!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Account creation not successful!');
+			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
-
 angular.module('scoreApp').controller('AccountLoginCtrl',
 	['$scope', '$rootScope', '$http', 'alert', 'user',
 		function($scope, $rootScope, $http, alert, user) {
@@ -90,7 +97,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 				alert.danger('Invalid login!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 
@@ -100,7 +107,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 			url: '/account/logout',
 			data: $scope.form
 		}).success(function(res) {
-			if (!res.status) {
+			if (res.status) {
 				alert.success('Successfully logged out!');
 				user.clear();	// Clear current user.
 			}
@@ -108,7 +115,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 				alert.danger('Logout not successful!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 
@@ -504,6 +511,8 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			}).error(function(err) {
 				d.reject(err);
 			});
+			
+			return d.promise;
 		},
 		clear: function() {
 			$rootScope.username = null;

@@ -8,12 +8,26 @@ exports.create = function(req, res) {
 		password: req.body.password
 	});
 
-	account.create(function(err) {
+	account.create(function(err, successful) {
 		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+			if (err.code == 'ER_DUP_ENTRY') {
+				console.log('ERR', err);
+				res.send(500, 'ERROR: Duplicate account name exists.');
+			} else {
+				console.log('Err', err);
+				res.send(500, 'ERROR: The server encountered an error.');
+			}
 		} else {
-			res.json(account.toJson());
+			if (successful) {
+				res.json({
+					status: true,
+					user: account.toJson()
+				});
+			} else {
+				res.json({
+					status: false
+				});
+			}
 		}
 	});
 };
@@ -25,12 +39,21 @@ exports.update = function(req, res) {
 		password: req.body.password
 	});
 
-	account.update(function(err) {
+	account.update(function(err, successful) {
 		if(err) {
 			console.log('ERR', err);
-			res.send(500);
+			res.send(500, 'ERROR: The server encountered an error.');
 		} else {
-			res.json(account.toJson());
+			if (successful) {
+				res.json({
+					status: true,
+					user: account.toJson()
+				});
+			} else {
+				res.json({
+					status: false
+				});
+			}
 		}
 	});
 };
@@ -44,7 +67,7 @@ exports.login = function(req, res) {
 	account.login(function(err, successful) {
 		if(err) {
 			console.log('ERR', err);
-			res.send(500);
+			res.send(500, 'ERROR: The server encountered an error.');
 		} else {
 			if (successful) {
 				req.login(account, function(err) {
@@ -54,7 +77,7 @@ exports.login = function(req, res) {
 				});
 				res.json({
 					status: true,
-					user: account
+					user: account.toJson()
 				});
 			} else {
 				res.json({
@@ -68,7 +91,7 @@ exports.login = function(req, res) {
 exports.logout = function(req, res) {
 	req.logout();
 	res.json({
-		status: false
+		status: true
 	});
 };
 
