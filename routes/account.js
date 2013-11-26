@@ -2,7 +2,6 @@ var Account = require('../model/Account');
 var passport = require('passport');
 
 exports.create = function(req, res) {
-	console.log('Test');
 	var account = new Account({
 		username: req.body.username,
 		email: req.body.email,
@@ -74,7 +73,5 @@ exports.logout = function(req, res) {
 };
 
 exports.current = function(req, res) {
-	//return req.user.toJson(); THIS DIDN'T WORK, FIGURE OUT WHY
-	//return req.user;
 	res.json(req.user);
 };
