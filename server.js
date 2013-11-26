@@ -10,8 +10,10 @@ var Event = require('./routes/event'); // Lowercase event is a keyword
 var account = require('./routes/account');
 var consistsOf = require('./routes/consistsOf');
 var official = require('./routes/official');
+var belongsTo = require('./routes/belongsTo');
 var team = require('./routes/team');
 var scoring = require('./routes/scoring');
+var runBy = require('./routes/runBy');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -61,6 +63,7 @@ app.get('/scoring/tiers', scoring.tiers);
 // Organization Routes
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
+app.post('/organization/addtournament', runBy.create);
 
 // Event Routes
 app.get('/event/all', Event.getAllEvents);
@@ -74,6 +77,7 @@ app.post('/official/create', official.createOfficial);
 app.post('/account/create', account.create);
 app.post('/account/update', account.update);
 app.post('/account/login', account.login);
+app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
 app.post('/account/logout', account.logout);
 
