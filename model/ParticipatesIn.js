@@ -76,7 +76,11 @@ ParticipatesIn.getTiers = function(callback) {
 			callback({err: 'Could not complete query'});
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
-			callback(match.split('\',\''));
+			var tiers = match.split('\',\'');
+			for(var i = 0; i < tiers.length; i++) {
+				tiers[i] = Number(tiers[i]);
+			}
+			callback(tiers);
 		}
 	});
 };

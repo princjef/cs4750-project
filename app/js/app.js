@@ -198,12 +198,15 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 	}).success(function(res) {
 		$scope.event = res.event;
 		$scope.participators = res.participators;
+		console.log($scope.participators);
 		$scope.updateRankings();
 	}).error(function(err) {
 		alert.danger(err);
 	});
 
 	var compareParticipators = function(a, b) {
+		a.tier = Number(a.tier);
+		b.tier = Number(b.tier);
 		if(a.tier < b.tier) {
 			return -1;
 		} else if(a.tier > b.tier) {
@@ -235,7 +238,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 						return -1;
 					}
 				} else {
-					return 0;	// This is an error
+					return 0;	// This is an issue, this should never be hit
 				}
 			}
 		}
@@ -266,6 +269,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 	};
 
 	$scope.saveScores = function() {
+		console.log($scope.participators);
 		$http({
 			method: 'POST',
 			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
@@ -476,8 +480,8 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				method: 'GET',
 				url: '/scoring/tiers',
 				cache: true
-			}).success(function(data) {
-				d.resolve(data);
+			}).success(function(tiers) {
+				d.resolve(tiers);
 			}).error(function(err) {
 				d.reject(err);
 			});

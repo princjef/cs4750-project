@@ -58,8 +58,8 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				method: 'GET',
 				url: '/scoring/tiers',
 				cache: true
-			}).success(function(data) {
-				d.resolve(data);
+			}).success(function(tiers) {
+				d.resolve(tiers);
 			}).error(function(err) {
 				d.reject(err);
 			});
