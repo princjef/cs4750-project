@@ -13,6 +13,7 @@ var official = require('./routes/official');
 var belongsTo = require('./routes/belongsTo');
 var team = require('./routes/team');
 var scoring = require('./routes/scoring');
+var runBy = require('./routes/runBy');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -60,6 +61,7 @@ app.get('/scoring/scoreCodes', scoring.scoreCodes);
 // Organization Routes
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
+app.post('/organization/addtournament', runBy.create);
 
 // Event Routes
 app.get('/event/all', Event.getAllEvents);
