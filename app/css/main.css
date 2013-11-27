@@ -40,9 +40,25 @@
   padding-right: 3px;
 }
 
-/* line 21, ../scss/base/_utility.scss */
+/* line 18, ../scss/base/_utility.scss */
 .small-left-pad {
   padding-left: 3px;
+}
+
+/* line 19, ../scss/base/_utility.scss */
+.medium-right-pad {
+  padding-right: 8px;
+}
+
+/* line 20, ../scss/base/_utility.scss */
+.medium-left-pad {
+  padding-left: 8px;
+}
+
+/* line 22, ../scss/base/_utility.scss */
+.h1-margin, .h2-margin, .h3-margin {
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 /*
