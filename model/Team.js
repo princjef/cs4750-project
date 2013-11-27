@@ -23,15 +23,15 @@ Team.getByTournamentID = function(tournamentID, callback) {
 	var addTeam = function(row) {
 		teams.push(new Team({
 			tournamentID: row.tournamentID,
-			number: row.number,
+			number: row.teamNumber,
 			division: row.division,
-			name: row.name,
+			name: row.teamName,
 			state: row.state,
 			school: row.school
 		}));
 	};
 
-	connection.query("SELECT * FROM Teams WHERE tournamentID=?",
+	connection.query("SELECT * FROM Team WHERE tournamentID=?",
 			[tournamentID], function(err, rows) {
 		if(err) {
 			console.log('ERR:', err);

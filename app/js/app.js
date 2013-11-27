@@ -499,6 +499,16 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		console.log('Error getting organizers');
 	});
 	
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/teams',
+		cache:true
+	}).success(function(data) {
+		$scope.teams = data;
+	}).error(function(err) {
+		console.log('Error getting teams');
+	});
+	
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
