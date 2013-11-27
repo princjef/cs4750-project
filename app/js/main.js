@@ -37,6 +37,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
+			.when('/tournament/:tournamentID/events/listing', {
+					templateUrl: '/partials/event/listing.html',
+					controller: 'EventListingCtrl'
+				})
 			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');

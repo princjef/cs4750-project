@@ -49,6 +49,7 @@ app.use('/css', express.static(__dirname + '/app/css'));
 // Tournament Routes
 app.get('/tournament/:id/info', tournament.info);
 app.get('/tournament/:id/teams', team.getByTournamentID);
+app.get('/tournament/:id/events', consistsOf.getByTournament);
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);

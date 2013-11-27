@@ -64,6 +64,32 @@ ConsistsOf.prototype.save = function(callback) {
 		});
 };
 
+ConsistsOf.getByTournamentID = function(tournamentID, callback) {
+	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=?",
+			[tournamentID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			var entries = [];
+			rows.forEach(function(row) {
+				entries.push(new ConsistsOf({
+					tournamentID: row.tournamentID,
+					eventName: row.eventName,
+					division: row.division,
+					eventType: row.eventType,
+					highScoreWins: row.highScoreWins,
+					highTiebreakWins: row.highTiebreakWins,
+					status: row.status,
+					supervisorID: row.writer_officialID,
+					writerID: row.supervisor_officialID
+				}));
+			});
+			callback(null, entries);
+		}
+	});
+};
+
 ConsistsOf.getStatuses = function(callback) {
 	connection.query("SHOW COLUMNS FROM ConsistsOf LIKE 'status'", function(err, rows) {
 		if(err) {
@@ -83,7 +109,6 @@ ConsistsOf.prototype.toJson = function() {
 		division:this.division,
 		eventType:this.eventType,
 	
-		tiebreak:this.tiebreak,
 		highScoreWins:this.highScoreWins,
 		highTiebreakWins:this.highTiebreakWins,
 		status:this.status,

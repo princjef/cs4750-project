@@ -59,3 +59,17 @@ exports.save = function(req, res) {
 		}
 	});
 };
+
+exports.getByTournament = function(req, res) {
+	ConsistsOf.getByTournamentID(req.params.id, function(err, entries) {
+		if(err) {
+			res.send(500);
+		} else {
+			var result = [];
+			entries.forEach(function(entry) {
+				result.push(entry.toJson());
+			});
+			res.json(result);
+		}
+	});
+};
