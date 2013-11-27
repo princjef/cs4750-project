@@ -355,9 +355,13 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', '$routeParams', function($window, $scope, $http, dropdowns, $routeParams) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournamentID', function($window, $scope, $http, $modalInstance, dropdowns, tournamentID) {
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
 	$scope.form = {};
-	$scope.form.tournamentID = $routeParams.tournamentID;
+	$scope.form.tournamentID = tournamentID;
 	dropdowns.getTournamentEvents().then(function(data) {
 		eventNames = [];
 		data.forEach(function(entry) {
@@ -389,9 +393,36 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 	];
 	$scope.form.eventType = $scope.eventTypes[0];
 	
-	$scope.form.highTiebreakWins = "1";
-	$scope.form.highScoreWins = "1";
+	$scope.form.highTiebreakWins = '1';
+	$scope.form.highScoreWins = '1';
 	
+	$scope.form.highScoreWinsHighTrigger = true;
+	$scope.form.highScoreWinsLowTrigger = false;
+	$scope.form.highTiebreakWinsHighTrigger = true;
+	$scope.form.highTiebreakWinsLowTrigger = false;
+
+	$scope.updateCheckboxes = function() {
+		if($scope.form.highScoreWins === '1' && (!$scope.form.highScoreWinsHighTrigger || $scope.form.highScoreWinsLowTrigger)) {
+			$scope.form.highScoreWins = '0';
+			$scope.form.highScoreWinsHighTrigger = false;
+			$scope.form.highScoreWinsLowTrigger = true;
+		} else if($scope.form.highScoreWins === '0' && ($scope.form.highScoreWinsHighTrigger || !$scope.form.highScoreWinsLowTrigger)) {
+			$scope.form.highScoreWins = '1';
+			$scope.form.highScoreWinsHighTrigger = true;
+			$scope.form.highScoreWinsLowTrigger = false;
+		}
+
+		if($scope.form.highTiebreakWins === '1' && (!$scope.form.highTiebreakWinsHighTrigger || $scope.form.highTiebreakWinsLowTrigger)) {
+			$scope.form.highTiebreakWins = '0';
+			$scope.form.highTiebreakWinsHighTrigger = false;
+			$scope.form.highTiebreakWinsLowTrigger = true;
+		} else if($scope.form.highTiebreakWins === '0' && ($scope.form.highTiebreakWinsHighTrigger || !$scope.form.highTiebreakWinsLowTrigger)) {
+			$scope.form.highTiebreakWins = '1';
+			$scope.form.highTiebreakWinsHighTrigger = true;
+			$scope.form.highTiebreakWinsLowTrigger = false;
+		}
+	};
+
 	$scope.addEvent = function() {
 		$scope.officials.forEach(function(entry) {
 			if(entry.name === $scope.supervisorName) {
@@ -408,7 +439,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			data:$scope.form})
 			.success(function (res) {
 				$window.alert('Successfully added event to tournament');})
-			.error(function (error) {
+			.error(function (err) {
 				console.log(err);
 			});
 	};
