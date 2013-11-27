@@ -3,11 +3,18 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 		method: 'GET',
 		url: '/tournament/' + $routeParams.tournamentID + '/events'
 	}).success(function(events) {
-		$scope.divisions = {
-			A: $filter('division')(events, 'A'),
-			B: $filter('division')(events, 'B'),
-			C: $filter('division')(events, 'C')
-		};
+		$scope.divisions = [
+			{
+				level: 'A',
+				events: $filter('division')(events, 'A')
+			}, {
+				level: 'B',
+				events: $filter('division')(events, 'B')
+			}, {
+				level: 'C',
+				events: $filter('division')(events, 'C')
+			}
+		];
 	}).error(function(err) {
 		alert.danger(err);
 	});
