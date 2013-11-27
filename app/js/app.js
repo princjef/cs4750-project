@@ -143,12 +143,23 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$w
 }]);
 
 
-angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$modal', 'alert', function($scope, $http, $routeParams, $modal, alert) {
+angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', function($scope, $http, $routeParams, $filter, $modal, alert) {
 	$http({
 		method: 'GET',
 		url: '/tournament/' + $routeParams.tournamentID + '/events'
 	}).success(function(events) {
-		$scope.events = events;
+		$scope.divisions = [
+			{
+				level: 'A',
+				events: $filter('division')(events, 'A')
+			}, {
+				level: 'B',
+				events: $filter('division')(events, 'B')
+			}, {
+				level: 'C',
+				events: $filter('division')(events, 'C')
+			}
+		];
 	}).error(function(err) {
 		alert.danger(err);
 	});
@@ -515,6 +526,22 @@ angular.module('scoreApp').directive('animationShowHide', function() {
 		});
 	};
 });
+angular.module('scoreApp').filter('division', [function() {
+	return function(inputs, value) {
+		var result = [];
+		if(inputs === undefined) {
+			return inputs;
+		} else {
+			inputs.forEach(function(entry) {
+				if(entry.division === value) {
+					result.push(entry);
+				}
+			});
+			console.log(result);
+			return result;
+		}
+	};
+}]);
 angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function($rootScope, $timeout) {
 	var createMessage = function(type, text, timeout) {
 		$rootScope.message = {
