@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$q', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $q) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$q', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $q, tournament) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -7,6 +7,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		cache:true
 	}).success(function(data) {
 		$scope.tournament = data;
+		tournament.set($scope.tournament);
 		$scope.tournamentDate = new Date(data.date);
 	}).error(function(err) {
 		console.log('Error getting tournament info');

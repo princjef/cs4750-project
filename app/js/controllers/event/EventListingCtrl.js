@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', function($scope, $http, $routeParams, $filter, $modal, alert) {
+angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, alert, tournament) {
 	$http({
 		method: 'GET',
 		url: '/tournament/' + $routeParams.tournamentID + '/events'
@@ -22,12 +22,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 	$scope.addEvent = function() {
 		var addEventModal = $modal.open({
 			templateUrl: '/partials/tournament/newevent.html',
-			controller: 'TournamentAddEventCtrl',
-			resolve: {
-				tournamentID: function() {
-					return $routeParams.tournamentID;
-				}
-			}
+			controller: 'TournamentAddEventCtrl'
 		});
 
 		addEventModal.result.then(function(event) {

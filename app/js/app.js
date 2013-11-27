@@ -37,10 +37,6 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
-			.when('/tournament/:tournamentID/events/listing', {
-					templateUrl: '/partials/event/listing.html',
-					controller: 'EventListingCtrl'
-				})
 			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
@@ -143,7 +139,7 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$w
 }]);
 
 
-angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', function($scope, $http, $routeParams, $filter, $modal, alert) {
+angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, alert, tournament) {
 	$http({
 		method: 'GET',
 		url: '/tournament/' + $routeParams.tournamentID + '/events'
@@ -167,12 +163,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 	$scope.addEvent = function() {
 		var addEventModal = $modal.open({
 			templateUrl: '/partials/tournament/newevent.html',
-			controller: 'TournamentAddEventCtrl',
-			resolve: {
-				tournamentID: function() {
-					return $routeParams.tournamentID;
-				}
-			}
+			controller: 'TournamentAddEventCtrl'
 		});
 
 		addEventModal.result.then(function(event) {
@@ -367,13 +358,17 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournamentID', function($window, $scope, $http, $modalInstance, dropdowns, tournamentID) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', function($window, $scope, $http, $modalInstance, dropdowns, tournament) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
 
+	console.log(tournament);
+
+	$scope.tournament = tournament.get();
+
 	$scope.form = {};
-	$scope.form.tournamentID = tournamentID;
+	$scope.form.tournamentID = $scope.tournament.id;
 	dropdowns.getTournamentEvents().then(function(data) {
 		eventNames = [];
 		data.forEach(function(entry) {
@@ -476,7 +471,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$q', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $q) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$q', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $q, tournament) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -485,6 +480,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		cache:true
 	}).success(function(data) {
 		$scope.tournament = data;
+		tournament.set($scope.tournament);
 		$scope.tournamentDate = new Date(data.date);
 	}).error(function(err) {
 		console.log('Error getting tournament info');
@@ -664,6 +660,18 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 	};
 }]);
 
+angular.module('scoreApp').service('tournament', [function() {
+	var tournament = {};
+
+	return {
+		set: function(tournamentData) {
+			tournament = tournamentData;
+		},
+		get: function() {
+			return tournament;
+		}
+	};
+}]);
 angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
 	return {
 		current: function() {

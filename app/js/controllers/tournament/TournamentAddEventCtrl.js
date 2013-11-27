@@ -1,10 +1,14 @@
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournamentID', function($window, $scope, $http, $modalInstance, dropdowns, tournamentID) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', function($window, $scope, $http, $modalInstance, dropdowns, tournament) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
 
+	console.log(tournament);
+
+	$scope.tournament = tournament.get();
+
 	$scope.form = {};
-	$scope.form.tournamentID = tournamentID;
+	$scope.form.tournamentID = $scope.tournament.id;
 	dropdowns.getTournamentEvents().then(function(data) {
 		eventNames = [];
 		data.forEach(function(entry) {
