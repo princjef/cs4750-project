@@ -21,16 +21,26 @@
 }
 
 /* line 5, ../scss/base/_utility.scss */
+.middle {
+  vertical-align: middle;
+}
+
+/* line 9, ../scss/base/_utility.scss */
 .smaller {
   font-size: 0.8em;
 }
 
-/* line 9, ../scss/base/_utility.scss */
+/* line 13, ../scss/base/_utility.scss */
+.larger {
+  font-size: 1.25em;
+}
+
+/* line 17, ../scss/base/_utility.scss */
 .small-right-pad {
   padding-right: 3px;
 }
 
-/* line 13, ../scss/base/_utility.scss */
+/* line 21, ../scss/base/_utility.scss */
 .small-left-pad {
   padding-left: 3px;
 }
