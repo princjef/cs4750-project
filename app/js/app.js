@@ -293,6 +293,11 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		}
 	};
 
+	$scope.updateScoreOrder = function() {
+		$scope.updateRankings();
+		$scope.saveEvent();
+	};
+
 	$scope.updateRankings = function() {
 		var teams = $scope.participators.slice(0);
 		var started = false;
