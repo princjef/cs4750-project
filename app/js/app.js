@@ -211,10 +211,6 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
 	$scope.form = {};
-
-	// These need to change
-	$scope.highScoreWins = true;
-	$scope.highTiebreakWins = true;
 	
 	dropdowns.getScoreCodes().then(function(data) {
 		$scope.scoreCodes = data;
@@ -266,26 +262,26 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			return 1;
 		} else {	// Same tier
 			if(a.score > b.score) {
-				if($scope.highScoreWins) {
+				if($scope.event.highScoreWins) {
 					return -1;
 				} else {
 					return 1;
 				}
 			} else if(a.score < b.score) {
-				if($scope.highScoreWins) {
+				if($scope.event.highScoreWins) {
 					return 1;
 				} else {
 					return -1;
 				}
 			} else {	// tie
 				if(a.tiebreak > b.tiebreak) {
-					if($scope.highTiebreakWins) {
+					if($scope.event.highTiebreakWins) {
 						return -1;
 					} else {
 						return 1;
 					}
 				} else if(a.tiebreak < b.tiebreak) {
-					if($scope.highTiebreakWins) {
+					if($scope.event.highTiebreakWins) {
 						return 1;
 					} else {
 						return -1;

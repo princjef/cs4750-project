@@ -2,14 +2,24 @@
 	display: none;
 }
 
+.middle {
+	vertical-align: middle;
+}
+
 .smaller {
 	font-size: 0.8em;
 }
 
-.small-right-pad {
-	padding-right: 3px;
+.larger {
+	font-size: 1.25em;
 }
 
-.small-left-pad {
-	padding-left: 3px;
+.small-right-pad { padding-right: 3px; }
+.small-left-pad { padding-left: 3px; }
+.medium-right-pad { padding-right: 8px; }
+.medium-left-pad { padding-left: 8px; }
+
+.h1-margin, .h2-margin, .h3-margin {
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
