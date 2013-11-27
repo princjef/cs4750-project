@@ -4,7 +4,7 @@
 		<i tooltip="Scoring In Progress" ng-switch-when="In Progress" class="fa fa-clock-o text-warning smaller"></i>
 		<i tooltip="Scoring Not Started" ng-switch-when="Not Started" class="fa fa-times-circle-o text-danger smaller"></i>
 	</span>
-	{{event.eventName}} ({{event.division}}) <small>{{tournament.name}}</small>
+	{{event.eventName}} ({{event.division}}) <a href="/tournament/{{tournament.id}}/dashboard"><small>{{tournament.name}}</small></a>
 </h3>
 <div class="pull-right form-inline h3-margin">
 	<label class="medium-right-pad">Score Order</label>
