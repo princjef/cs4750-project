@@ -49,11 +49,11 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 		});
 };
 
-ConsistsOf.prototype.updateEventInTournament = function(callback) {
-	connection.query('UPDATE ConsistsOf SET tournamentID=?, eventName=?, division=?, eventType=?,'+
-		' highScoreWins=?, highTiebreakWins=?, status=?, supervisor_officialID=?, writer_officialID=?)',
-		[this.tournamentID, this.eventName, this.division, this.eventType, this.highScoreWins, 
-		this.highTiebreakWins, this.status, this.supervisorID, this.writerID], function(err, row) {
+ConsistsOf.prototype.save = function(callback) {
+	connection.query("UPDATE ConsistsOf SET eventType=?, highScoreWins=?, highTiebreakWins=?, status=?,"+
+		" supervisor_officialID=?, writer_officialID=? WHERE tournamentID=? AND eventName=? AND division=?",
+		[this.eventType, this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID,
+		this.tournamentID, this.eventName, this.division], function(err, row) {
 			if(err) {
 				console.log(err);
 				callback(err);
@@ -62,6 +62,32 @@ ConsistsOf.prototype.updateEventInTournament = function(callback) {
 				callback();
 			}
 		});
+};
+
+ConsistsOf.getByTournamentID = function(tournamentID, callback) {
+	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=?",
+			[tournamentID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			var entries = [];
+			rows.forEach(function(row) {
+				entries.push(new ConsistsOf({
+					tournamentID: row.tournamentID,
+					eventName: row.eventName,
+					division: row.division,
+					eventType: row.eventType,
+					highScoreWins: row.highScoreWins,
+					highTiebreakWins: row.highTiebreakWins,
+					status: row.status,
+					supervisorID: row.writer_officialID,
+					writerID: row.supervisor_officialID
+				}));
+			});
+			callback(null, entries);
+		}
+	});
 };
 
 ConsistsOf.getStatuses = function(callback) {
@@ -83,13 +109,12 @@ ConsistsOf.prototype.toJson = function() {
 		division:this.division,
 		eventType:this.eventType,
 	
-		tiebreak:this.tiebreak,
 		highScoreWins:this.highScoreWins,
 		highTiebreakWins:this.highTiebreakWins,
 		status:this.status,
 
 		supervisorID:this.supervisorID,
-		writerID:this.writerID	
+		writerID:this.writerID
 	};
 };
 

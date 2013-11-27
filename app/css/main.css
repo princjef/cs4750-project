@@ -1,3 +1,20 @@
+/* line 2, ../scss/base/_bugfixes.scss */
+.modal {
+  display: block;
+}
+
+/* line 6, ../scss/base/_bugfixes.scss */
+.modal-body:before, .modal-body:after {
+  display: table;
+  content: " ";
+}
+
+/* line 11, ../scss/base/_bugfixes.scss */
+.modal-header:before, .modal-header:after {
+  display: table;
+  content: " ";
+}
+
 /* line 1, ../scss/base/_utility.scss */
 .no-display {
   display: none;

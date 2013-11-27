@@ -1,0 +1,13 @@
+<!-- <div ng-controller="EventListingCtrl"> -->
+	<ul class="list-unstyled">
+		<li ng-repeat="event in events">
+			<span class="status-icon" ng-switch on="event.status">
+				<i tooltip="Scoring Completed" ng-switch-when="Completed" class="fa fa-check-circle-o text-success"></i>
+				<i tooltip="Scoring In Progress" ng-switch-when="In Progress" class="fa fa-clock-o text-warning"></i>
+				<i tooltip="Scoring Not Started" ng-switch-when="Not Started" class="fa fa-times-circle-o text-danger"></i>
+			</span>
+			<a href="/tournament/{{event.tournamentID}}/scoring/{{event.division}}/{{event.eventName}}">{{event.eventName}} ({{event.division}})</a>
+		</li>
+	</ul>
+	<button class="btn btn-default" ng-click="addEvent()">Add New Event</button>
+<!-- </div> -->

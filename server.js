@@ -49,6 +49,7 @@ app.use('/css', express.static(__dirname + '/app/css'));
 // Tournament Routes
 app.get('/tournament/:id/info', tournament.info);
 app.get('/tournament/:id/teams', team.getByTournamentID);
+app.get('/tournament/:id/events', consistsOf.getByTournament);
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
@@ -69,7 +70,7 @@ app.post('/organization/addtournament', runBy.create);
 app.get('/event/all', Event.getAllEvents);
 app.post('/event/create', Event.createEvent);
 app.get('/event/info', consistsOf.info);
-app.get('/event/save', consistsOf.save);
+app.post('/event/save', consistsOf.save);
 app.get('/event/statuses', consistsOf.statuses);
 
 //Official Routes

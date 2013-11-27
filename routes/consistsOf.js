@@ -50,5 +50,26 @@ exports.statuses = function(req, res) {
 };
 
 exports.save = function(req, res) {
+	var consistsOf = new ConsistsOf(req.body);
+	consistsOf.save(function(err) {
+		if(err) {
+			res.send(500);
+		} else {
+			res.send(200);
+		}
+	});
+};
 
+exports.getByTournament = function(req, res) {
+	ConsistsOf.getByTournamentID(req.params.id, function(err, entries) {
+		if(err) {
+			res.send(500);
+		} else {
+			var result = [];
+			entries.forEach(function(entry) {
+				result.push(entry.toJson());
+			});
+			res.json(result);
+		}
+	});
 };
