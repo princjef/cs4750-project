@@ -89,7 +89,7 @@ ConsistsOf.prototype.toJson = function() {
 		status:this.status,
 
 		supervisorID:this.supervisorID,
-		writerID:this.writerID	
+		writerID:this.writerID
 	};
 };
 
