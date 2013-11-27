@@ -12,4 +12,14 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		console.log('Error getting tournament info');
 	});
 	
+	$http({
+		method:'GET',
+		url:'/organization/' + $routeParams.tournamentID + '/getorganizers',
+		cache:true
+	}).success(function(data) {
+		$scope.organizers = data;
+	}).error(function(err) {
+		console.log('Error getting organizers');
+	});
+	
 }]);
