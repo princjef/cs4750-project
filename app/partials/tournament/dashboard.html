@@ -3,11 +3,22 @@
 	
 	<h5>{{tournamentDate.toDateString()}}</h5>
 	<h5 ng-repeat="o in organizers"><small>{{o.name}}</small></h5>
+	<div class="progress">
+		<div class=" progress-bar progress-bar-danger" style="width: {{(eventStatuses[2].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[2].events.length}}% Complete (danger) </span>
+		</div>
+		<div class=" progress-bar progress-bar-warning" style="width: {{(eventStatuses[1].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[1].events.length}}% Complete (warning) </span>
+		</div>
+		<div class=" progress-bar progress-bar-success" style="width: {{(eventStatuses[0].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[0].events.length}}% Complete (success) </span>
+		</div>
+	</div>
 </div>
 <div class="col-md-5" ng-include="'/partials/event/listing.html'">
 </div>
 <div class="col-md-4">
-	<h1>Teams</h1>
+	<h2>Teams ({{teams.length}})</h2>
 	<ul class="list-unstyled">
 		<li ng-repeat="t in teams">{{t.name}}</li>
 	</ul>

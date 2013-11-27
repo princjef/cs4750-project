@@ -37,10 +37,6 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
-			.when('/tournament/:tournamentID/events/listing', {
-					templateUrl: '/partials/event/listing.html',
-					controller: 'EventListingCtrl'
-				})
 			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
@@ -476,7 +472,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$q', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $q) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -510,6 +506,26 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		console.log('Error getting teams');
 	});
 	
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/events',
+		cache:true
+	}).success(function(events) {
+		$scope.eventStatuses = [{
+			level:'Completed',
+			events:$filter('status')(events, 'Completed')
+		}, {
+			level:'InProgress',
+			events:$filter('status')(events, 'In Progress')
+		}, {
+			level:'NotStarted',
+			events:$filter('status')(events, 'Not Started')
+		}];
+		$scope.total = $scope.eventStatuses[0].events.length + $scope.eventStatuses[1].events.length + $scope.eventStatuses[2].events.length;
+		console.log('events ' + $scope.eventStatuses[0].events.length);
+	}).error(function(err) {
+		console.log('Error getting events');
+	});
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
@@ -549,6 +565,21 @@ angular.module('scoreApp').filter('division', [function() {
 				}
 			});
 			console.log(result);
+			return result;
+		}
+	};
+}]);
+angular.module('scoreApp').filter('status', [function() {
+	return function(inputs, value) {
+		var result = [];
+		if(inputs === undefined) {
+			return inputs;
+		} else {
+			inputs.forEach(function(entry) {
+				if(entry.status === value) {
+					result.push(entry);
+				}
+			});
 			return result;
 		}
 	};
