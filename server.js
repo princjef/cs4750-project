@@ -62,6 +62,7 @@ app.get('/scoring/scoreCodes', scoring.scoreCodes);
 app.get('/scoring/tiers', scoring.tiers);
 
 // Organization Routes
+app.get('/organization/:tournamentID/getorganizers', organization.getByTournamentID);
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 app.post('/organization/addtournament', runBy.create);
