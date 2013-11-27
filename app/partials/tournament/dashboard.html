@@ -4,8 +4,7 @@
 	<h5>{{tournamentDate.toDateString()}}</h5>
 	<h5 ng-repeat="o in organizers"><small>{{o.name}}</small></h5>
 </div>
-<div class="col-md-5">
-	<h1>Events</h1>
+<div class="col-md-5" ng-include="'/partials/event/listing.html'">
 </div>
 <div class="col-md-4">
 	<h1>Teams</h1>
