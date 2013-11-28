@@ -22,7 +22,7 @@ Account.prototype.create = function(callback) {
 		if (err) console.log('ERR', err);
 		else {
 			connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
-			[that.username, that.email, hash], function(err, result) {
+			[that.username, that.email, that.password/*hash*/], function(err, result) {
 				console.log('result is:', result);
 				if(err) {
 					console.log('ERR', err);
@@ -78,21 +78,25 @@ Account.prototype.update = function(callback) {
 	connection.query("SELECT * FROM Account WHERE username=?",
 	[this.username], function(err, row) {
 		if(!err) {
-			if (row.length > 0) {
-				hashedPass = row[0].password;
+			// if (row.length > 0) {
+				// hashedPass = row[0].password;
 
-				Account.comparePass(that.password, hashedPass, function(err, result) {
-					console.log('result is:', result);
-					if (err || !result) {
-						console.log('INFO', 'Invalid username and/or password!');
-						callback(null, false);
-					} else {
-						console.log('INFO', 'Logged in with username:', that.username);
-						that.email = row[0].email;
-						callback(null, true);
-					}
-
-				});
+				// Account.comparePass(that.password, hashedPass, function(err, result) {
+				// 	console.log('result is:', result);
+				// 	if (err || !result) {
+				// 		console.log('INFO', 'Invalid username and/or password!');
+				// 		callback(null, false);
+				// 	} else {
+				// 		console.log('INFO', 'Logged in with username:', that.username);
+				// 		that.email = row[0].email;
+				// 		callback(null, true);
+				// 	}
+				// });
+			// }
+			if (row.length > 0 && row[0].password == that.password) {
+				console.log('INFO', 'Logged in with username:', that.username);
+				that.email = row[0].email;
+				callback(null, true);
 			} else {
 				console.log('INFO', 'User', that.username, 'does not exist!');
 				callback(null, false);
