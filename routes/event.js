@@ -1,12 +1,12 @@
 var Event = require('../model/Event');
 
 exports.createEvent = function(req, res) {
-	var eevent = new Event({
+	var event = new Event({
 		division: req.body.division.value,
 		name: req.body.name
 	});
 	
-	eevent.create(function(err) {
+	event.create(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
@@ -31,9 +31,9 @@ exports.updateEvent = function(req, res) {
 };
 
 exports.getAllEvents = function(req, res) {
-	Event.getAllEvents(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	Event.getAllEvents(function(err, result) {
+		if(err) {
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}

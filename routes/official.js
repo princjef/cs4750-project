@@ -18,9 +18,9 @@ exports.createOfficial = function(req, res) {
 };
 
 exports.getAllOfficials = function(req, res) {
-	Official.getOfficials(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	Official.getOfficials(function(err, result) {
+		if(err) {
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}

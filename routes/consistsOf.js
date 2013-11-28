@@ -33,7 +33,7 @@ exports.info = function(req, res) {
 
 	consistsOf.get(function(err) {
 		if(err) {
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(consistsOf.toJson());
 		}
@@ -43,7 +43,7 @@ exports.info = function(req, res) {
 exports.statuses = function(req, res) {
 	ConsistsOf.getStatuses(function(result) {
 		if(result.err) {
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}
@@ -54,7 +54,7 @@ exports.save = function(req, res) {
 	var consistsOf = new ConsistsOf(req.body);
 	consistsOf.save(function(err) {
 		if(err) {
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.send(200);
 		}
@@ -64,7 +64,7 @@ exports.save = function(req, res) {
 exports.getByTournament = function(req, res) {
 	ConsistsOf.getByTournamentID(req.params.id, function(err, entries) {
 		if(err) {
-			res.send(500);
+			res.send(500, err);
 		} else {
 			var result = [];
 			entries.forEach(function(entry) {

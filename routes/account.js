@@ -11,8 +11,7 @@ exports.create = function(req, res) {
 
 	account.create(function(err) {
 		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(account.toJson());
 		}
@@ -28,8 +27,7 @@ exports.update = function(req, res) {
 
 	account.update(function(err) {
 		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(account.toJson());
 		}
@@ -44,8 +42,7 @@ exports.login = function(req, res) {
 
 	account.login(function(err, successful) {
 		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+			res.send(500, err);
 		} else {
 			if (successful) {
 				req.login(account, function(err) {

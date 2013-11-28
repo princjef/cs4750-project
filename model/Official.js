@@ -76,7 +76,7 @@ Official.getOfficials = function(callback) {
 			callback(error.message(err));
 		} else {
 			console.log('INFO: Returned all officials');
-			callback(rows);
+			callback(null, rows);
 		}
 	});
 };

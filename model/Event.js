@@ -43,7 +43,7 @@ Event.getAllEvents = function(callback) {
 			callback(error.message(err));
 		} else {
 			console.log('INFO: Returned all events');
-			callback(row);
+			callback(null, row);
 		}
 	});
 };

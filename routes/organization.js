@@ -7,8 +7,7 @@ exports.create = function(req, res) {
 	
 	organization.create(function(err) {
 		if(err) {
-			console.log('ERR', err);
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(organization.toJson());
 		}
@@ -23,8 +22,7 @@ exports.update = function(req, res) {
 
 	organization.create(function(err) {
 		if(err) {
-			console.log('ERr', err);
-			res.send(500);
+			res.send(500, err);
 		} else {
 			res.json(organization.toJson());
 		}
@@ -33,10 +31,8 @@ exports.update = function(req, res) {
 
 exports.getByTournamentID = function(req, res) {
 	Organization.getOrganizationByTournamentID(req.params.tournamentID, function(err, organizers) {
-		if(err && err.err) {
+		if(err) {
 			res.send(500, err);
-		} else if (err && err.response){
-			res.send(err.response.code, err.response.message);
 		} else {
 			var result = [];
 			organizers.forEach(function(entry) {

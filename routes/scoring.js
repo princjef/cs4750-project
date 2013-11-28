@@ -54,7 +54,7 @@ exports.update = function(req, res) {
 		});
 		participant.save(function(err) {
 			if(err) {
-				res.send(500);
+				res.send(500, err);
 			}
 		});
 	});

@@ -55,12 +55,7 @@ Organization.getOrganizationByTournamentID = function(tournamentID, callback) {
 			callabck(error.message(err));
 		} else {
 			if(rows.length === 0) {
-				callback({
-					response: {
-						code: 404,
-						message: 'This tournament has no organizers on record'
-					}
-				});
+				callback('This tournament has no organizers on record');
 			} else {
 				var organizers = [];
 				rows.forEach(function(entry) {
