@@ -50,6 +50,28 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$modal', 'user', function($scope, $modal, user) {
+	$scope.user = {};
+
+	$scope.getUser = function() {
+		user.current().then(function(user) {
+			$scope.user = user;
+		});
+	};
+	
+	$scope.getUser();
+
+	$scope.openLogin = function() {
+		var loginForm = $modal.open({
+			templateUrl: '/partials/account/login.html',
+			controller: 'AccountLoginCtrl'
+		});
+
+		loginForm.result.then(function() {
+			$scope.getUser();
+		});
+	};
+}]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
 	$http({
@@ -88,8 +110,8 @@ angular.module('scoreApp').controller('AccountCreateCtrl',
 	};
 }]);
 angular.module('scoreApp').controller('AccountLoginCtrl',
-	['$scope', '$rootScope', '$http', 'alert', 'user',
-		function($scope, $rootScope, $http, alert, user) {
+	['$scope', '$rootScope', '$http', '$modalInstance', 'alert', 'user',
+		function($scope, $rootScope, $http, $modalInstance, alert, user) {
 	
 	$scope.form = {};
 
@@ -101,7 +123,9 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
-				user.current();	// Update current user.
+				user.current().then(function(res) {
+					$modalInstance.close();
+				});
 			}
 			else {
 				alert.danger('Invalid login!');
@@ -127,6 +151,10 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		}).error(function(err) {
 			alert.danger(err);
 		});
+	};
+
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 
 }]);
