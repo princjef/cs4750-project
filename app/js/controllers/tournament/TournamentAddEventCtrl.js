@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', function($window, $scope, $http, $modalInstance, dropdowns, tournament) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
@@ -83,11 +83,12 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
-			data:$scope.form})
-			.success(function (res) {
-				$window.alert('Successfully added event to tournament');})
-			.error(function (err) {
-				console.log(err);
-			});
+			data:$scope.form
+		}).success(function (res) {
+			alert.success('Successfully added event to tournament');
+			$modalInstance.close(res);
+		}).error(function (err) {
+			console.log(err);
+		});
 	};
 }]);

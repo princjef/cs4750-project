@@ -167,7 +167,11 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 		});
 
 		addEventModal.result.then(function(event) {
-			$scope.events.push(event);
+			$scope.divisions.forEach(function(division) {
+				if(division.level === event.division) {
+					division.events.push(event);
+				}
+			});
 		});
 	};
 }]);
@@ -358,7 +362,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', function($window, $scope, $http, $modalInstance, dropdowns, tournament) {
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
@@ -443,12 +447,13 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
-			data:$scope.form})
-			.success(function (res) {
-				$window.alert('Successfully added event to tournament');})
-			.error(function (err) {
-				console.log(err);
-			});
+			data:$scope.form
+		}).success(function (res) {
+			alert.success('Successfully added event to tournament');
+			$modalInstance.close(res);
+		}).error(function (err) {
+			console.log(err);
+		});
 	};
 }]);
 angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {

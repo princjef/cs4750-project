@@ -37,7 +37,7 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
 		' highScoreWins, highTiebreakWins, status, supervisor_officialID, writer_officialID)'+
 		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
-		this.highScoreWins, this.highTiebreakWins, 'Not Started', this.supervisorID, this.writerID],
+		this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID],
 		function(err, row) {
 			if(err) {
 				console.log(err);

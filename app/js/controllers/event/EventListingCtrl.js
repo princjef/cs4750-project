@@ -26,7 +26,11 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 		});
 
 		addEventModal.result.then(function(event) {
-			$scope.events.push(event);
+			$scope.divisions.forEach(function(division) {
+				if(division.level === event.division) {
+					division.events.push(event);
+				}
+			});
 		});
 	};
 }]);

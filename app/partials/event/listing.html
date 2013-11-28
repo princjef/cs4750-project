@@ -3,7 +3,7 @@
 	<div ng-repeat="division in divisions" ng-show="division.events.length">
 		<h4>Division {{division.level}}</h4>
 		<div class="list-group">
-			<a href="/tournament/{{event.tournamentID}}/scoring/{{event.division}}/{{event.eventName}}" class="list-group-item" ng-repeat="event in division.events">
+			<a href="/tournament/{{event.tournamentID}}/scoring/{{event.division}}/{{event.eventName}}" class="list-group-item" ng-repeat="event in division.events|orderBy:'eventName'">
 				<span class="status-icon" ng-switch on="event.status">
 					<i tooltip="Scoring Completed" ng-switch-when="Completed" class="fa fa-check-circle-o text-success larger middle small-right-pad"></i>
 					<i tooltip="Scoring In Progress" ng-switch-when="In Progress" class="fa fa-clock-o text-warning larger middle small-right-pad"></i>

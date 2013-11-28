@@ -6,7 +6,8 @@ exports.addEventToTournament = function(req, res) {
 		eventName:req.body.eventToAdd.eventName,
 		division:req.body.eventToAdd.division,
 		eventType:req.body.eventType.value,
-	
+
+		status: 'Not Started',
 		highScoreWins:parseInt(req.body.highScoreWins, 2),
 		highTiebreakWins:parseInt(req.body.highTiebreakWins, 2),
 
