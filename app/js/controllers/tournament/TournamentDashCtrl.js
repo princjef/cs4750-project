@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -53,4 +53,11 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
+	
+	$scope.addTeam = function() {
+		$modal.open({
+			templateUrl:'/partials/team/newteam.html',
+			controller:'TeamAddCtrl'
+		});
+	};
 }]);

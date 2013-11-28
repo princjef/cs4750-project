@@ -366,7 +366,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', 'alert', '$modalInstance', function($scope, $routeParams, $http, alert, $modalInstance) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
@@ -384,7 +384,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			url:'/tournament/' + $routeParams.tournamentID + '/addteam',
 			data:$scope.form
 		}).success(function(result) {
-			alert.success('Added team to tournament ' + $routeParams.tournamentID);
+			console.log('Added the team');
 		}).error(function(err) {
 			console.log('Unable to add team');	
 		});
@@ -504,7 +504,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -559,6 +559,13 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
+	
+	$scope.addTeam = function() {
+		$modal.open({
+			templateUrl:'/partials/team/newteam.html',
+			controller:'TeamAddCtrl'
+		});
+	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {

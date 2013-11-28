@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', 'alert', '$modalInstance', function($scope, $routeParams, $http, alert, $modalInstance) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
@@ -16,7 +16,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			url:'/tournament/' + $routeParams.tournamentID + '/addteam',
 			data:$scope.form
 		}).success(function(result) {
-			alert.success('Added team to tournament ' + $routeParams.tournamentID);
+			console.log('Added the team');
 		}).error(function(err) {
 			console.log('Unable to add team');	
 		});
