@@ -17,18 +17,25 @@ var Account = function(obj) {
  */
 Account.prototype.create = function(callback) {
 	var that = this;
-	connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
-	[this.username, this.email, Account.hashSaltPass(this.password)], function(err, result) {
-		console.log(result);
-		if(err) {
-			console.log('ERR', err);
-			callback(err, false);
-		} else if (result.affectedRows > 0) {
-			console.log('INFO', 'Created Account', that.username);
-			callback(null, true);
-		} else {
-			console.log('INFO', 'User', that.username, 'does not exist!');
-			callback(null, false);
+
+	Account.hashSaltPass(this.password, function(err, hash) {
+		if (err) console.log('ERR', err);
+		else {
+			connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
+			[that.username, that.email, hash], function(err, result) {
+				console.log('result is:', result);
+				if(err) {
+					console.log('ERR', err);
+					callback(err, false);
+				} else if (result.affectedRows > 0) {
+					console.log('INFO', 'Created Account', that.username);
+					callback(null, true);
+				} else {
+					console.log('INFO', 'User', that.username, 'does not exist!');
+					callback(null, false);
+				}
+			});
+
 		}
 	});
 };
@@ -40,6 +47,8 @@ Account.prototype.create = function(callback) {
  * Returns: error (if there is one)
  */
 Account.prototype.update = function(callback) {
+	// THIS IS WRONG FOR NOW
+	// WILL FIX IT IF I EVER GET LOGIN TO WORK
 	var that = this;
 	connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
 	[this.email, Account.hashSaltPass(this.password), this.username], function(err, result) {
@@ -71,16 +80,19 @@ Account.prototype.update = function(callback) {
 		if(!err) {
 			if (row.length > 0) {
 				hashedPass = row[0].password;
-				console.log(hashedPass);
 
-				if (Account.comparePass(that.password, hashedPass)) {
-					console.log('INFO', 'Logged in with username:', that.username);
-					that.email = row[0].email;
-					callback(null, true);
-				} else {
-					console.log('INFO', 'Invalid username and/or password!');
-					callback(null, false);
-				}
+				Account.comparePass(that.password, hashedPass, function(err, result) {
+					console.log('result is:', result);
+					if (err || !result) {
+						console.log('INFO', 'Invalid username and/or password!');
+						callback(null, false);
+					} else {
+						console.log('INFO', 'Logged in with username:', that.username);
+						that.email = row[0].email;
+						callback(null, true);
+					}
+
+				});
 			} else {
 				console.log('INFO', 'User', that.username, 'does not exist!');
 				callback(null, false);
@@ -113,20 +125,19 @@ Account.prototype.toJson = function() {
 	};
 };
 
-Account.hashSaltPass = function(password) {
-	var salt = bcrypt.genSaltSync(10);
-	var hash = bcrypt.hashSync(password, salt);
-	return hash;
+Account.hashSaltPass = function(password, callback) {
+	bcrypt.hash(password, 10, function(err, hash) {
+		callback(err, hash);
+	});
 };
 
-Account.comparePass = function(password, hash) {
-	console.log('hash is', hash);
-	console.log('password is', password);
-
-	console.log(bcrypt.hashSync(password, hash));
-
-	console.log(bcrypt.compareSync(password, hash));
-	return bcrypt.compareSync(password, hash);
+Account.comparePass = function(password, hash, callback) {
+	bcrypt.compare(password, hash, function(err, res) {
+		console.log('login result is:', res);
+		callback(err, res);
+	});
 };
+
+
 
 module.exports = Account;

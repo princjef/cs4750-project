@@ -78,7 +78,7 @@ exports.login = function(req, res) {
 			if (successful) {
 				req.login(account, function(err) {
 					if (err) {
-						res.send(500, err);
+						res.send(500, 'ERROR: Login unsuccessful');
 					}
 				});
 				res.json({
