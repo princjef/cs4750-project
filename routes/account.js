@@ -2,20 +2,40 @@ var Account = require('../model/Account');
 var passport = require('passport');
 
 exports.create = function(req, res) {
-	console.log('Test');
 	var account = new Account({
 		username: req.body.username,
 		email: req.body.email,
-		password: req.body.password
+		password: req.body.password,
 	});
 
-	account.create(function(err) {
-		if(err) {
-			res.send(500, err);
-		} else {
-			res.json(account.toJson());
-		}
-	});
+	if (req.body.password != req.body.passwordReentered) {
+		res.send(500, 'ERROR: Passwords do not match.');
+	}
+
+	else {
+		account.create(function(err, successful) {
+			if(err) {
+				if (err.code == 'ER_DUP_ENTRY') {
+					console.log('ERR', err);
+					res.send(500, 'ERROR: Duplicate account name exists.');
+				} else {
+					console.log('Err', err);
+					res.send(500, 'ERROR: The server encountered an error.');
+				}
+			} else {
+				if (successful) {
+					res.json({
+						status: true,
+						user: account.toJson()
+					});
+				} else {
+					res.json({
+						status: false
+					});
+				}
+			}
+		});
+	}
 };
 
 exports.update = function(req, res) {
@@ -25,11 +45,20 @@ exports.update = function(req, res) {
 		password: req.body.password
 	});
 
-	account.update(function(err) {
+	account.update(function(err, successful) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			res.json(account.toJson());
+			if (successful) {
+				res.json({
+					status: true,
+					user: account.toJson()
+				});
+			} else {
+				res.json({
+					status: false
+				});
+			}
 		}
 	});
 };
@@ -47,12 +76,12 @@ exports.login = function(req, res) {
 			if (successful) {
 				req.login(account, function(err) {
 					if (err) {
-						res.send(500, err);
+						res.send(500, 'Login unsuccessful');
 					}
 				});
 				res.json({
 					status: true,
-					user: account
+					user: account.toJson()
 				});
 			} else {
 				res.json({
@@ -66,12 +95,10 @@ exports.login = function(req, res) {
 exports.logout = function(req, res) {
 	req.logout();
 	res.json({
-		status: false
+		status: true
 	});
 };
 
 exports.current = function(req, res) {
-	//return req.user.toJson(); THIS DIDN'T WORK, FIGURE OUT WHY
-	//return req.user;
 	res.json(req.user);
 };

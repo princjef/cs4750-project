@@ -13,6 +13,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/dashboard.html',
 					controller: 'TournamentDashCtrl'
 				})
+			.when('/tournament/:tournamentID/newteam', {
+					templateUrl: '/partials/team/newteam.html',
+					controller: 'TeamAddCtrl'
+				})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
@@ -54,7 +58,9 @@ angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$htt
 	});
 
 }]);
-angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('scoreApp').controller('AccountCreateCtrl',
+	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+
 	$scope.form = {};
 
 	$scope.createAccount = function() {
@@ -63,13 +69,18 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 			url: '/account/create',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully created account');
+			if (res.status) {
+				alert.success('Successfully created account!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Account creation not successful!');
+			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
-
 angular.module('scoreApp').controller('AccountLoginCtrl',
 	['$scope', '$rootScope', '$http', 'alert', 'user',
 		function($scope, $rootScope, $http, alert, user) {
@@ -90,7 +101,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 				alert.danger('Invalid login!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 
@@ -100,15 +111,15 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 			url: '/account/logout',
 			data: $scope.form
 		}).success(function(res) {
-			if (!res.status) {
+			if (res.status) {
 				alert.success('Successfully logged out!');
-				user.current();	// Update current user.
+				user.clear();	// Clear current user.
 			}
 			else {
 				alert.danger('Logout not successful!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 
@@ -364,6 +375,30 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	$scope.form = {};
+	$scope.tournamentID = $routeParams.tournamentID;
+	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
+					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
+					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+	$scope.form.state = $scope.states[0];
+	$scope.divisions = ['A', 'B', 'C'];
+	$scope.form.division = $scope.divisions[0];
+	$scope.createTeam = function() {
+		$http({
+			method:'POST',
+			url:'/tournament/' + $routeParams.tournamentID + '/addteam',
+			data:$scope.form
+		}).success(function(result) {
+			console.log('Added the team');
+		}).error(function(err) {
+			console.log('Unable to add team');	
+		});
+	};
+}]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
@@ -478,7 +513,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -533,6 +568,13 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
+	
+	$scope.addTeam = function() {
+		$modal.open({
+			templateUrl:'/partials/team/newteam.html',
+			controller:'TeamAddCtrl'
+		});
+	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
@@ -783,6 +825,11 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			}).error(function(err) {
 				d.reject(err);
 			});
+			
+			return d.promise;
+		},
+		clear: function() {
+			$rootScope.username = null;
 		}
 	};
 }]);

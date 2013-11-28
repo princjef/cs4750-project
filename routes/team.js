@@ -13,3 +13,21 @@ exports.getByTournamentID = function(req, res) {
 		}
 	});
 };
+
+exports.addToTournament = function(req, res) {
+	var team = new Team({
+		tournamentID: req.params.id,
+		number: req.body.teamNumber,
+		division: req.body.division,
+		name: req.body.teamName,
+		state: req.body.state,
+		school: req.body.school
+	});
+	team.addToTournament(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(team.toJson());
+		}
+	});
+};

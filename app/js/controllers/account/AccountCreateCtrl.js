@@ -1,4 +1,6 @@
-angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('scoreApp').controller('AccountCreateCtrl',
+	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+
 	$scope.form = {};
 
 	$scope.createAccount = function() {
@@ -7,9 +9,15 @@ angular.module('scoreApp').controller('AccountCreateCtrl', ['$scope', '$http', '
 			url: '/account/create',
 			data: $scope.form
 		}).success(function(res) {
-			$window.alert('Successfully created account');
+			if (res.status) {
+				alert.success('Successfully created account!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Account creation not successful!');
+			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);

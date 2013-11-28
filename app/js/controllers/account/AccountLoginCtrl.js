@@ -18,7 +18,7 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 				alert.danger('Invalid login!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 
@@ -28,15 +28,15 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 			url: '/account/logout',
 			data: $scope.form
 		}).success(function(res) {
-			if (!res.status) {
+			if (res.status) {
 				alert.success('Successfully logged out!');
-				user.current();	// Update current user.
+				user.clear();	// Clear current user.
 			}
 			else {
 				alert.danger('Logout not successful!');
 			}
 		}).error(function(err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 

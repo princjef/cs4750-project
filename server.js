@@ -54,6 +54,7 @@ app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
 app.post('/tournament/addevent', consistsOf.addEventToTournament);
+app.post('/tournament/:id/addteam', team.addToTournament);
 
 // Scoring Routes
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
