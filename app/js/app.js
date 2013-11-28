@@ -13,6 +13,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/dashboard.html',
 					controller: 'TournamentDashCtrl'
 				})
+			.when('/tournament/:tournamentID/newteam', {
+					templateUrl: '/partials/team/newteam.html',
+					controller: 'TeamAddCtrl'
+				})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
@@ -361,6 +365,10 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			alert.danger(err);
 		});
 	};
+}]);
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+	$scope.form = {};
+	$scope.tournamentID = $routeParams.tournamentID;
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
 	$scope.cancel = function() {
