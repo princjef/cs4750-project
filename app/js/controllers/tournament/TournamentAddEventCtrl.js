@@ -88,7 +88,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			alert.success('Successfully added event to tournament');
 			$modalInstance.close(res);
 		}).error(function (err) {
-			console.log(err);
+			alert.danger(err);
 		});
 	};
 }]);
