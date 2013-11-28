@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
+angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
 	$scope.form = {};
 	
 	dropdowns.getScoreCodes().then(function(data) {
@@ -129,6 +129,8 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		if($scope.event.status !== oldStatus) {
 			$scope.saveEvent();
 		}
+
+		underscore.debounce($scope.saveScores, 3000)();
 	};
 
 	$scope.saveScores = function() {

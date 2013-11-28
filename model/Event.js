@@ -2,7 +2,7 @@ var connection = require('../sql/connection');
 var error = require('../sql/error');
 
 var Event = function(obj) {
-	this.name = obj.name;
+	this.name = obj.name || obj.eventName;
 	this.division = obj.division;
 };
 

@@ -87,14 +87,131 @@ ParticipatesIn.getTiers = function(callback) {
 	});
 };
 
+// ParticipatesIn.saveMultiple = function(array, callback) {
+// 	var query = "UPDATE ParticipatesIn SET";
+// 	var params = [];
+// 	var queryParts = {
+// 		scoreCode: {
+// 			query: " scoreCode = CASE",
+// 			end: " ELSE scoreCode END",
+// 			params: []
+// 		},
+// 		score: {
+// 			query: " score = CASE",
+// 			end: " ELSE score END",
+// 			params: []
+// 		},
+// 		tiebreak: {
+// 			query: " tiebreak = CASE",
+// 			end: " ELSE tiebreak END",
+// 			params: []
+// 		},
+// 		tier: {
+// 			query: " tier = CASE",
+// 			end: " ELSE tier END",
+// 			params: []
+// 		},
+// 		repeater: " WHEN (tournamentID=? AND teamNumber=? AND division=? AND eventName=?) THEN ?",
+// 		inClause: {
+// 			query: " WHERE (tournamentID, teamNumber, division, eventName) IN (",
+// 			firstRepeater: "(?, ?, ?, ?)",
+// 			repeater: ", (?, ?, ?, ?)",
+// 			started: false,
+// 			params: [],
+// 			end: ")"
+// 		}
+// 	};
+
+// 	array.forEach(function(participatesIn) {
+// 		console.log("Iteration");
+// 		queryParts.scoreCode.query += queryParts.repeater;
+// 		queryParts.scoreCode.params = queryParts.scoreCode.params.concat([
+// 			participatesIn.team.tournamentID,
+// 			participatesIn.team.teamNumber,
+// 			participatesIn.event.division,
+// 			participatesIn.event.name,
+// 			participatesIn.scoreCode
+// 		]);
+
+// 		queryParts.score.query += queryParts.repeater;
+// 		queryParts.score.params = queryParts.score.params.concat([
+// 			participatesIn.team.tournamentID,
+// 			participatesIn.team.teamNumber,
+// 			participatesIn.event.division,
+// 			participatesIn.event.name,
+// 			participatesIn.score
+// 		]);
+
+// 		queryParts.tiebreak.query += queryParts.repeater;
+// 		queryParts.tiebreak.params = queryParts.tiebreak.params.concat([
+// 			participatesIn.team.tournamentID,
+// 			participatesIn.team.teamNumber,
+// 			participatesIn.event.division,
+// 			participatesIn.event.name,
+// 			participatesIn.tiebreak
+// 		]);
+
+// 		queryParts.tier.query += queryParts.repeater;
+// 		queryParts.tier.params = queryParts.tier.params.concat([
+// 			participatesIn.team.tournamentID,
+// 			participatesIn.team.teamNumber,
+// 			participatesIn.event.division,
+// 			participatesIn.event.name,
+// 			participatesIn.tier
+// 		]);
+
+// 		queryParts.inClause.params = queryParts.inClause.params.concat([
+// 			participatesIn.team.tournamentID,
+// 			participatesIn.team.teamNumber,
+// 			participatesIn.event.division,
+// 			participatesIn.event.name
+// 		]);
+
+// 		if(queryParts.inClause.started) {
+// 			queryParts.inClause.query += queryParts.inClause.repeater;
+// 		} else {
+// 			queryParts.inClause.query += queryParts.inClause.firstRepeater;
+// 			queryParts.inClause.started = true;
+// 		}
+// 	});
+
+// 	query += queryParts.scoreCode.query + queryParts.scoreCode.end + "," +
+// 			queryParts.score.query + queryParts.score.end + "," +
+// 			queryParts.tiebreak.query + queryParts.tiebreak.end + "," +
+// 			queryParts.tier.query + queryParts.tier.end +
+// 			queryParts.inClause.query + queryParts.inClause.end;
+
+// 	params = params.concat(
+// 		queryParts.scoreCode.params,
+// 		queryParts.score.params,
+// 		queryParts.tiebreak.params,
+// 		queryParts.tier.params,
+// 		queryParts.inClause.params
+// 	);
+
+// 	console.log(query);
+
+// 	connection.query(query, params, function(err, result) {
+// 		if(err) {
+// 			console.log(err);
+// 			callback(error.message(err));
+// 		} else {
+// 			console.log(result.affectedRows);
+// 			callback();
+// 		}
+// 	});
+// };
+
 ParticipatesIn.prototype.save = function(callback) {
 	var that = this;
 	connection.query("UPDATE ParticipatesIn SET scoreCode=?, score=?, tiebreak=?, tier=? WHERE " +
 			"tournamentID=? AND teamNumber=? AND division=? AND eventName=?",
-			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err) {
+			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err, result) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));
+		} else {
+			callback();
 		}
 	});
 };

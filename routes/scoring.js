@@ -43,6 +43,8 @@ exports.participators = function(req, res) {
 
 exports.update = function(req, res) {
 	var participants = [];
+	var succeeded = true;
+	var returnCount = 0;
 	req.body.participants.forEach(function(entry) {
 		var participant = new ParticipatesIn({
 			team: new Team(entry.team),
@@ -54,10 +56,11 @@ exports.update = function(req, res) {
 		});
 		participant.save(function(err) {
 			if(err) {
+				succeeded = false;
 				res.send(500, err);
+			} else if(succeeded && (++returnCount === req.body.participants.length)) {
+				res.send(200);
 			}
 		});
 	});
-
-	res.send(200);
 };

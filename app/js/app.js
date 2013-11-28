@@ -204,7 +204,7 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
+angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
 	$scope.form = {};
 	
 	dropdowns.getScoreCodes().then(function(data) {
@@ -335,6 +335,8 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		if($scope.event.status !== oldStatus) {
 			$scope.saveEvent();
 		}
+
+		underscore.debounce($scope.saveScores, 3000)();
 	};
 
 	$scope.saveScores = function() {
@@ -709,6 +711,61 @@ angular.module('scoreApp').service('tournament', [function() {
 		},
 		get: function() {
 			return tournament;
+		}
+	};
+}]);
+angular.module('scoreApp').service('underscore', [function() {
+	return {
+		throttle: function(func, wait, options) {
+			console.log('throttling');
+			var context, args, result;
+			var timeout = null;
+			var previous = 0;
+			options || (options = {});
+			var later = function() {
+				previous = options.leading === false ? 0 : new Date;
+				timeout = null;
+				result = func.apply(context, args);
+			};
+			return function() {
+				var now = new Date;
+				if (!previous && options.leading === false) previous = now;
+				var remaining = wait - (now - previous);
+				context = this;
+				args = arguments;
+				if (remaining <= 0) {
+					clearTimeout(timeout);
+					timeout = null;
+					previous = now;
+					result = func.apply(context, args);
+				} else if (!timeout && options.trailing !== false) {
+					timeout = setTimeout(later, remaining);
+				}
+				return result;
+			};
+		},
+		debounce: function(func, wait, immediate) {
+			var timeout, args, context, timestamp, result;
+			return function() {
+				context = this;
+				args = arguments;
+				timestamp = new Date();
+				var later = function() {
+					var last = (new Date()) - timestamp;
+					if (last < wait) {
+						timeout = setTimeout(later, wait - last);
+					} else {
+						timeout = null;
+						if (!immediate) result = func.apply(context, args);
+					}
+				};
+				var callNow = immediate && !timeout;
+				if (!timeout) {
+					timeout = setTimeout(later, wait);
+				}
+				if (callNow) result = func.apply(context, args);
+				return result;
+			};
 		}
 	};
 }]);
