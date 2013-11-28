@@ -9,9 +9,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/newevent.html',
 					controller: 'TournamentAddEventCtrl'
 			})
-			.when('/tournament/dashboard', {
+			.when('/tournament/:tournamentID/dashboard', {
 					templateUrl: '/partials/tournament/dashboard.html',
 					controller: 'TournamentDashCtrl'
+				})
+			.when('/tournament/:tournamentID/newteam', {
+					templateUrl: '/partials/team/newteam.html',
+					controller: 'TeamAddCtrl'
 				})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',
@@ -146,6 +150,42 @@ angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$w
 }]);
 
 
+angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, alert, tournament) {
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/events'
+	}).success(function(events) {
+		$scope.divisions = [
+			{
+				level: 'A',
+				events: $filter('division')(events, 'A')
+			}, {
+				level: 'B',
+				events: $filter('division')(events, 'B')
+			}, {
+				level: 'C',
+				events: $filter('division')(events, 'C')
+			}
+		];
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$scope.addEvent = function() {
+		var addEventModal = $modal.open({
+			templateUrl: '/partials/tournament/newevent.html',
+			controller: 'TournamentAddEventCtrl'
+		});
+
+		addEventModal.result.then(function(event) {
+			$scope.divisions.forEach(function(division) {
+				if(division.level === event.division) {
+					division.events.push(event);
+				}
+			});
+		});
+	};
+}]);
 angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', '$http', function($scope, $window, $http) {
 	$scope.form = {};
 	
@@ -177,10 +217,6 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', function($scope, $http, $routeParams, alert, dropdowns) {
 	$scope.form = {};
-
-	// These need to change
-	$scope.highScoreWins = true;
-	$scope.highTiebreakWins = true;
 	
 	dropdowns.getScoreCodes().then(function(data) {
 		$scope.scoreCodes = data;
@@ -201,11 +237,23 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 
 	$http({
 		method: 'GET',
+		url: '/event/info',
+		params: {
+			tournamentID: $routeParams.tournamentID,
+			name: $routeParams.eventName,
+			division: $routeParams.eventDivision
+		}
+	}).success(function(res) {
+		$scope.event = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
 		url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
 	}).success(function(res) {
-		$scope.event = res.event;
 		$scope.participators = res.participators;
-		console.log($scope.participators);
 		$scope.updateRankings();
 	}).error(function(err) {
 		alert.danger(err);
@@ -220,26 +268,26 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			return 1;
 		} else {	// Same tier
 			if(a.score > b.score) {
-				if($scope.highScoreWins) {
+				if($scope.event.highScoreWins) {
 					return -1;
 				} else {
 					return 1;
 				}
 			} else if(a.score < b.score) {
-				if($scope.highScoreWins) {
+				if($scope.event.highScoreWins) {
 					return 1;
 				} else {
 					return -1;
 				}
 			} else {	// tie
 				if(a.tiebreak > b.tiebreak) {
-					if($scope.highTiebreakWins) {
+					if($scope.event.highTiebreakWins) {
 						return -1;
 					} else {
 						return 1;
 					}
 				} else if(a.tiebreak < b.tiebreak) {
-					if($scope.highTiebreakWins) {
+					if($scope.event.highTiebreakWins) {
 						return 1;
 					} else {
 						return -1;
@@ -251,20 +299,32 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		}
 	};
 
+	$scope.updateScoreOrder = function() {
+		$scope.updateRankings();
+		$scope.saveEvent();
+	};
+
 	$scope.updateRankings = function() {
 		var teams = $scope.participators.slice(0);
+		var started = false;
+		var finished = true;
 		for(var i = teams.length - 1; i >= 0; i--) {
 			teams[i].index = i;
 			if(teams[i].scoreCode === null ||
-					(teams[i].scoreCode === 'participated' && teams[i].score === null)) {
+					(teams[i].scoreCode === 'participated' && (teams[i].score === null || teams[i].score.length === 0))) {
 				$scope.participators[i].place = null;
 				teams.splice(i, 1);
+				finished = false;
 			} else if(teams[i].scoreCode === 'NS') {
 				$scope.participators[i].place = $scope.participators.length + 1;
 				teams.splice(i, 1);
+				started = true;
 			} else if(teams[i].scoreCode === 'DQ') {
 				$scope.participators[i].place = $scope.participators.length + 2;
 				teams.splice(i, 1);
+				started = true;
+			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null && teams[i].score.length === 0) {
+				started = true;
 			}
 		}
 		teams.sort(compareParticipators);
@@ -273,10 +333,22 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		teams.forEach(function(team) {
 			$scope.participators[team.index].place = currentPlace++;
 		});
+
+		var oldStatus = $scope.event.status;
+		if(!started) {
+			$scope.event.status = 'Not Started';
+		} else if(started && !finished) {
+			$scope.event.status = 'In Progress';
+		} else {
+			$scope.event.status = 'Completed';
+		}
+
+		if($scope.event.status !== oldStatus) {
+			$scope.saveEvent();
+		}
 	};
 
 	$scope.saveScores = function() {
-		console.log($scope.participators);
 		$http({
 			method: 'POST',
 			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
@@ -290,10 +362,52 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			alert.danger(err);
 		});
 	};
+
+	$scope.saveEvent = function() {
+		$http({
+			method: 'POST',
+			url: '/event/save',
+			data: $scope.event
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
 }]);
-angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', 'dropdowns', '$routeParams', function($window, $scope, $http, dropdowns, $routeParams) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
 	$scope.form = {};
-	$scope.form.tournamentID = $routeParams.tournamentID;
+	$scope.tournamentID = $routeParams.tournamentID;
+	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
+					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
+					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+	$scope.form.state = $scope.states[0];
+	$scope.divisions = ['A', 'B', 'C'];
+	$scope.form.division = $scope.divisions[0];
+	$scope.createTeam = function() {
+		$http({
+			method:'POST',
+			url:'/tournament/' + $routeParams.tournamentID + '/addteam',
+			data:$scope.form
+		}).success(function(result) {
+			console.log('Added the team');
+		}).error(function(err) {
+			console.log('Unable to add team');	
+		});
+	};
+}]);
+angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
+	console.log(tournament);
+
+	$scope.tournament = tournament.get();
+
+	$scope.form = {};
+	$scope.form.tournamentID = $scope.tournament.id;
 	dropdowns.getTournamentEvents().then(function(data) {
 		eventNames = [];
 		data.forEach(function(entry) {
@@ -301,7 +415,7 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			eventNames.push({
 				name:entryName,
 				value:entry
-			});	
+			});
 		});
 		$scope.events = eventNames;
 		$scope.form.eventToAdd = eventNames[0].value;
@@ -317,18 +431,44 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 			});
 		});
 		$scope.officials = names;
-		
 	});
+
 	$scope.eventTypes = [
-		{value:'Standard'}, 
+		{value:'Standard'},
 		{value:'Trial'}
 	];
 	$scope.form.eventType = $scope.eventTypes[0];
 	
-	$scope.form.highTiebreakWins = "1";
-	$scope.form.highScoreWins = "1";
-	$scope.form.scored = "0";
+	$scope.form.highTiebreakWins = '1';
+	$scope.form.highScoreWins = '1';
 	
+	$scope.form.highScoreWinsHighTrigger = true;
+	$scope.form.highScoreWinsLowTrigger = false;
+	$scope.form.highTiebreakWinsHighTrigger = true;
+	$scope.form.highTiebreakWinsLowTrigger = false;
+
+	$scope.updateCheckboxes = function() {
+		if($scope.form.highScoreWins === '1' && (!$scope.form.highScoreWinsHighTrigger || $scope.form.highScoreWinsLowTrigger)) {
+			$scope.form.highScoreWins = '0';
+			$scope.form.highScoreWinsHighTrigger = false;
+			$scope.form.highScoreWinsLowTrigger = true;
+		} else if($scope.form.highScoreWins === '0' && ($scope.form.highScoreWinsHighTrigger || !$scope.form.highScoreWinsLowTrigger)) {
+			$scope.form.highScoreWins = '1';
+			$scope.form.highScoreWinsHighTrigger = true;
+			$scope.form.highScoreWinsLowTrigger = false;
+		}
+
+		if($scope.form.highTiebreakWins === '1' && (!$scope.form.highTiebreakWinsHighTrigger || $scope.form.highTiebreakWinsLowTrigger)) {
+			$scope.form.highTiebreakWins = '0';
+			$scope.form.highTiebreakWinsHighTrigger = false;
+			$scope.form.highTiebreakWinsLowTrigger = true;
+		} else if($scope.form.highTiebreakWins === '0' && ($scope.form.highTiebreakWinsHighTrigger || !$scope.form.highTiebreakWinsLowTrigger)) {
+			$scope.form.highTiebreakWins = '1';
+			$scope.form.highTiebreakWinsHighTrigger = true;
+			$scope.form.highTiebreakWinsLowTrigger = false;
+		}
+	};
+
 	$scope.addEvent = function() {
 		$scope.officials.forEach(function(entry) {
 			if(entry.name === $scope.supervisorName) {
@@ -342,12 +482,13 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
-			data:$scope.form})
-			.success(function (res) {
-				$window.alert('Successfully added event to tournament');})
-			.error(function (error) {
-				console.log(err);
-			});
+			data:$scope.form
+		}).success(function (res) {
+			alert.success('Successfully added event to tournament');
+			$modalInstance.close(res);
+		}).error(function (err) {
+			console.log(err);
+		});
 	};
 }]);
 angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
@@ -370,8 +511,68 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', function($scope, $rootScope, $window, dropdowns, $hhtp) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
+	$scope.form = {};
+	// Get the tournament information
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/info',
+		cache:true
+	}).success(function(data) {
+		$scope.tournament = data;
+		tournament.set($scope.tournament);
+		$scope.tournamentDate = new Date(data.date);
+	}).error(function(err) {
+		console.log('Error getting tournament info');
+	});
 	
+	$http({
+		method:'GET',
+		url:'/organization/' + $routeParams.tournamentID + '/getorganizers',
+		cache:true
+	}).success(function(data) {
+		$scope.organizers = data;
+	}).error(function(err) {
+		console.log('Error getting organizers');
+	});
+	
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/teams',
+		cache:true
+	}).success(function(data) {
+		$scope.teams = data;
+	}).error(function(err) {
+		console.log('Error getting teams');
+	});
+	
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/events',
+		cache:true
+	}).success(function(events) {
+		$scope.eventStatuses = [{
+			level:'Completed',
+			events:$filter('status')(events, 'Completed')
+		}, {
+			level:'InProgress',
+			events:$filter('status')(events, 'In Progress')
+		}, {
+			level:'NotStarted',
+			events:$filter('status')(events, 'Not Started')
+		}];
+		$scope.total = $scope.eventStatuses[0].events.length + $scope.eventStatuses[1].events.length + $scope.eventStatuses[2].events.length;
+		console.log('events ' + $scope.eventStatuses[0].events.length);
+	}).error(function(err) {
+		console.log('Error getting events');
+	});
+	
+	$scope.addTeam = function() {
+		$modal.open({
+			templateUrl:'/partials/team/newteam.html',
+			controller:'TeamAddCtrl'
+		});
+	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
@@ -399,6 +600,37 @@ angular.module('scoreApp').directive('animationShowHide', function() {
 		});
 	};
 });
+angular.module('scoreApp').filter('division', [function() {
+	return function(inputs, value) {
+		var result = [];
+		if(inputs === undefined) {
+			return inputs;
+		} else {
+			inputs.forEach(function(entry) {
+				if(entry.division === value) {
+					result.push(entry);
+				}
+			});
+			console.log(result);
+			return result;
+		}
+	};
+}]);
+angular.module('scoreApp').filter('status', [function() {
+	return function(inputs, value) {
+		var result = [];
+		if(inputs === undefined) {
+			return inputs;
+		} else {
+			inputs.forEach(function(entry) {
+				if(entry.status === value) {
+					result.push(entry);
+				}
+			});
+			return result;
+		}
+	};
+}]);
 angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function($rootScope, $timeout) {
 	var createMessage = function(type, text, timeout) {
 		$rootScope.message = {
@@ -493,10 +725,35 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				d.reject(err);
 			});
 			return d.promise;
+		},
+		getEventStatuses: function() {
+			var d = $q.defer();
+			$http({
+				method: 'GET',
+				url: '/event/statuses',
+				cache: true
+			}).success(function(statuses) {
+				d.resolve(statuses);
+			}).error(function(err) {
+				d.reject(err);
+			});
+			return d.promise;
 		}
 	};
 }]);
 
+angular.module('scoreApp').service('tournament', [function() {
+	var tournament = {};
+
+	return {
+		set: function(tournamentData) {
+			tournament = tournamentData;
+		},
+		get: function() {
+			return tournament;
+		}
+	};
+}]);
 angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
 	return {
 		current: function() {

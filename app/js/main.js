@@ -9,9 +9,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/tournament/newevent.html',
 					controller: 'TournamentAddEventCtrl'
 			})
-			.when('/tournament/dashboard', {
+			.when('/tournament/:tournamentID/dashboard', {
 					templateUrl: '/partials/tournament/dashboard.html',
 					controller: 'TournamentDashCtrl'
+				})
+			.when('/tournament/:tournamentID/newteam', {
+					templateUrl: '/partials/team/newteam.html',
+					controller: 'TeamAddCtrl'
 				})
 			.when('/organization/new', {
 					templateUrl: '/partials/organization/new.html',

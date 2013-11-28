@@ -8,17 +8,36 @@ var ConsistsOf = function(obj) {
 	
 	this.highScoreWins = obj.highScoreWins;
 	this.highTiebreakWins = obj.highTiebreakWins;
-	this.scored = obj.scored;
+	this.status = obj.status;
 	
 	this.supervisorID = obj.supervisorID;
 	this.writerID = obj.writerID;
 };
 
+ConsistsOf.prototype.get = function(callback) {
+	var that = this;
+	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=? AND eventName=? AND division=?",
+			[this.tournamentID, this.eventName, this.division], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			that.eventType = rows[0].eventType;
+			that.status = rows[0].status;
+			that.highScoreWins = rows[0].highScoreWins;
+			that.highTiebreakWins = rows[0].highTiebreakWins;
+			that.writerID = rows[0].writer_officialID;
+			that.supervisorID = rows[0].supervisor_officialID;
+			callback();
+		}
+	});
+};
+
 ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
-		' highScoreWins, highTiebreakWins, scored, supervisor_officialID, writer_officialID)'+
+		' highScoreWins, highTiebreakWins, status, supervisor_officialID, writer_officialID)'+
 		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
-		this.highScoreWins, this.highTiebreakWins, this.scored, this.supervisorID, this.writerID],
+		this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID],
 		function(err, row) {
 			if(err) {
 				console.log(err);
@@ -30,11 +49,11 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 		});
 };
 
-ConsistsOf.prototype.updateEventInTournament = function(callback) {
-	connection.query('UPDATE ConsistsOf SET tournamentID=?, eventName=?, division=?, eventType=?,'+
-		' highScoreWins=?, highTiebreakWins=?, scored=?, supervisor_officialID=?, writer_officialID=?)',
-		[this.tournamentID, this.eventName, this.division, this.eventType, this.highScoreWins, 
-		this.highTiebreakWins, this.scored, this.supervisorID, this.writerID], function(err, row) {
+ConsistsOf.prototype.save = function(callback) {
+	connection.query("UPDATE ConsistsOf SET eventType=?, highScoreWins=?, highTiebreakWins=?, status=?,"+
+		" supervisor_officialID=?, writer_officialID=? WHERE tournamentID=? AND eventName=? AND division=?",
+		[this.eventType, this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID,
+		this.tournamentID, this.eventName, this.division], function(err, row) {
 			if(err) {
 				console.log(err);
 				callback(err);
@@ -45,6 +64,44 @@ ConsistsOf.prototype.updateEventInTournament = function(callback) {
 		});
 };
 
+ConsistsOf.getByTournamentID = function(tournamentID, callback) {
+	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=?",
+			[tournamentID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			var entries = [];
+			rows.forEach(function(row) {
+				entries.push(new ConsistsOf({
+					tournamentID: row.tournamentID,
+					eventName: row.eventName,
+					division: row.division,
+					eventType: row.eventType,
+					highScoreWins: row.highScoreWins,
+					highTiebreakWins: row.highTiebreakWins,
+					status: row.status,
+					supervisorID: row.writer_officialID,
+					writerID: row.supervisor_officialID
+				}));
+			});
+			callback(null, entries);
+		}
+	});
+};
+
+ConsistsOf.getStatuses = function(callback) {
+	connection.query("SHOW COLUMNS FROM ConsistsOf LIKE 'status'", function(err, rows) {
+		if(err) {
+			console.log('ERR', err);
+			callback({err: 'Could not complete query'});
+		} else {
+			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
+			callback(match.split('\',\''));
+		}
+	});
+};
+
 ConsistsOf.prototype.toJson = function() {
 	return {
 		tournamentID:this.tournamentID,
@@ -52,13 +109,12 @@ ConsistsOf.prototype.toJson = function() {
 		division:this.division,
 		eventType:this.eventType,
 	
-		tiebreak:this.tiebreak,
 		highScoreWins:this.highScoreWins,
 		highTiebreakWins:this.highTiebreakWins,
-		scored:this.scored,
+		status:this.status,
 
 		supervisorID:this.supervisorID,
-		writerID:this.writerID	
+		writerID:this.writerID
 	};
 };
 
@@ -82,8 +138,8 @@ ConsistsOf.prototype.setHighTiebreakWins = function(highTiebreakWins) {
 	return this;
 };
 
-ConsistsOf.prototype.setScored = function(scored) {
-	this.scored = scored;
+ConsistsOf.prototype.setStatus = function(scored) {
+	this.status = status;
 	return this;
 };
 

@@ -23,15 +23,15 @@ Team.getByTournamentID = function(tournamentID, callback) {
 	var addTeam = function(row) {
 		teams.push(new Team({
 			tournamentID: row.tournamentID,
-			number: row.number,
+			number: row.teamNumber,
 			division: row.division,
-			name: row.name,
+			name: row.teamName,
 			state: row.state,
 			school: row.school
 		}));
 	};
 
-	connection.query("SELECT * FROM Teams WHERE tournamentID=?",
+	connection.query("SELECT * FROM Team WHERE tournamentID=?",
 			[tournamentID], function(err, rows) {
 		if(err) {
 			console.log('ERR:', err);
@@ -41,6 +41,19 @@ Team.getByTournamentID = function(tournamentID, callback) {
 			callback(null, teams);
 		}
 	});
+};
+
+Team.prototype.addToTournament = function(callback) {
+	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school) VALUES(?, ?, ?, ?, ?, ?)",
+		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {
+			if(err) {
+				console.log('ERR', err);
+				callback(err);
+			} else {
+				console.log('INFO: Created a new team');
+				callback();
+			}
+		});
 };
 
 // Setters

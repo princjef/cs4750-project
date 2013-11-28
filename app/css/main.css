@@ -1,6 +1,64 @@
+/* line 2, ../scss/base/_bugfixes.scss */
+.modal {
+  display: block;
+}
+
+/* line 6, ../scss/base/_bugfixes.scss */
+.modal-body:before, .modal-body:after {
+  display: table;
+  content: " ";
+}
+
+/* line 11, ../scss/base/_bugfixes.scss */
+.modal-header:before, .modal-header:after {
+  display: table;
+  content: " ";
+}
+
 /* line 1, ../scss/base/_utility.scss */
 .no-display {
   display: none;
+}
+
+/* line 5, ../scss/base/_utility.scss */
+.middle {
+  vertical-align: middle;
+}
+
+/* line 9, ../scss/base/_utility.scss */
+.smaller {
+  font-size: 0.8em;
+}
+
+/* line 13, ../scss/base/_utility.scss */
+.larger {
+  font-size: 1.25em;
+}
+
+/* line 17, ../scss/base/_utility.scss */
+.small-right-pad {
+  padding-right: 3px;
+}
+
+/* line 18, ../scss/base/_utility.scss */
+.small-left-pad {
+  padding-left: 3px;
+}
+
+/* line 19, ../scss/base/_utility.scss */
+.medium-right-pad {
+  padding-right: 8px;
+}
+
+/* line 20, ../scss/base/_utility.scss */
+.medium-left-pad {
+  padding-left: 8px;
+}
+
+/* line 22, ../scss/base/_utility.scss */
+.h1-margin, .h2-margin, .h3-margin {
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 /*

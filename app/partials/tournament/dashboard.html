@@ -1,1 +1,28 @@
-<h3>Tournament Dashboard</h3>
+<div class="col-md-3">
+	<h3>{{tournament.name}}</h3>
+	
+	<h5>{{tournamentDate.toDateString()}}</h5>
+	<h5 ng-repeat="o in organizers"><small>{{o.name}}</small></h5>
+	<div class="progress">
+		<div class=" progress-bar progress-bar-danger" style="width: {{(eventStatuses[2].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[2].events.length}}% Complete (danger) </span>
+		</div>
+		<div class=" progress-bar progress-bar-warning" style="width: {{(eventStatuses[1].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[1].events.length}}% Complete (warning) </span>
+		</div>
+		<div class=" progress-bar progress-bar-success" style="width: {{(eventStatuses[0].events.length / total) * 100}}%">
+			<span class="sr-only">{{eventStatuses[0].events.length}}% Complete (success) </span>
+		</div>
+	</div>
+</div>
+<div class="col-md-5" ng-include="'/partials/event/listing.html'">
+</div>
+<div class="col-md-4">
+	<h2>Teams ({{teams.length}})</h2>
+	<ul class="list-group">
+		<li ng-repeat="t in teams|orderBy:t.name" class="list-group-item">{{t.name}}</li>
+	</ul>
+	<div>
+		<button class="btn btn-default pull-right" ng-click="addTeam()">Add New Team</button>
+	</div>
+</div>

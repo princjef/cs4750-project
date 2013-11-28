@@ -47,6 +47,31 @@ Organization.prototype.update = function() {
 	});
 };
 
+Organization.getOrganizationByTournamentID = function(tournamentID, callback) {
+	connection.query("SELECT * FROM Organization NATURAL JOIN RunBy WHERE tournamentID=?", [tournamentID], function(err, rows) {
+		if(err) {
+			callabck(err);
+		} else {
+			if(rows.length === 0) {
+				callback({
+					response: {
+						code: 404,
+						message: 'This tournament has no organizers on record'
+					}
+				});
+			} else {
+				var organizers = [];
+				rows.forEach(function(entry) {
+					organizers.push(new Organization({
+						id:entry.orgID,
+						name:entry.orgName}));
+				});
+				callback(null, organizers);
+			}
+		}
+	});
+};
+
 // Setters
 Organization.prototype.setID = function(id) {
 	this.id = id;
