@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var BelongsTo = function(obj) {
 	this.username = obj.username;
@@ -8,8 +9,8 @@ var BelongsTo = function(obj) {
 BelongsTo.prototype.create = function(callback) {
 	connection.query("INSERT INTO BelongsTo(username, orgID) VALUES (?, ?)", [this.username, this.orgID], function(err, row) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO: Successfully added an account to an organization');
 			callback();

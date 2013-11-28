@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var Tournament = function(obj) {
 	this.id = obj.id;
@@ -19,11 +20,11 @@ var Tournament = function(obj) {
 Tournament.getLevels = function(callback) {
 	connection.query("SHOW COLUMNS FROM Tournament LIKE 'tournamentType'", function(err, rows) {
 		if(err) {
-			console.log('ERR', err);
-			callback({err: 'Could not complete query'});
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
-			callback(match.split('\',\''));
+			callback(null, match.split('\',\''));
 		}
 	});
 };
@@ -42,18 +43,11 @@ Tournament.prototype.getByID = function(callback) {
 	connection.query("SELECT * FROM Tournament WHERE tournamentID=?",
 			[this.id], function(err, rows) {
 		if(err) {
-			console.log('ERR:', err);
-			callback({
-				err: err
-			});
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			if(rows.length === 0) {
-				callback({
-					response: {
-						code: 404,
-						message: 'The tournament you requested does not exist'
-					}
-				});
+				callback('The tournament you requested does not exist');
 			} else {
 				that.type = rows[0].tournamentType;
 				that.location = rows[0].location;
@@ -76,8 +70,8 @@ Tournament.prototype.create = function(callback) {
 	connection.query("INSERT INTO Tournament (tournamentName, tournamentType, location, tournamentDate) VALUES (?, ?, ?, ?)",
 			[this.name, this.type, this.location, this.date], function(err, row) {
 		if(err) {
-			console.log('ERR:', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO: Created Tournament with ID:', row.insertId);
 			that.id = row.insertId;
@@ -97,8 +91,8 @@ Tournament.prototype.update = function(callback) {
 	connection.query("UPDATE Tournament SET tournamentName=?, tournamentType=?, location=?, tournamentDate=? WHERE tournamentID=?",
 			[this.name, this.type, this.location, this.date], function(err, row) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO', 'Updated Tournament with ID:', that.id);
 			callback();

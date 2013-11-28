@@ -1,0 +1,8 @@
+{
+	"ER_DUP_KEY": "This item already exists",
+	"ER_DUP_ENTRY": "This item already exists",
+	"ER_DUP_UNIQUE": "This item already exists",
+	"ER_KEY_NOT_FOUND": "We couldn't find what you're looking for",
+	"ER_KEY_DOES_NOT_EXIST": "We couldn't find what you're looking for",
+	"ER_BAD_NULL_ERROR": "Please make sure you fill out all of the required fields"
+}

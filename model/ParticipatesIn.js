@@ -1,6 +1,7 @@
 var connection = require('../sql/connection');
 var Team = require('./Team');
 var Event = require('./Event');
+var error = require('../sql/error');
 
 var ParticipatesIn = function(obj) {
 	this.team = obj.team; // this is a Team model object
@@ -22,7 +23,8 @@ ParticipatesIn.getParticipatingTeamsByEventAndTournament = function(tournamentID
 	connection.query("SELECT * FROM ParticipatesIn NATURAL JOIN Team NATURAL JOIN Event WHERE tournamentID=? AND eventName=? AND division=?",
 			[tournamentID, eventName, eventDivision], function(err, rows) {
 		if(err) {
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			var entries = ParticipatesIn.populateMultiple(rows);
 			callback(null, entries);
@@ -60,11 +62,11 @@ ParticipatesIn.populateMultiple = function(rows) {
 ParticipatesIn.getScoreCodes = function(callback) {
 	connection.query("SHOW COLUMNS FROM ParticipatesIn LIKE 'scoreCode'", function(err, rows) {
 		if(err) {
-			console.log('ERR', err);
-			callback({err: 'Could not complete query'});
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
-			callback(match.split('\',\''));
+			callback(null, match.split('\',\''));
 		}
 	});
 };
@@ -72,15 +74,15 @@ ParticipatesIn.getScoreCodes = function(callback) {
 ParticipatesIn.getTiers = function(callback) {
 	connection.query("SHOW COLUMNS FROM ParticipatesIn LIKE 'tier'", function(err, rows) {
 		if(err) {
-			console.log('ERR', err);
-			callback({err: 'Could not complete query'});
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
 			var tiers = match.split('\',\'');
 			for(var i = 0; i < tiers.length; i++) {
 				tiers[i] = Number(tiers[i]);
 			}
-			callback(tiers);
+			callback(null, tiers);
 		}
 	});
 };
@@ -91,8 +93,8 @@ ParticipatesIn.prototype.save = function(callback) {
 			"tournamentID=? AND teamNumber=? AND division=? AND eventName=?",
 			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err) {
 		if(err) {
-			console.log('ERR', err);
-			callback('Could not complete query');
+			console.log(err);
+			callback(error.message(err));
 		}
 	});
 };

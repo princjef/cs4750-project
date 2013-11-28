@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 Official = function(obj) {
 	this.officialID = obj.officialID;
@@ -13,8 +14,8 @@ Official.prototype.create = function(callback) {
 	connection.query("INSERT INTO Official(name_first, name_last, email, phone) VALUES(?, ?, ?, ?)",
 	[this.name_first, this.name_last, this.email, this.phone], function(err, row) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			that.officialID = row.insertId;
 			console.log('INFO: Creates a new official with ID:', that.officialID);
@@ -28,8 +29,8 @@ Official.prototype.update = function(callback) {
 	connection.query("UPDATE Official SET name_first=?, name_last=?, email=?, phone=? WHERE officialID=?",
 	[this.name_first, this.name_last, this.email, this.phone, this.officialID], function(err, row) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			that.officialID = row.officialID;
 			console.log('INFO: Updated official with ID:', that.officalID);
@@ -71,8 +72,8 @@ Official.prototype.toJson = function() {
 Official.getOfficials = function(callback) {
 	connection.query('SELECT * FROM Official', [], function(err, rows) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO: Returned all officials');
 			callback(rows);

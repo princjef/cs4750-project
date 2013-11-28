@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var Account = function(obj) {
 	this.username = obj.username;
@@ -18,8 +19,8 @@ Account.prototype.create = function(callback) {
 	connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)", 
 	[this.username, this.email, this.password], function(err) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO: Created Account');
 			callback();
@@ -38,8 +39,8 @@ Account.prototype.update = function(callback) {
 	connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
 	[this.email, this.password, this.username], function(err) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO', 'Updated Account with username:', that.username);
 			callback();
@@ -58,8 +59,8 @@ Account.prototype.update = function(callback) {
 	connection.query("SELECT * FROM Account WHERE username=? AND password=?",
 	[this.username, this.password], function(err, row) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err, null);
+			console.log(err);
+			callback(error.message(err), null);
 		} else {
 			if (row.length > 0) {
 				console.log('INFO', 'Logged in with username:', that.username);

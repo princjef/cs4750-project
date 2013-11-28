@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var Team = function(obj) {
 	this.tournamentID = obj.tournamentID;
@@ -34,8 +35,8 @@ Team.getByTournamentID = function(tournamentID, callback) {
 	connection.query("SELECT * FROM Team WHERE tournamentID=?",
 			[tournamentID], function(err, rows) {
 		if(err) {
-			console.log('ERR:', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			rows.forEach(addTeam);
 			callback(null, teams);

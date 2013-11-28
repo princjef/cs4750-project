@@ -6,10 +6,8 @@ exports.info = function(req, res) {
 	});
 
 	tournament.getByID(function(err) {
-		if(err && err.err) {
+		if(err) {
 			res.send(500, err);
-		} else if(err && err.response) {
-			res.send(response.code, response.message);
 		} else {
 			res.json(tournament.toJson());
 		}
@@ -17,9 +15,9 @@ exports.info = function(req, res) {
 };
 
 exports.levels = function(req, res) {
-	Tournament.getLevels(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	Tournament.getLevels(function(err, result) {
+		if(err) {
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}

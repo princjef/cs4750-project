@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var ConsistsOf = function(obj) {
 	this.tournamentID = obj.tournamentID;
@@ -20,7 +21,7 @@ ConsistsOf.prototype.get = function(callback) {
 			[this.tournamentID, this.eventName, this.division], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			that.eventType = rows[0].eventType;
 			that.status = rows[0].status;
@@ -41,7 +42,7 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 		function(err, row) {
 			if(err) {
 				console.log(err);
-				callback(err);
+				callback(error.message(err));
 			} else {
 				console.log('Added an event to a tournament');
 				callback();
@@ -56,7 +57,7 @@ ConsistsOf.prototype.save = function(callback) {
 		this.tournamentID, this.eventName, this.division], function(err, row) {
 			if(err) {
 				console.log(err);
-				callback(err);
+				callback(error.message(err));
 			} else {
 				console.log('Updated an event in a tournament');
 				callback();
@@ -69,7 +70,7 @@ ConsistsOf.getByTournamentID = function(tournamentID, callback) {
 			[tournamentID], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			var entries = [];
 			rows.forEach(function(row) {
@@ -93,8 +94,8 @@ ConsistsOf.getByTournamentID = function(tournamentID, callback) {
 ConsistsOf.getStatuses = function(callback) {
 	connection.query("SHOW COLUMNS FROM ConsistsOf LIKE 'status'", function(err, rows) {
 		if(err) {
-			console.log('ERR', err);
-			callback({err: 'Could not complete query'});
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
 			callback(match.split('\',\''));

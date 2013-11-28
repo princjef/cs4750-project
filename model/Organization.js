@@ -1,4 +1,5 @@
 var connection = require('../sql/connection');
+var error = require('../sql/error');
 
 var Organization = function(obj) {
 	this.id = obj.id;
@@ -17,8 +18,8 @@ Organization.prototype.create = function(callback) {
 	connection.query("INSERT INTO Organization (orgName) VALUES (?)",
 			[this.name], function(err, info) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			this.id = info.insertId;
 			console.log('INFO', 'Organization created with ID:', info.insertId);
@@ -38,8 +39,8 @@ Organization.prototype.update = function() {
 	connection.query("UPDATE Organization SET orgName=? WHERE orgID=?",
 			[this.name, this.id], function(err, info) {
 		if(err) {
-			console.log('ERR', err);
-			callback(err);
+			console.log(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO', 'Updated Organization with ID: ', that.id);
 			callback();
@@ -50,7 +51,8 @@ Organization.prototype.update = function() {
 Organization.getOrganizationByTournamentID = function(tournamentID, callback) {
 	connection.query("SELECT * FROM Organization NATURAL JOIN RunBy WHERE tournamentID=?", [tournamentID], function(err, rows) {
 		if(err) {
-			callabck(err);
+			console.log(err);
+			callabck(error.message(err));
 		} else {
 			if(rows.length === 0) {
 				callback({

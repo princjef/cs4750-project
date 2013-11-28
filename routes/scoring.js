@@ -3,9 +3,9 @@ var Team = require('../model/Team');
 var Event = require('../model/Event');
 
 exports.scoreCodes = function(req, res) {
-	ParticipatesIn.getScoreCodes(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	ParticipatesIn.getScoreCodes(function(err, result) {
+		if(err) {
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}
@@ -13,9 +13,9 @@ exports.scoreCodes = function(req, res) {
 };
 
 exports.tiers = function(req, res) {
-	ParticipatesIn.getTiers(function(result) {
-		if(result.err) {
-			res.send(500, result.err);
+	ParticipatesIn.getTiers(function(err, result) {
+		if(err) {
+			res.send(500, err);
 		} else {
 			res.json(result);
 		}
