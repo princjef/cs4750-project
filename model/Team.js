@@ -43,6 +43,19 @@ Team.getByTournamentID = function(tournamentID, callback) {
 	});
 };
 
+Team.prototype.addToTournament = function(callback) {
+	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school) VALUES(?, ?, ?, ?, ?, ?)",
+		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {
+			if(err) {
+				console.log('ERR', err);
+				callback(err);
+			} else {
+				console.log('INFO: Created a new team');
+				callback();
+			}
+		});
+};
+
 // Setters
 Team.prototype.setTournamentID = function(id) {
 	this.tournamentID = id;
