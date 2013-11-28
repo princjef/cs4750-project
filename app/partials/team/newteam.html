@@ -1,27 +1,35 @@
-<h3>Add Team to Tournament {{tournamentID}}</h3>
-<form class="team-form">
-	<div class="form-group">
-		<label for="new-team-name">Team Name:</label>
-		<input id="new-team-name" type="text" ng-model="form.teamName" class="form-control"/>
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h3>Add Team to Tournament {{tournamentID}}</h3>
+		</div>
+		<div class="modal-body">
+			<form class="team-form">
+				<div class="form-group">
+					<label for="new-team-name">Team Name:</label>
+					<input id="new-team-name" type="text" ng-model="form.teamName" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label for="new-team-number">Team Number:</label>
+					<input id="new-team-number" type="number" ng-model="form.teamNumber" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label for="new-team-division">Division:</label>
+					<select id="new-team-division" type="text" ng-model="form.division" class="form-control" ng-options="d for d in divisions"/>
+				</div>
+				<div class="form-group">
+					<label for="new-team-school">School:</label>
+					<input id="new-team-school" type="text" ng-model="form.school" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label for="new-team-state">State:</label>
+					<select id="new-team-state" type="text" ng-model="form.state" class="form-control" ng-options="s for s in states"/>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" ng-click="createEvent()">Add Team</button>
+			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+		</div>
 	</div>
-	<div class="form-group">
-		<label for="new-team-number">Team Number:</label>
-		<input id="new-team-number" type="number" ng-model="form.teamNumber" class="form-control"/>
-	</div>
-	<div class="form-group">
-		<label for="new-team-division">Division:</label>
-		<select id="new-team-division" type="text" ng-model="form.division" class="form-control" ng-options="d for d in divisions"/>
-	</div>
-	<div class="form-group">
-		<label for="new-team-school">School:</label>
-		<input id="new-team-school" type="text" ng-model="form.school" class="form-control"/>
-	</div>
-	<div class="form-group">
-		<label for="new-team-state">State:</label>
-		<select id="new-team-state" type="text" ng-model="form.state" class="form-control" ng-options="s for s in states"/>
-	</div>
-	<div class="form-group">
-		<button ng-click="createTeam()" class="btn btn-primary">Add Team</button>
-	</div>
-	
-</form>
+</div>

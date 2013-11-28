@@ -1,4 +1,7 @@
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', 'alert', function($scope, $routeParams, $http, alert) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', 'alert', '$modalInstance', function($scope, $routeParams, $http, alert, $modalInstance) {
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
 	$scope.form = {};
 	$scope.tournamentID = $routeParams.tournamentID;
 	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
