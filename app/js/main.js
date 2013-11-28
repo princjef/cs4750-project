@@ -1,6 +1,10 @@
 angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 		$routeProvider
+			.when('/', {
+				templateUrl: '/partials/splash.html',
+				controller: 'SplashCtrl'
+			})
 			.when('/tournament/new', {
 					templateUrl: '/partials/tournament/new.html',
 					controller: 'TournamentCreateCtrl'
