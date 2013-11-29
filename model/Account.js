@@ -119,7 +119,7 @@ Account.prototype.setPassword = function(password) {
 };
 
 Account.prototype.setEmail = function(email) {
-	ths.email = email;
+	this.email = email;
 	return this;
 };
 
@@ -129,6 +129,21 @@ Account.prototype.toJson = function() {
 		username: this.username,
 		email: this.email
 	};
+};
+
+Account.getByUsername = function(username, callback) {
+	connection.query("SELECT * FROM Account WHERE username=?",
+			[username], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else if(rows.length === 0) {
+			callback('The user you requested does not exist');
+		} else {
+			var account = new Account(rows[0]);
+			callback(null, account);
+		}
+	});
 };
 
 Account.hashSaltPass = function(password, callback) {

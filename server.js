@@ -67,6 +67,7 @@ app.get('/organization/:tournamentID/getorganizers', organization.getByTournamen
 app.get('/organization/:organizationID/info', organization.info);
 app.get('/organization/:organizationID/admins', organization.admins);
 app.get('/organization/:organizationID/tournaments', tournament.getByOrganizationID);
+app.post('/organization/:organizationID/admins/add', belongsTo.addToOrganization);
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 app.post('/organization/addtournament', runBy.create);

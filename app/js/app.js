@@ -296,6 +296,25 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 			$scope.tournaments.push(tournament);
 		});
 	};
+
+	$scope.newAdmin = {
+		active: false,
+		username: '',
+		submit: function() {
+			$http({
+				method: 'POST',
+				url: '/organization/' + $routeParams.organizationID + '/admins/add',
+				data: {
+					username: $scope.newAdmin.username
+				}
+			}).success(function(account) {
+				$scope.admins.push(account);
+				$scope.newAdmin.active = false;
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
+	};
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
 	$scope.form = {};

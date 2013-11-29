@@ -12,5 +12,14 @@
 		<ul class="list-group">
 			<li class="list-group-item" ng-repeat="admin in admins">{{admin.username}} ({{admin.email}})</li>
 		</ul>
+		<div>
+			<div class="input-group" ng-show="newAdmin.active">
+				<input type="text" class="form-control" ng-model="newAdmin.username" />
+				<span class="input-group-btn">
+					<button class="btn btn-default" ng-click="newAdmin.submit()">Add</button>
+				</span>
+			</div>
+			<button class="btn btn-default pull-right" ng-click="newAdmin.active = true" ng-hide="newAdmin.active">Add Member</button>
+		</div>
 	</div>
 </div>
