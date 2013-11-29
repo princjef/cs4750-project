@@ -80,3 +80,14 @@ exports.getCoachedTeams = function(req, res) {
 		}
 	});
 };
+
+exports.getOfficialByID = function(req, res) {
+	Official.getOfficialByID(req.params.id, function(err, result) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			var official = new Official(result);
+			res.json(official.toJson());
+		}
+	});
+};
