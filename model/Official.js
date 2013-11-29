@@ -152,4 +152,16 @@ Official.getOfficials = function(callback) {
 	});
 };
 
+Official.getOfficialByID = function(callback, officialID) {
+	connection.query('SELECT * FROM Official WHERE officialID=?', [], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			console.log('INFO: got official');
+			callback(null, rows[0]);
+		}
+	});
+};
+
 module.exports = Official;
