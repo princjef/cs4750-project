@@ -3,8 +3,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	// Get the tournament information
 	$http({
 		method:'GET',
-		url:'/tournament/' + $routeParams.tournamentID + '/info',
-		cache:true
+		url:'/tournament/' + $routeParams.tournamentID + '/info'
 	}).success(function(data) {
 		$scope.tournament = data;
 		tournament.set($scope.tournament);
@@ -15,8 +14,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	
 	$http({
 		method:'GET',
-		url:'/organization/' + $routeParams.tournamentID + '/getorganizers',
-		cache:true
+		url:'/organization/' + $routeParams.tournamentID + '/getorganizers'
 	}).success(function(data) {
 		$scope.organizers = data;
 	}).error(function(err) {
@@ -25,8 +23,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	
 	$http({
 		method:'GET',
-		url:'/tournament/' + $routeParams.tournamentID + '/events',
-		cache:true
+		url:'/tournament/' + $routeParams.tournamentID + '/events'
 	}).success(function(events) {
 		$scope.eventStatuses = [{
 			level:'Completed',
