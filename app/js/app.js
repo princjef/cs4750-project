@@ -45,6 +45,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/official/new.html',
 					controller: 'OfficialCreateCtrl'
 				})
+			.when('/official/:officialID/info', {
+					templateUrl: '/partials/official/info.html',
+					controller: 'OfficialInfoCtrl'
+				})
 			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
@@ -269,6 +273,19 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 			console.log(err);
 		});
 	};
+}]);
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+	$scope.supervisedEvents = [];
+	$scope.writtenEvents = [];
+	$scope.coachedTeams = [];
+	$http({
+		method:'GET',
+		url:'/official/' + $routeParams.officialID + '/getbyid'
+	}).success(function(data) {
+		$scope.official = data;
+	}).error(function(err) {
+		console.log('Error getting official');
+	});
 }]);
 angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
 	$scope.form = {};

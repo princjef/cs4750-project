@@ -45,6 +45,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/official/new.html',
 					controller: 'OfficialCreateCtrl'
 				})
+			.when('/official/:officialID/info', {
+					templateUrl: '/partials/official/info.html',
+					controller: 'OfficialInfoCtrl'
+				})
 			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'

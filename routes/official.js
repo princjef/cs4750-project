@@ -45,7 +45,7 @@ exports.getSupervisedEvents = function(req, res) {
 	});
 };
 
-exports.getWrttenEvents = function(req, res) {
+exports.getWrittenEvents = function(req, res) {
 	var official = new Official({
 		officialID:req.params.id,
 		name_first:req.body.name_first,
@@ -82,6 +82,7 @@ exports.getCoachedTeams = function(req, res) {
 };
 
 exports.getOfficialByID = function(req, res) {
+	console.log('Got REquest');
 	Official.getOfficialByID(req.params.id, function(err, result) {
 		if(err) {
 			res.send(500, err);

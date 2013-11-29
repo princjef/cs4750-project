@@ -153,7 +153,7 @@ Official.getOfficials = function(callback) {
 };
 
 Official.getOfficialByID = function(officialID, callback) {
-	connection.query('SELECT * FROM Official WHERE officialID=?', [], function(err, rows) {
+	connection.query('SELECT * FROM Official WHERE officialID=?', [officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
 			callback(err);
