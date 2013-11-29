@@ -14,6 +14,7 @@ var belongsTo = require('./routes/belongsTo');
 var team = require('./routes/team');
 var scoring = require('./routes/scoring');
 var runBy = require('./routes/runBy');
+var coachedBy = require('./routes/coachedBy');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -94,6 +95,10 @@ app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
 app.post('/account/logout', account.logout);
+
+// Team Routes
+app.post('/team/addcoach', coachedBy.create);
+app.post('/team/removecoach', coachedBy.remove);
 
 // All other routes
 app.all('/*', function(req, res) {
