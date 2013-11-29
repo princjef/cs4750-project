@@ -57,6 +57,20 @@ Team.prototype.update = function(callback) {
 	});
 };
 
+Team.prototype.remove = function(callback) {
+	connection.query("DELETE FROM Team WHERE tournamentID=?, teamNumber=?, division=?",
+	[this.tournamentID, this.number, this.division], function(err, row) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			console.log('Deleted team ' + row.teamNumber + ' from tournament ' + row.tournamentID + ' in division ' + row.division);
+			callback();
+		}
+	});
+	
+};
+
 Team.prototype.addToTournament = function(callback) {
 	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school) VALUES(?, ?, ?, ?, ?, ?)",
 		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {
