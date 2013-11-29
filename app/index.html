@@ -60,12 +60,13 @@
 	</header>
 
 	<div class="container">
-		<div class="animated alert" ng-class="message.type" animation-show-hide="message.show" show-animation="flipInX" hide-animation="flipOutX">
-			{{message.text}}
-		</div>
 		<div ng-view></div>
 	</div>
 	
+	<div class="animated alert fixed fixed-bottom-left" ng-class="message.type" animation-show-hide="message.show" show-animation="flipInX" hide-animation="flipOutX">
+		{{message.text}}
+	</div>
+
 	<!-- Scripts -->
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
