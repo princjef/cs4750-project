@@ -25,6 +25,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
 				})
+			.when('/organization/:organizationID/dashboard', {
+					templateUrl: '/partials/organization/dashboard.html',
+					controller: 'OrganizationDashCtrl'
+				})
 			.when('/event/new', {
 					templateUrl: '/partials/event/new.html',
 					controller: 'EventCreateCtrl'

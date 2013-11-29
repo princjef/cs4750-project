@@ -1,5 +1,6 @@
 var connection = require('../sql/connection');
 var error = require('../sql/error');
+var Account = require('../model/Account');
 
 var Organization = function(obj) {
 	this.id = obj.id;
@@ -34,7 +35,7 @@ Organization.prototype.create = function(callback) {
  * Params: callback function
  * Returns: error (if there is one)
  */
-Organization.prototype.update = function() {
+Organization.prototype.update = function(callback) {
 	var that = this;
 	connection.query("UPDATE Organization SET orgName=? WHERE orgID=?",
 			[this.name, this.id], function(err, info) {
@@ -44,6 +45,38 @@ Organization.prototype.update = function() {
 		} else {
 			console.log('INFO', 'Updated Organization with ID: ', that.id);
 			callback();
+		}
+	});
+};
+
+Organization.prototype.getAdmins = function(callback) {
+	var that = this;
+	connection.query("SELECT Account.* FROM Account NATURAL JOIN BelongsTo WHERE orgID=?",
+			[this.id], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var accounts = [];
+			rows.forEach(function(account) {
+				accounts.push(new Account(account));
+			});
+			callback(null, accounts);
+		}
+	});
+};
+
+Organization.getByID = function(organizationID, callback) {
+	connection.query("SELECT * FROM Organization WHERE orgID=?",
+			[organizationID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			callback(null, new Organization({
+				id: rows[0].orgID,
+				name: rows[0].orgName
+			}));
 		}
 	});
 };

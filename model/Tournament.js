@@ -29,6 +29,27 @@ Tournament.getLevels = function(callback) {
 	});
 };
 
+Tournament.getByOrganizationID = function(organizationID, callback) {
+	connection.query("SELECT Tournament.* FROM Tournament NATURAL JOIN RunBy WHERE orgID=?",
+			[organizationID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var tournaments = [];
+			rows.forEach(function(row) {
+				tournaments.push(new Tournament({
+					id: row.tournamentID,
+					name: row.tournamentName,
+					type: row.tournamentType,
+					location: row.location,
+					date: row.tournamentDate
+				}));
+			});
+			callback(null, tournaments);
+		}
+	});
+};
 
 // Instance Functions
 

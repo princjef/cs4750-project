@@ -1,4 +1,5 @@
 var Tournament = require('../model/Tournament');
+var RunBy = require('../model/RunBy');
 
 exports.info = function(req, res) {
 	var tournament = new Tournament({
@@ -36,7 +37,18 @@ exports.create = function(req, res) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			res.json(tournament.toJson());
+			var runBy = new RunBy({
+				orgID: req.body.organizationID,
+				tournamentID: tournament.id
+			});
+
+			runBy.create(function(err) {
+				if(err) {
+					res.send(500, err);
+				} else {
+					res.json(tournament.toJson());
+				}
+			});
 		}
 	});
 };
@@ -55,6 +67,20 @@ exports.update = function(req, res) {
 			res.send(500, err);
 		} else {
 			res.json(tournament.toJson());
+		}
+	});
+};
+
+exports.getByOrganizationID = function(req, res) {
+	Tournament.getByOrganizationID(req.params.organizationID, function(err, tournaments) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			var result = [];
+			tournaments.forEach(function(tournament) {
+				result.push(tournament.toJson());
+			});
+			res.json(result);
 		}
 	});
 };
