@@ -1,5 +1,6 @@
-angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$modalInstance', 'dropdowns', 'alert', 'organizationID', function($scope, $http, $modalInstance, dropdowns, alert, organizationID) {
 	$scope.form = {};
+	$scope.form.organizationID = organizationID;
 
 	dropdowns.getTournamentLevels().then(function(data) {
 		$scope.types = data;
@@ -11,10 +12,15 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 			method: 'POST',
 			url: '/tournament/create',
 			data: $scope.form
-		}).success(function(res) {
+		}).success(function(tournament) {
+			$modalInstance.close(tournament);
 			alert.success('Successfully created tournament');
 		}).error(function(err) {
 			alert.danger(err);
 		});
+	};
+
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }]);

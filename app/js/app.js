@@ -253,7 +253,7 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', 'alert', function($scope, $http, $routeParams, alert) {
+angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', 'alert', function($scope, $http, $routeParams, $modal, alert) {
 	$http({
 		method: 'GET',
 		url: '/organization/' + $routeParams.organizationID + '/info'
@@ -280,6 +280,22 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 	}).error(function(err) {
 		alert.danger(err);
 	});
+
+	$scope.addTournament = function() {
+		var newTournament = $modal.open({
+			templateUrl: '/partials/tournament/new.html',
+			controller: 'TournamentCreateCtrl',
+			resolve: {
+				organizationID: function() {
+					return $routeParams.organizationID;
+				}
+			}
+		});
+
+		newTournament.result.then(function(tournament) {
+			$scope.tournaments.push(tournament);
+		});
+	};
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
 	$scope.form = {};
@@ -559,8 +575,9 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', 'dropdowns', 'alert', '$window', function($scope, $http, dropdowns, alert, $window) {
+angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http', '$modalInstance', 'dropdowns', 'alert', 'organizationID', function($scope, $http, $modalInstance, dropdowns, alert, organizationID) {
 	$scope.form = {};
+	$scope.form.organizationID = organizationID;
 
 	dropdowns.getTournamentLevels().then(function(data) {
 		$scope.types = data;
@@ -572,11 +589,16 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 			method: 'POST',
 			url: '/tournament/create',
 			data: $scope.form
-		}).success(function(res) {
+		}).success(function(tournament) {
+			$modalInstance.close(tournament);
 			alert.success('Successfully created tournament');
 		}).error(function(err) {
 			alert.danger(err);
 		});
+	};
+
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }]);
 angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {

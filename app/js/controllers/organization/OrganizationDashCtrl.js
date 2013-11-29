@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', 'alert', function($scope, $http, $routeParams, alert) {
+angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', 'alert', function($scope, $http, $routeParams, $modal, alert) {
 	$http({
 		method: 'GET',
 		url: '/organization/' + $routeParams.organizationID + '/info'
@@ -25,4 +25,20 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 	}).error(function(err) {
 		alert.danger(err);
 	});
+
+	$scope.addTournament = function() {
+		var newTournament = $modal.open({
+			templateUrl: '/partials/tournament/new.html',
+			controller: 'TournamentCreateCtrl',
+			resolve: {
+				organizationID: function() {
+					return $routeParams.organizationID;
+				}
+			}
+		});
+
+		newTournament.result.then(function(tournament) {
+			$scope.tournaments.push(tournament);
+		});
+	};
 }]);

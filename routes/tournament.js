@@ -1,4 +1,5 @@
 var Tournament = require('../model/Tournament');
+var RunBy = require('../model/RunBy');
 
 exports.info = function(req, res) {
 	var tournament = new Tournament({
@@ -36,7 +37,18 @@ exports.create = function(req, res) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			res.json(tournament.toJson());
+			var runBy = new RunBy({
+				orgID: req.body.organizationID,
+				tournamentID: tournament.id
+			});
+
+			runBy.create(function(err) {
+				if(err) {
+					res.send(500, err);
+				} else {
+					res.json(tournament.toJson());
+				}
+			});
 		}
 	});
 };
