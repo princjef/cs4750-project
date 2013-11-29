@@ -667,6 +667,25 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		console.log('Error getting events');
 	});
 }]);
+angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 'tournament', function($scope, $http, tournament) {
+	$scope.editTournament = tournament.get();
+	
+	$scope.updateTournament = function() {
+		$http({
+			method:'POST',
+			url:'/tournament/update',
+			data:$scope.editTournament
+		}).success(function(data) {
+			
+		}).error(function(err) {
+			console.log('Error editing tournament');
+		});
+	};
+	
+	$scope.cancel = function() {
+		
+	};
+}]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
 		if(attrs.animationShowHide) {
