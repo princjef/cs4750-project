@@ -49,6 +49,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/official/info.html',
 					controller: 'OfficialInfoCtrl'
 				})
+			.when('/official/lookup', {
+				templateUrl:'/partials/official/lookup.html',
+				controller: 'OfficialLookupCtrl'
+				})
 			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
@@ -321,6 +325,16 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 		$scope.supervisedEvents = data;
 	}).error(function(err) {
 		console.log('Error getting supervised events');
+	});
+}]);
+angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {
+	$http({
+		method:'GET',
+		url:'/official/all'
+	}).success(function(data) {
+		$scope.officials = data;
+	}).error(function(err) {
+		console.log('Could not Get Officials');
 	});
 }]);
 angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
