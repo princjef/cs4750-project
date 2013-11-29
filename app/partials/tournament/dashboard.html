@@ -19,9 +19,33 @@
 </div>
 <div class="col-md-4">
 	<h2>Teams ({{teams.length}})</h2>
-	<ul class="list-group">
-		<li ng-repeat="t in teams|orderBy:t.name" class="list-group-item">{{t.name}}</li>
-	</ul>
+	<div class="list-group">
+	<div ng-repeat="t in teams">
+		<a href="#" class="list-group-item" ng-click="t.show = !t.show">
+			{{t.name}}
+		</a>
+		<div class="list-group-item" ng-show="t.show">
+			<small>
+				<table class="table table-condensed">
+					<tr>
+						<th>Division</th>
+						<th>Number</th>
+						<th>School</th>
+						<th>State</th>
+					</tr>
+					<tr>
+						<td>{{t.division}}</td>
+						<td>{{t.number}}</td>
+						<td>{{t.school}}</td>
+						<td>{{t.state}}</td>
+					</tr>
+				</table>
+				<button class="btn btn-default" ng-click="">Edit</button> 
+				<button class="btn btn-danger" ng-click="">Remove</button>
+			</small>
+		</div>
+	</div>
+</div>		
 	<div>
 		<button class="btn btn-default pull-right" ng-click="addTeam()">Add New Team</button>
 	</div>
