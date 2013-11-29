@@ -580,17 +580,19 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 	};
 	
 	$scope.removeTeam = function(t) {
-		$http({
-			method:'POST',
-			url:'/tournament/' + $routeParams.tournamentID + '/removeteam',
-			data:t
-		}).success(function(data) {
-			var i = $scope.teams.indexOf(t);
-			$scope.teams.splice(i, 1);
-			alert.success('Removed team ' + t.name + ' from tournament');
-		}).error(function(err) {
-			alert.danger('There was an error. Could not remove ' + t.name + '!');
-		});
+		if($window.confirm('Are you sure you want to remove ' + t.name + '?')) {
+			$http({
+				method:'POST',
+				url:'/tournament/' + $routeParams.tournamentID + '/removeteam',
+				data:t
+			}).success(function(data) {
+				var i = $scope.teams.indexOf(t);
+				$scope.teams.splice(i, 1);
+				alert.success('Removed team ' + t.name + ' from tournament');
+			}).error(function(err) {
+				alert.danger('There was an error. Could not remove ' + t.name + '!');
+			});
+		}
 	};
 	
 	$scope.editTeamWindow = function(t) {
