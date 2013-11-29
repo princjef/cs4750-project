@@ -70,3 +70,17 @@ exports.admins = function(req, res) {
 		}
 	});
 };
+
+exports.getByUsername = function(req, res) {
+	Organization.getByUsername(req.params.username, function(err, organizations) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			var result = [];
+			organizations.forEach(function(organization) {
+				result.push(organization.toJson());
+			});
+			res.json(result);
+		}
+	});
+}

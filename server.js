@@ -94,6 +94,7 @@ app.post('/account/update', account.update);
 app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
+app.get('/account/:username/organizations', organization.getByUsername);
 app.post('/account/logout', account.logout);
 
 // Team Routes

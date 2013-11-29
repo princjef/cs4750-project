@@ -60,7 +60,16 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	$scope.getUser = function() {
 		user.current().then(function(user) {
 			$scope.user = user;
-			console.log(user);
+			if(user.username) {
+				$http({
+					method: 'GET',
+					url: '/account/' + user.username + '/organizations'
+				}).success(function(organizations) {
+					$scope.user.organizations = organizations;
+				}).error(function(err) {
+					alert.danger(err);
+				});
+			}
 		});
 	};
 

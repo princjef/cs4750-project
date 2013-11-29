@@ -81,6 +81,25 @@ Organization.getByID = function(organizationID, callback) {
 	});
 };
 
+Organization.getByUsername = function(username, callback) {
+	connection.query("SELECT Organization.* FROM Organization NATURAL JOIN BelongsTo WHERE username=?",
+			[username], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var organizations = [];
+			rows.forEach(function(organization) {
+				organizations.push(new Organization({
+					id: organization.orgID,
+					name: organization.orgName
+				}));
+			});
+			callback(null, organizations);
+		}
+	});
+};
+
 Organization.getOrganizationByTournamentID = function(tournamentID, callback) {
 	connection.query("SELECT * FROM Organization NATURAL JOIN RunBy WHERE tournamentID=?", [tournamentID], function(err, rows) {
 		if(err) {
