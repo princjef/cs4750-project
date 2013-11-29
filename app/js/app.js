@@ -409,15 +409,14 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', 'states', function($scope, $routeParams, $http, $modalInstance, states) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
 	$scope.form = {};
 	$scope.tournamentID = $routeParams.tournamentID;
-	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
-					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
-					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+	$scope.states = states.getStates();
+	
 	$scope.form.state = $scope.states[0];
 	$scope.divisions = ['A', 'B', 'C'];
 	$scope.form.division = $scope.divisions[0];
@@ -433,10 +432,8 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', function($scope, $modalInstance, $http, team) {
-	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
-					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
-					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', function($scope, $modalInstance, $http, team, states) {
+	$scope.states = states.getStates();
 	$scope.editTeam = team.get(); 
 	$scope.updateTeam = function() {
 		$http({
@@ -822,6 +819,17 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 	};
 }]);
 
+angular.module('scoreApp').service('states', [function() {
+	var states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
+					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
+					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+					
+	return {
+		getStates:function() {
+			return states;
+		}	
+	};
+}]);
 angular.module('scoreApp').service('team', [function() {
 	var team = {};
 	
