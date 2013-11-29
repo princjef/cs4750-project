@@ -97,9 +97,9 @@ Official.prototype.getCoachedTeams = function(callback) {
 				rows.forEach(function(entry) {
 					result.push({
 						tournamentName:entry.tournamentName,
-						name:entry.name,
+						name:entry.teamName,
 						division:entry.division,
-						number:entry.number,
+						number:entry.teamNumber,
 						school:entry.school,
 						state:entry.state
 					});
