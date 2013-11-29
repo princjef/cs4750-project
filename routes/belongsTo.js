@@ -34,3 +34,18 @@ exports.addToOrganization = function(req, res) {
 		}
 	});
 };
+
+exports.remove = function(req, res) {
+	var belongsTo = new BelongsTo({
+		username: req.body.username,
+		orgID: req.params.organizationID
+	});
+
+	belongsTo.remove(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(belongsTo.toJson());
+		}
+	});
+};

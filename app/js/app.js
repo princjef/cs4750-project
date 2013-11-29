@@ -284,7 +284,7 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', 'alert', function($scope, $http, $routeParams, $modal, alert) {
+angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', '$window', 'alert', function($scope, $http, $routeParams, $modal, $window, alert) {
 	$http({
 		method: 'GET',
 		url: '/organization/' + $routeParams.organizationID + '/info'
@@ -341,6 +341,27 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 			}).success(function(account) {
 				$scope.admins.push(account);
 				$scope.newAdmin.active = false;
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
+	};
+
+	$scope.removeAdmin = function(account) {
+		if($window.confirm('Are you sure you want to remove ' + account.username + ' from ' + $scope.organization.name + '?')) {
+			$http({
+				method: 'POST',
+				url: '/organization/' + $routeParams.organizationID + '/admins/remove',
+				data: {
+					username: account.username
+				}
+			}).success(function(account) {
+				for(var i = 0; i < $scope.admins.length; i++) {
+					if($scope.admins[i].username === account.username) {
+						$scope.admins.splice(i, 1);
+					}
+				}
+				alert.success(account.username + ' successfully removed');
 			}).error(function(err) {
 				alert.danger(err);
 			});
