@@ -35,9 +35,9 @@ exports.addToTournament = function(req, res) {
 exports.update = function(req, res) {
 	var team = new Team({
 		tournamentID: req.params.id,
-		number: req.body.teamNumber,
+		number: req.body.number,
 		division: req.body.division,
-		name: req.body.teamName,
+		name: req.body.name,
 		state: req.body.state,
 		school: req.body.school
 	});
@@ -53,9 +53,9 @@ exports.update = function(req, res) {
 exports.remove = function(req, res) {
 	var team = new Team({
 		tournamentID: req.params.id,
-		number: req.body.teamNumber,
+		number: req.body.number,
 		division: req.body.division,
-		name: req.body.teamName,
+		name: req.body.name,
 		state: req.body.state,
 		school: req.body.school
 	});

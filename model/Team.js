@@ -51,20 +51,20 @@ Team.prototype.update = function(callback) {
 			console.log('ERR', err);
 			callback(err);
 		} else {
-			console.log('Updated team ' + row.teamNumber + ' from tournament ' + row.tournamentID + ' in division ' + row.division);
+			console.log('Updated team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
 			callback();
 		}
 	});
 };
 
 Team.prototype.remove = function(callback) {
-	connection.query("DELETE FROM Team WHERE tournamentID=?, teamNumber=?, division=?",
+	connection.query("DELETE FROM Team WHERE (tournamentID=? AND teamNumber=? AND division=?)",
 	[this.tournamentID, this.number, this.division], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
 			callback(err);
 		} else {
-			console.log('Deleted team ' + row.teamNumber + ' from tournament ' + row.tournamentID + ' in division ' + row.division);
+			console.log('Deleted team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
 			callback();
 		}
 	});
