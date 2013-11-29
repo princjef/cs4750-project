@@ -31,3 +31,39 @@ exports.addToTournament = function(req, res) {
 		}
 	});
 };
+
+exports.update = function(req, res) {
+	var team = new Team({
+		tournamentID: req.params.id,
+		number: req.body.teamNumber,
+		division: req.body.division,
+		name: req.body.teamName,
+		state: req.body.state,
+		school: req.body.school
+	});
+	team.update(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(team.toJson());
+		}
+	});
+};
+
+exports.remove = function(req, res) {
+	var team = new Team({
+		tournamentID: req.params.id,
+		number: req.body.teamNumber,
+		division: req.body.division,
+		name: req.body.teamName,
+		state: req.body.state,
+		school: req.body.school
+	});
+	team.remove(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(team.toJson());
+		}
+	});
+};

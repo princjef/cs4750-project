@@ -55,6 +55,8 @@ app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
 app.post('/tournament/addevent', consistsOf.addEventToTournament);
 app.post('/tournament/:id/addteam', team.addToTournament);
+app.post('/tournament/:id/removeteam', team.remove);
+app.post('/tournament/:id/updateteam', team.update);
 
 // Scoring Routes
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
