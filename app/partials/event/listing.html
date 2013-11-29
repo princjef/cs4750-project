@@ -9,7 +9,8 @@
 					<i tooltip="Scoring In Progress" ng-switch-when="In Progress" class="fa fa-clock-o text-warning larger middle small-right-pad"></i>
 					<i tooltip="Scoring Not Started" ng-switch-when="Not Started" class="fa fa-times-circle-o text-danger larger middle small-right-pad"></i>
 				</span>
-				<span>{{event.eventName}}</span>	
+				<span>{{event.eventName}}</span>
+				<button class="close pull-right" aria-hidden="true" ng-click="removeEvent($event, event)">&times;</button>	
 			</a>
 		</div>
 	</div>

@@ -74,3 +74,14 @@ exports.getByTournament = function(req, res) {
 		}
 	});
 };
+
+exports.remove = function(req, res) {
+	var consistsOf = new ConsistsOf(req.body);
+	consistsOf.remove(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(consistsOf);
+		}
+	});
+};

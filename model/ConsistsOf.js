@@ -65,6 +65,20 @@ ConsistsOf.prototype.save = function(callback) {
 		});
 };
 
+ConsistsOf.prototype.remove = function(callback) {
+	connection.query("DELETE FROM ConsistsOf WHERE tournamentID=? AND eventName=? AND division=?",
+			[this.tournamentID, this.eventName, this.division], function(err, result) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else if(result.affectedRows === 0) {
+			callback('The event specified does not exist');
+		} else {
+			callback();
+		}
+	});
+};
+
 ConsistsOf.getByTournamentID = function(tournamentID, callback) {
 	connection.query("SELECT * FROM ConsistsOf WHERE tournamentID=?",
 			[tournamentID], function(err, rows) {

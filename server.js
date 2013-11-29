@@ -80,6 +80,7 @@ app.post('/event/create', Event.createEvent);
 app.get('/event/info', consistsOf.info);
 app.post('/event/save', consistsOf.save);
 app.get('/event/statuses', consistsOf.statuses);
+app.post('/event/remove', consistsOf.remove);
 
 //Official Routes
 app.get('/official/all', official.getAllOfficials);
