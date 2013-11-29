@@ -26,3 +26,39 @@ exports.getAllOfficials = function(req, res) {
 		}
 	});
 };
+
+exports.getSupervisedEvents = function(req, res) {
+	var official = new Official({
+		officialID:req.params.id,
+		name_first:req.body.name_first,
+		name_last:req.body.name_last,
+		email:req.body.email,
+		phone:req.body.phone
+	});
+	
+	official.getSupervisedEvents(function(err, result) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(result);
+		}
+	});
+};
+
+exports.getWrttenEvents = function(req, res) {
+	var official = new Official({
+		officialID:req.params.id,
+		name_first:req.body.name_first,
+		name_last:req.body.name_last,
+		email:req.body.email,
+		phone:req.body.phone
+	});
+	
+	official.getWrittenEvents(function(err, result) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.json(result);
+		}
+	});
+};

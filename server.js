@@ -85,6 +85,8 @@ app.post('/event/remove', consistsOf.remove);
 
 //Official Routes
 app.get('/official/all', official.getAllOfficials);
+app.get('/official/:id/supervisedevents', official.getSupervisedEvents);
+app.get('/official/:id/writtenevents', official.getWrittenEvents);
 app.post('/official/create', official.createOfficial);
 
 // Account Routes
