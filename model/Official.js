@@ -39,6 +39,48 @@ Official.prototype.update = function(callback) {
 	});
 };
 
+Official.prototype.getSupervisedEvents = function(callback) {
+	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.supervisor_officialID WHERE officialID=?',
+	[this.officialID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			result = [];
+			rows.forEach(function(entry) {
+				result.push({
+					tournamentID:entry.tournamentID,
+					tournamentName:entry.tournamentName,
+					eventName:entry.eventName,
+					division:entry.division
+				});
+			});
+			callback(null, result);
+		}
+	});
+};
+
+Official.prototype.getWrittenEvents = function(callback) {
+	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.writer_officialID WHERE officialID=?',
+	[this.officialID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(err);
+		} else {
+			result = [];
+			rows.forEach(function(entry) {
+				result.push({
+					tournamentID:entry.tournamentID,
+					tournamentName:entry.tournamentName,
+					eventName:entry.eventName,
+					division:entry.division
+				});
+			});
+			callback(null, result);
+		}
+	});
+};
+
 Official.prototype.setFirstName = function(name_first) {
 	this.name_first = name_first;
 	return this;
