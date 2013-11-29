@@ -50,15 +50,16 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$modal', 'user', function($scope, $modal, user) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', 'user', 'alert', function($scope, $http, $modal, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
 		user.current().then(function(user) {
 			$scope.user = user;
+			console.log(user);
 		});
 	};
-	
+
 	$scope.getUser();
 
 	$scope.openLogin = function() {
@@ -69,6 +70,23 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$modal', 'user',
 
 		loginForm.result.then(function() {
 			$scope.getUser();
+		});
+	};
+
+	$scope.logout = function() {
+		$http({
+			method: 'POST',
+			url: '/account/logout'
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully logged out');
+				$scope.getUser();
+			}
+			else {
+				alert.danger('Logout not successful');
+			}
+		}).error(function(err) {
+			alert.danger(err);
 		});
 	};
 }]);
@@ -129,24 +147,6 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 			}
 			else {
 				alert.danger('Invalid login!');
-			}
-		}).error(function(err) {
-			alert.danger(err);
-		});
-	};
-
-	$scope.logout = function() {
-		$http({
-			method: 'POST',
-			url: '/account/logout',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged out!');
-				user.clear();	// Clear current user.
-			}
-			else {
-				alert.danger('Logout not successful!');
 			}
 		}).error(function(err) {
 			alert.danger(err);
@@ -852,7 +852,7 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			$http({
 				method: 'GET',
 				url: '/account/current',
-				cache: true
+				cache: false
 			}).success(function(user) {
 				$rootScope.username = user.username;
 				d.resolve(user);
@@ -861,9 +861,6 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			});
 			
 			return d.promise;
-		},
-		clear: function() {
-			$rootScope.username = null;
 		}
 	};
 }]);
