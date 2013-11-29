@@ -477,6 +477,7 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 		}).success(function(data) {
 			var i = $scope.teams.indexOf(t);
 			$scope.teams.splice(i, 1);
+			alert.success('Removed team ' + t.name + ' from tournament');
 		}).error(function(err) {
 			alert.danger('There was an error. Could not remove ' + t.name + '!');
 		});
@@ -492,9 +493,14 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 	
 	$scope.switchExpanded = function(t) {
 		if($scope.expanded) {
-			$scope.expanded.show = false;
-			$scope.expanded = t;
-			t.show = true;
+			if($scope.expanded === t) {
+				t.show = false;
+				$scope.expanded = undefined;
+			} else {
+				$scope.expanded.show = false;
+				$scope.expanded = t;
+				t.show = true;
+			}
 		} else {
 			$scope.expanded = t;
 			t.show = true;
