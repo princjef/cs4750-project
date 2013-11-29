@@ -36,26 +36,55 @@
 }
 
 /* line 17, ../scss/base/_utility.scss */
+.fixed {
+  position: fixed;
+}
+
+/* line 21, ../scss/base/_utility.scss */
+.fixed-bottom-left {
+  bottom: 0;
+  left: 20px;
+}
+
+/* line 26, ../scss/base/_utility.scss */
+.fixed-bottom-right {
+  bottom: 0;
+  right: 20px;
+}
+
+/* line 31, ../scss/base/_utility.scss */
+.fixed-top-left {
+  top: 20px;
+  left: 20px;
+}
+
+/* line 36, ../scss/base/_utility.scss */
+.fixed-top-right {
+  top: 20px;
+  right: 20px;
+}
+
+/* line 41, ../scss/base/_utility.scss */
 .small-right-pad {
   padding-right: 3px;
 }
 
-/* line 18, ../scss/base/_utility.scss */
+/* line 42, ../scss/base/_utility.scss */
 .small-left-pad {
   padding-left: 3px;
 }
 
-/* line 19, ../scss/base/_utility.scss */
+/* line 43, ../scss/base/_utility.scss */
 .medium-right-pad {
   padding-right: 8px;
 }
 
-/* line 20, ../scss/base/_utility.scss */
+/* line 44, ../scss/base/_utility.scss */
 .medium-left-pad {
   padding-left: 8px;
 }
 
-/* line 22, ../scss/base/_utility.scss */
+/* line 46, ../scss/base/_utility.scss */
 .h1-margin, .h2-margin, .h3-margin {
   margin-top: 20px;
   margin-bottom: 10px;

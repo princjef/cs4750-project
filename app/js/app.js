@@ -1,6 +1,10 @@
 angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 		$routeProvider
+			.when('/', {
+				templateUrl: '/partials/splash.html',
+				controller: 'SplashCtrl'
+			})
 			.when('/tournament/new', {
 					templateUrl: '/partials/tournament/new.html',
 					controller: 'TournamentCreateCtrl'
@@ -46,6 +50,46 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', 'user', 'alert', function($scope, $http, $modal, user, alert) {
+	$scope.user = {};
+
+	$scope.getUser = function() {
+		user.current().then(function(user) {
+			$scope.user = user;
+			console.log(user);
+		});
+	};
+
+	$scope.getUser();
+
+	$scope.openLogin = function() {
+		var loginForm = $modal.open({
+			templateUrl: '/partials/account/login.html',
+			controller: 'AccountLoginCtrl'
+		});
+
+		loginForm.result.then(function() {
+			$scope.getUser();
+		});
+	};
+
+	$scope.logout = function() {
+		$http({
+			method: 'POST',
+			url: '/account/logout'
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully logged out');
+				$scope.getUser();
+			}
+			else {
+				alert.danger('Logout not successful');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+}]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
 	$http({
@@ -57,6 +101,8 @@ angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$htt
 		console.log(err);
 	});
 
+}]);
+angular.module('scoreApp').controller('SplashCtrl', ['$scope', function($scope) {
 }]);
 angular.module('scoreApp').controller('AccountCreateCtrl',
 	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
@@ -82,8 +128,8 @@ angular.module('scoreApp').controller('AccountCreateCtrl',
 	};
 }]);
 angular.module('scoreApp').controller('AccountLoginCtrl',
-	['$scope', '$rootScope', '$http', 'alert', 'user',
-		function($scope, $rootScope, $http, alert, user) {
+	['$scope', '$rootScope', '$http', '$modalInstance', 'alert', 'user',
+		function($scope, $rootScope, $http, $modalInstance, alert, user) {
 	
 	$scope.form = {};
 
@@ -95,7 +141,9 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
-				user.current();	// Update current user.
+				user.current().then(function(res) {
+					$modalInstance.close();
+				});
 			}
 			else {
 				alert.danger('Invalid login!');
@@ -105,22 +153,8 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		});
 	};
 
-	$scope.logout = function() {
-		$http({
-			method: 'POST',
-			url: '/account/logout',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged out!');
-				user.clear();	// Clear current user.
-			}
-			else {
-				alert.danger('Logout not successful!');
-			}
-		}).error(function(err) {
-			alert.danger(err);
-		});
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 
 }]);
@@ -874,7 +908,7 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			$http({
 				method: 'GET',
 				url: '/account/current',
-				cache: true
+				cache: false
 			}).success(function(user) {
 				$rootScope.username = user.username;
 				d.resolve(user);
@@ -883,9 +917,6 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			});
 			
 			return d.promise;
-		},
-		clear: function() {
-			$rootScope.username = null;
 		}
 	};
 }]);

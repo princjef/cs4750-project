@@ -5,7 +5,7 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			$http({
 				method: 'GET',
 				url: '/account/current',
-				cache: true
+				cache: false
 			}).success(function(user) {
 				$rootScope.username = user.username;
 				d.resolve(user);
@@ -14,9 +14,6 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 			});
 			
 			return d.promise;
-		},
-		clear: function() {
-			$rootScope.username = null;
 		}
 	};
 }]);

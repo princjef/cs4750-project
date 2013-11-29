@@ -1,6 +1,6 @@
 angular.module('scoreApp').controller('AccountLoginCtrl',
-	['$scope', '$rootScope', '$http', 'alert', 'user',
-		function($scope, $rootScope, $http, alert, user) {
+	['$scope', '$rootScope', '$http', '$modalInstance', 'alert', 'user',
+		function($scope, $rootScope, $http, $modalInstance, alert, user) {
 	
 	$scope.form = {};
 
@@ -12,7 +12,9 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully logged in!');
-				user.current();	// Update current user.
+				user.current().then(function(res) {
+					$modalInstance.close();
+				});
 			}
 			else {
 				alert.danger('Invalid login!');
@@ -22,22 +24,8 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 		});
 	};
 
-	$scope.logout = function() {
-		$http({
-			method: 'POST',
-			url: '/account/logout',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged out!');
-				user.clear();	// Clear current user.
-			}
-			else {
-				alert.danger('Logout not successful!');
-			}
-		}).error(function(err) {
-			alert.danger(err);
-		});
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 
 }]);
