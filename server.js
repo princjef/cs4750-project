@@ -71,6 +71,7 @@ app.get('/organization/:organizationID/info', organization.info);
 app.get('/organization/:organizationID/admins', organization.admins);
 app.get('/organization/:organizationID/tournaments', tournament.getByOrganizationID);
 app.post('/organization/:organizationID/admins/add', belongsTo.addToOrganization);
+app.post('/organization/:organizationID/admins/remove', belongsTo.remove);
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
 app.post('/organization/addtournament', runBy.create);
@@ -97,6 +98,7 @@ app.post('/account/update', account.update);
 app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
+app.get('/account/:username/organizations', organization.getByUsername);
 app.post('/account/logout', account.logout);
 
 // Team Routes

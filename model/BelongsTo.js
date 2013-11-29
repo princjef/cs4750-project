@@ -18,6 +18,20 @@ BelongsTo.prototype.create = function(callback) {
 	});
 };
 
+BelongsTo.prototype.remove = function(callback) {
+	connection.query("DELETE FROM BelongsTo WHERE username=? and orgID=?",
+			[this.username, this.orgID], function(err, result) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else if(result.affectedRows === 0) {
+			callback('The specified user is not an admin for this organization');
+		} else {
+			callback();
+		}
+	});
+};
+
 BelongsTo.prototype.toJson = function() {
 	return {
 		username:this.username,

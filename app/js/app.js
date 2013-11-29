@@ -64,7 +64,16 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	$scope.getUser = function() {
 		user.current().then(function(user) {
 			$scope.user = user;
-			console.log(user);
+			if(user.username) {
+				$http({
+					method: 'GET',
+					url: '/account/' + user.username + '/organizations'
+				}).success(function(organizations) {
+					$scope.user.organizations = organizations;
+				}).error(function(err) {
+					alert.danger(err);
+				});
+			}
 		});
 	};
 
@@ -328,7 +337,7 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', 'alert', function($scope, $http, $routeParams, $modal, alert) {
+angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', '$modal', '$window', 'alert', function($scope, $http, $routeParams, $modal, $window, alert) {
 	$http({
 		method: 'GET',
 		url: '/organization/' + $routeParams.organizationID + '/info'
@@ -385,6 +394,27 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 			}).success(function(account) {
 				$scope.admins.push(account);
 				$scope.newAdmin.active = false;
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
+	};
+
+	$scope.removeAdmin = function(account) {
+		if($window.confirm('Are you sure you want to remove ' + account.username + ' from ' + $scope.organization.name + '?')) {
+			$http({
+				method: 'POST',
+				url: '/organization/' + $routeParams.organizationID + '/admins/remove',
+				data: {
+					username: account.username
+				}
+			}).success(function(account) {
+				for(var i = 0; i < $scope.admins.length; i++) {
+					if($scope.admins[i].username === account.username) {
+						$scope.admins.splice(i, 1);
+					}
+				}
+				alert.success(account.username + ' successfully removed');
 			}).error(function(err) {
 				alert.danger(err);
 			});
@@ -480,6 +510,23 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		$scope.saveEvent();
 	};
 
+	$scope.saveScores = function() {
+		$http({
+			method: 'POST',
+			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
+			data: {
+				participants: $scope.participators,
+				event: $scope.event
+			}
+		}).success(function(res) {
+			alert.success('Scoring information successfully saved');
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+
+	$scope.debouncedScores = underscore.debounce($scope.saveScores, 3000);
+
 	$scope.updateRankings = function() {
 		var teams = $scope.participators.slice(0);
 		var started = false;
@@ -499,7 +546,8 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 				$scope.participators[i].place = $scope.participators.length + 2;
 				teams.splice(i, 1);
 				started = true;
-			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null && teams[i].score.length === 0) {
+			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null && teams[i].score.length !== 0) {
+				console.log("started");
 				started = true;
 			}
 		}
@@ -523,22 +571,7 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			$scope.saveEvent();
 		}
 
-		underscore.debounce($scope.saveScores, 3000)();
-	};
-
-	$scope.saveScores = function() {
-		$http({
-			method: 'POST',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
-			data: {
-				participants: $scope.participators,
-				event: $scope.event
-			}
-		}).success(function(res) {
-			alert.success('Scoring information successfully saved');
-		}).error(function(err) {
-			alert.danger(err);
-		});
+		$scope.debouncedScores();
 	};
 
 	$scope.saveEvent = function() {

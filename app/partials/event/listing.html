@@ -1,7 +1,9 @@
 <div ng-controller="EventListingCtrl">
 	<h2>Events ({{divisions[0].events.length + divisions[1].events.length + divisions[2].events.length}})</h2>
-	<div ng-repeat="division in divisions" ng-show="division.events.length">
-		<h4>Division {{division.level}}</h4>
+	<div ng-repeat="division in divisions" ng-show="division.events.length" class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">Division {{division.level}}</h4>
+		</div>
 		<div class="list-group">
 			<a href="/tournament/{{event.tournamentID}}/scoring/{{event.division}}/{{event.eventName}}" class="list-group-item" ng-repeat="event in division.events|orderBy:'eventName'">
 				<span class="status-icon" ng-switch on="event.status">
