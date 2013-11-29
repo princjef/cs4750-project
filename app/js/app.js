@@ -488,7 +488,17 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 			templateUrl:'/partials/team/editteam.html',
 			controller:'TeamEditCtrl'
 		});
-		
+	};
+	
+	$scope.switchExpanded = function(t) {
+		if($scope.expanded) {
+			$scope.expanded.show = false;
+			$scope.expanded = t;
+			t.show = true;
+		} else {
+			$scope.expanded = t;
+			t.show = true;
+		}
 	};
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
