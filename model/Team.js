@@ -45,7 +45,7 @@ Team.getByTournamentID = function(tournamentID, callback) {
 };
 
 Team.prototype.update = function(callback) {
-	connection.query("UPDATE Team SET teamName=?, state=?, school=? WHERE tournamentID=?, teamNumber=?, division=?", 
+	connection.query("UPDATE Team SET teamName=?, state=?, school=? WHERE tournamentID=? AND teamNumber=? AND division=?", 
 	[this.name, this.state, this.school, this.tournamentID, this.number, this.division], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
