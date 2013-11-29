@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', function($scope, $window, $http, $routeParams, $modal, tournament, alert) {
+angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', 'team', function($scope, $window, $http, $routeParams, $modal, tournament, alert, team) {	
 	$http({
 		method:'GET',
 		url:'/tournament/' + $routeParams.tournamentID + '/teams',
@@ -16,17 +16,25 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 		});
 	};
 	
-	$scope.removeTeam = function(team) {
-		console.log('/tournament/' + $routeParams.tournamentID + '/removeteam');
+	$scope.removeTeam = function(t) {
 		$http({
 			method:'POST',
 			url:'/tournament/' + $routeParams.tournamentID + '/removeteam',
-			data:team
+			data:t
 		}).success(function(data) {
-			var i = $scope.teams.indexOf(team);
+			var i = $scope.teams.indexOf(t);
 			$scope.teams.splice(i, 1);
 		}).error(function(err) {
-			alert.danger('There was an error. Could not remove ' + team.name + '!');
+			alert.danger('There was an error. Could not remove ' + t.name + '!');
 		});
+	};
+	
+	$scope.editTeamWindow = function(t) {
+		team.set(t);
+		$modal.open({
+			templateUrl:'/partials/team/editteam.html',
+			controller:'TeamEditCtrl'
+		});
+		
 	};
 }]);

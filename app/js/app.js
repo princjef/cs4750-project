@@ -399,7 +399,28 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', function($scope, $window, $http, $routeParams, $modal, tournament, alert) {
+angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', function($scope, $modalInstance, $http, team) {
+	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
+					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
+					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+	$scope.editTeam = team.get(); 
+	$scope.updateTeam = function() {
+		$http({
+			method:'POST',
+			url:'/tournament/' + $scope.editTeam.tournamentID + '/updateteam',
+			data:$scope.editTeam
+		}).success(function(data) {
+			$modalInstance.dismiss('success');
+		}).error(function(err) {
+
+		});
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+}]);
+angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', 'team', function($scope, $window, $http, $routeParams, $modal, tournament, alert, team) {	
 	$http({
 		method:'GET',
 		url:'/tournament/' + $routeParams.tournamentID + '/teams',
@@ -417,18 +438,26 @@ angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '
 		});
 	};
 	
-	$scope.removeTeam = function(team) {
-		console.log('/tournament/' + $routeParams.tournamentID + '/removeteam');
+	$scope.removeTeam = function(t) {
 		$http({
 			method:'POST',
 			url:'/tournament/' + $routeParams.tournamentID + '/removeteam',
-			data:team
+			data:t
 		}).success(function(data) {
-			var i = $scope.teams.indexOf(team);
+			var i = $scope.teams.indexOf(t);
 			$scope.teams.splice(i, 1);
 		}).error(function(err) {
-			alert.danger('There was an error. Could not remove ' + team.name + '!');
+			alert.danger('There was an error. Could not remove ' + t.name + '!');
 		});
+	};
+	
+	$scope.editTeamWindow = function(t) {
+		team.set(t);
+		$modal.open({
+			templateUrl:'/partials/team/editteam.html',
+			controller:'TeamEditCtrl'
+		});
+		
 	};
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
@@ -759,6 +788,18 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 	};
 }]);
 
+angular.module('scoreApp').service('team', [function() {
+	var team = {};
+	
+	return{
+		set: function(teamData) {
+			team = teamData;
+		},
+		get: function() {
+			return team;
+		}
+	};
+}]);
 angular.module('scoreApp').service('tournament', [function() {
 	var tournament = {};
 
