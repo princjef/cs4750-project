@@ -46,7 +46,8 @@ exports.update = function(req, res) {
 		name: req.body.name,
 		type: req.body.type,
 		location: req.body.location,
-		date: req.body.date
+		date: req.body.date,
+		id: req.body.id
 	});
 
 	tournament.update(function(err) {

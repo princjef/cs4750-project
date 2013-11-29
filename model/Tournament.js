@@ -89,7 +89,7 @@ Tournament.prototype.create = function(callback) {
 Tournament.prototype.update = function(callback) {
 	var that = this;
 	connection.query("UPDATE Tournament SET tournamentName=?, tournamentType=?, location=?, tournamentDate=? WHERE tournamentID=?",
-			[this.name, this.type, this.location, this.date], function(err, row) {
+			[this.name, this.type, this.location, this.date, this.id], function(err, row) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));

@@ -43,4 +43,12 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
+	
+	$scope.editTournament = function() {
+		tournament.set($scope.tournament);
+		$modal.open({
+			templateUrl:'/partials/tournament/edittournament.html',
+			controller:'TournamentEditCtrl'
+		});
+	};
 }]);

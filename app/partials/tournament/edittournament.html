@@ -7,27 +7,27 @@
 			<form class="tournament-form">
 				<div class="form-group">
 					<label for="new-tournament-name">Name:</label>
-					<input id="new-tournament-name" class="form-control" type="text" ng-model="editTournament.name" />
+					<input id="new-tournament-name" class="form-control" type="text" ng-model="form.name" />
 				</div>
 				<div class="form-group">
 					<label for="new-tournament-date">Date:</label>
 					<div class="input-group" ng-init="open = false;">
-						<input id="new-tournament-date" type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="editTournament.date" />
+						<input id="new-tournament-date" type="text" class="form-control" datepicker-popup="MMM dd, yyyy" is-open="open" show-weeks="false" ng-model="form.date" />
 						<span class="input-group-addon" ng-click="open = !open;"><i class="fa fa-calendar"></i></span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="new-tournament-location">Location:</label>
-					<input id="new-tournament-location" type="text" class="form-control" ng-model="editTournament.location" />
+					<input id="new-tournament-location" type="text" class="form-control" ng-model="form.location" />
 				</div>
 				<div class="form-group">
 					<label for="new-tournament-type">Type:</label>
-					<select id="new-tournament-type" ng-model="editTournament.type" required ng-options="label for label in types" class="form-control"></select>
+					<select id="new-tournament-type" ng-model="form.type" required ng-options="label for label in types" class="form-control"></select>
 				</div>
 			</form>
 		</div>
 		<div class="modal-footer">
-			<button class="btn btn-primary" ng-click="updateTournament()">Create</button>
+			<button class="btn btn-primary" ng-click="updateTournament()">Apply</button>
 			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
 		</div>
 	</div>
