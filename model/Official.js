@@ -40,6 +40,7 @@ Official.prototype.update = function(callback) {
 };
 
 Official.prototype.getSupervisedEvents = function(callback) {
+	var that = this;
 	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.supervisor_officialID WHERE officialID=?',
 	[this.officialID], function(err, rows) {
 		if(err) {
@@ -55,12 +56,14 @@ Official.prototype.getSupervisedEvents = function(callback) {
 					division:entry.division
 				});
 			});
+			console.log('INFO: Got ' + result.length + ' supervised events for official ' + that.officialID);
 			callback(null, result);
 		}
 	});
 };
 
 Official.prototype.getWrittenEvents = function(callback) {
+	var that = this;
 	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.writer_officialID WHERE officialID=?',
 	[this.officialID], function(err, rows) {
 		if(err) {
@@ -76,9 +79,35 @@ Official.prototype.getWrittenEvents = function(callback) {
 					division:entry.division
 				});
 			});
+			console.log('INFO: Got ' + result.length + ' written events for official ' + that.officialID);
 			callback(null, result);
 		}
 	});
+};
+
+Official.prototype.getCoachedTeams = function(callback) {
+	var that = this;
+	connection.query('SELECT * FROM Official NATURAL JOIN CoachedBy NATURAL JOIN Team NATURAL JOIN Tournament WHERE officialID=?',
+		[this.officialID], function(err, rows) {
+			if(err) {
+				console.log(err);
+				callback(err);
+			} else {
+				var result = [];
+				rows.forEach(function(entry) {
+					result.push({
+						tournamentName:entry.tournamentName,
+						name:entry.name,
+						division:entry.division,
+						number:entry.number,
+						school:entry.school,
+						state:entry.state
+					});
+				});
+				console.log('INFO: Got ' + result.length + ' coached teams for official ' + that.officialID);
+				callback(null, result);
+			}
+		});
 };
 
 Official.prototype.setFirstName = function(name_first) {
