@@ -44,6 +44,33 @@ Team.getByTournamentID = function(tournamentID, callback) {
 	});
 };
 
+Team.prototype.update = function(callback) {
+	connection.query("UPDATE Team SET teamName=?, state=?, school=? WHERE tournamentID=? AND teamNumber=? AND division=?", 
+	[this.name, this.state, this.school, this.tournamentID, this.number, this.division], function(err, row) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			console.log('Updated team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
+			callback();
+		}
+	});
+};
+
+Team.prototype.remove = function(callback) {
+	connection.query("DELETE FROM Team WHERE (tournamentID=? AND teamNumber=? AND division=?)",
+	[this.tournamentID, this.number, this.division], function(err, row) {
+		if(err) {
+			console.log('ERR', err);
+			callback(err);
+		} else {
+			console.log('Deleted team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
+			callback();
+		}
+	});
+	
+};
+
 Team.prototype.addToTournament = function(callback) {
 	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school) VALUES(?, ?, ?, ?, ?, ?)",
 		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {

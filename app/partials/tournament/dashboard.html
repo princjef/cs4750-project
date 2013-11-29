@@ -17,12 +17,5 @@
 </div>
 <div class="col-md-5" ng-include="'/partials/event/listing.html'">
 </div>
-<div class="col-md-4">
-	<h2>Teams ({{teams.length}})</h2>
-	<ul class="list-group">
-		<li ng-repeat="t in teams|orderBy:t.name" class="list-group-item">{{t.name}}</li>
-	</ul>
-	<div>
-		<button class="btn btn-default pull-right" ng-click="addTeam()">Add New Team</button>
-	</div>
+<div class="col-md-4" ng-include="'/partials/team/listing.html'">
 </div>

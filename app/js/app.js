@@ -476,15 +476,14 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', function($scope, $routeParams, $http, $modalInstance) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', 'states', function($scope, $routeParams, $http, $modalInstance, states) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
 	$scope.form = {};
 	$scope.tournamentID = $routeParams.tournamentID;
-	$scope.states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
-					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
-					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+	$scope.states = states.getStates();
+	
 	$scope.form.state = $scope.states[0];
 	$scope.divisions = ['A', 'B', 'C'];
 	$scope.form.division = $scope.divisions[0];
@@ -498,6 +497,65 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 		}).error(function(err) {
 			console.log('Unable to add team');	
 		});
+	};
+}]);
+angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', function($scope, $modalInstance, $http, team, states) {
+	$scope.states = states.getStates();
+	$scope.editTeam = team.get(); 
+	$scope.updateTeam = function() {
+		$http({
+			method:'POST',
+			url:'/tournament/' + $scope.editTeam.tournamentID + '/updateteam',
+			data:$scope.editTeam
+		}).success(function(data) {
+			$modalInstance.dismiss('success');
+		}).error(function(err) {
+
+		});
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+}]);
+angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', 'team', function($scope, $window, $http, $routeParams, $modal, tournament, alert, team) {	
+	$http({
+		method:'GET',
+		url:'/tournament/' + $routeParams.tournamentID + '/teams',
+		cache:true
+	}).success(function(data) {
+		$scope.teams = data;
+	}).error(function(err) {
+		console.log('Error getting teams');
+	});
+
+	$scope.addTeam = function() {
+		$modal.open({
+			templateUrl:'/partials/team/newteam.html',
+			controller:'TeamAddCtrl'
+		});
+	};
+	
+	$scope.removeTeam = function(t) {
+		$http({
+			method:'POST',
+			url:'/tournament/' + $routeParams.tournamentID + '/removeteam',
+			data:t
+		}).success(function(data) {
+			var i = $scope.teams.indexOf(t);
+			$scope.teams.splice(i, 1);
+		}).error(function(err) {
+			alert.danger('There was an error. Could not remove ' + t.name + '!');
+		});
+	};
+	
+	$scope.editTeamWindow = function(t) {
+		team.set(t);
+		$modal.open({
+			templateUrl:'/partials/team/editteam.html',
+			controller:'TeamEditCtrl'
+		});
+		
 	};
 }]);
 angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$scope', '$http', '$modalInstance', 'dropdowns', 'tournament', 'alert', function($window, $scope, $http, $modalInstance, dropdowns, tournament, alert) {
@@ -647,16 +705,6 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	
 	$http({
 		method:'GET',
-		url:'/tournament/' + $routeParams.tournamentID + '/teams',
-		cache:true
-	}).success(function(data) {
-		$scope.teams = data;
-	}).error(function(err) {
-		console.log('Error getting teams');
-	});
-	
-	$http({
-		method:'GET',
 		url:'/tournament/' + $routeParams.tournamentID + '/events',
 		cache:true
 	}).success(function(events) {
@@ -675,13 +723,6 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
-	
-	$scope.addTeam = function() {
-		$modal.open({
-			templateUrl:'/partials/team/newteam.html',
-			controller:'TeamAddCtrl'
-		});
-	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
 	return function(scope, element, attrs) {
@@ -851,6 +892,29 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 	};
 }]);
 
+angular.module('scoreApp').service('states', [function() {
+	var states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
+					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
+					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+					
+	return {
+		getStates:function() {
+			return states;
+		}	
+	};
+}]);
+angular.module('scoreApp').service('team', [function() {
+	var team = {};
+	
+	return{
+		set: function(teamData) {
+			team = teamData;
+		},
+		get: function() {
+			return team;
+		}
+	};
+}]);
 angular.module('scoreApp').service('tournament', [function() {
 	var tournament = {};
 

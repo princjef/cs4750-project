@@ -25,16 +25,6 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	
 	$http({
 		method:'GET',
-		url:'/tournament/' + $routeParams.tournamentID + '/teams',
-		cache:true
-	}).success(function(data) {
-		$scope.teams = data;
-	}).error(function(err) {
-		console.log('Error getting teams');
-	});
-	
-	$http({
-		method:'GET',
 		url:'/tournament/' + $routeParams.tournamentID + '/events',
 		cache:true
 	}).success(function(events) {
@@ -53,11 +43,4 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	}).error(function(err) {
 		console.log('Error getting events');
 	});
-	
-	$scope.addTeam = function() {
-		$modal.open({
-			templateUrl:'/partials/team/newteam.html',
-			controller:'TeamAddCtrl'
-		});
-	};
 }]);
