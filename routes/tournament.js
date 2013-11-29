@@ -57,3 +57,17 @@ exports.update = function(req, res) {
 		}
 	});
 };
+
+exports.getByOrganizationID = function(req, res) {
+	Tournament.getByOrganizationID(req.params.organizationID, function(err, tournaments) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			var result = [];
+			tournaments.forEach(function(tournament) {
+				result.push(tournament.toJson());
+			});
+			res.json(result);
+		}
+	});
+};

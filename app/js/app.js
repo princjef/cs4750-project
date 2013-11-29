@@ -25,6 +25,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
 					templateUrl: '/partials/organization/new.html',
 					controller: 'OrganizationCreateCtrl'
 				})
+			.when('/organization/:organizationID/dashboard', {
+					templateUrl: '/partials/organization/dashboard.html',
+					controller: 'OrganizationDashCtrl'
+				})
 			.when('/event/new', {
 					templateUrl: '/partials/event/new.html',
 					controller: 'EventCreateCtrl'
@@ -248,6 +252,34 @@ angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$htt
 			alert.danger(err);
 		});
 	};
+}]);
+angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http', '$routeParams', 'alert', function($scope, $http, $routeParams, alert) {
+	$http({
+		method: 'GET',
+		url: '/organization/' + $routeParams.organizationID + '/info'
+	}).success(function(res) {
+		$scope.organization = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
+		url: '/organization/' + $routeParams.organizationID + '/admins'
+	}).success(function(res) {
+		$scope.admins = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
+
+	$http({
+		method: 'GET',
+		url: '/organization/' + $routeParams.organizationID + '/tournaments'
+	}).success(function(res) {
+		$scope.tournaments = res;
+	}).error(function(err) {
+		alert.danger(err);
+	});
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
 	$scope.form = {};
