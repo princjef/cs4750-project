@@ -1,8 +1,11 @@
 <h3>{{official.name_first + ' ' + official.name_last}}</h3>
+<strong>Email:</strong> {{official.email}}<br/>
+<strong>Phone:</strong> {{official.phone}}<br/>
 <div>
 	<div>
-		<h4>Teams coached by {{official.name_first + ' ' + official.name_last}}</h4>
-		<table class="table table-striped">
+		<h4>Coached Teams</h4>
+		<h4 ng-show="coachedTeams.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has no coached teams.</small></h4>
+		<table class="table table-striped" ng-show="coachedTeams.length > 0">
 			<tr>
 				<th>Tournament</th>
 				<th>Name</th>
@@ -20,35 +23,37 @@
 				<td>{{t.state}}</td>
 			</tr>
 		</table>
-	</div>
-	<div>
-		<h4>Events written by {{official.name_first + ' ' + official.name_last}}</h4>
-		<table class="table table-striped">
-			<tr>
-				<th>Tournament</th>
-				<th>Event Name</th>
-				<th>Division</th>
-			</tr>
-			<tr ng-repeat='e in writtenEvents'>
-				<td>{{e.tournamentName}}</td>
-				<td>{{e.eventName}}</td>
-				<td>{{e.division}}</td>
-			</tr>
-		</table>
-	</div>
-	<div>
-		<h4>Events supervised by {{official.name_first + ' ' + official.name_last}}</h4>
-		<table class="table table-striped">
-			<tr>
-				<th>Tournament</th>
-				<th>Event Name</th>
-				<th>Division</th>
-			</tr>
-			<tr ng-repeat='e in supervisedEvents'>
-				<td>{{e.tournamentName}}</td>
-				<td>{{e.eventName}}</td>
-				<td>{{e.division}}</td>
-			</tr>
-		</table>
+		<div class="col-md-6">
+			<h4>Written Events</h4>
+			<h4 ng-show="writtenEvents.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has not written any events.</small></h4>
+			<table class="table table-striped" ng-show="writtenEvents.length > 0">
+				<tr>
+					<th>Tournament</th>
+					<th>Event Name</th>
+					<th>Division</th>
+				</tr>
+				<tr ng-repeat='e in writtenEvents'>
+					<td>{{e.tournamentName}}</td>
+					<td>{{e.eventName}}</td>
+					<td>{{e.division}}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<h4>Supervised Events</h4>
+			<h4 ng-show="supervisedEvents.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has no supervised events.</small></h4>
+			<table class="table table-striped" ng-show="supervisedEvents.length > 0">
+				<tr>
+					<th>Tournament</th>
+					<th>Event Name</th>
+					<th>Division</th>
+				</tr>
+				<tr ng-repeat='e in supervisedEvents'>
+					<td>{{e.tournamentName}}</td>
+					<td>{{e.eventName}}</td>
+					<td>{{e.division}}</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </div>
