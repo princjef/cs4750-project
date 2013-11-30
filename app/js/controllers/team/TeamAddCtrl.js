@@ -32,8 +32,6 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 		var err = false;
 		var added = 0;
 		$scope.coaches.forEach(function(entry) {
-			$scope.form.officialID = entry.value;
-			console.log("ooooo " + entry.value);
 			$http({
 				method:'POST',
 				url:'/team/addcoach',

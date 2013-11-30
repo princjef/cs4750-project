@@ -17,6 +17,24 @@
 					<label for="new-team-state">State:</label>
 					<select id="new-team-state" type="text" ng-model="form.state" class="form-control" ng-options="s for s in states"/>
 				</div>
+				<div class="form-group">
+					<label for="new-team-coach">Coaches:</label>
+					<div class="list-group">
+						<div class="list-group-item" ng-repeat="c in coaches">
+							{{c.name}}
+							<button class="close pull-right" aria-hidden="true" ng-click="removeCoach(c)">&times;</button>
+						</div>
+					</div>
+					<div class="input-group">
+						<input id="new-team-coach" type="text" ng-model="form.coach" class="form-control" list="coaches"/>
+				        <span class="input-group-btn">
+				        	<button class="btn btn-default" type="button" ng-click="checkCoach()">Add</button>
+				        </span>
+					</div>
+					<datalist id="coaches" >
+						<option ng-repeat="o in officials">{{o.name}}</option>
+					</datalist>
+				</div>
 			</form>
 		</div>
 		<div class="modal-footer">
