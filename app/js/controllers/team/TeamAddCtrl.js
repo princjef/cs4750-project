@@ -19,6 +19,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	});
 	
 	$scope.form = {};
+	$scope.coaches = [];
 	$scope.badCoach = false;
 	$scope.form.tournamentID = $routeParams.tournamentID;
 	$scope.states = states.getStates();
@@ -60,18 +61,17 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	$scope.checkCoach = function() {
 		if(!$scope.form.coach) {
 			console.log('No Coach');
-			createTeam(false);
 		} else {
 			console.log('Yes coach');
-			var coachValid = false;
+			var coachValid = null;
 			$scope.officials.forEach(function(entry) {
 				if(entry.name === $scope.form.coach) {
-					coachValid = true;
+					coachValid = entry;
 					$scope.form.officialID = entry.value;
 				}
 			});
 			if(coachValid) {
-				createTeam(true);
+				$scope.coaches.push(coachValid);
 			} else {
 				$scope.errorMessage = 'This coach does not exist. Create new official? (The current team will be lost)';
 				$scope.badCoach = true;
