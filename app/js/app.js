@@ -1,4 +1,4 @@
-angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
+angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
@@ -997,6 +997,25 @@ angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function(
 		},
 		danger: function(message, timeout) {
 			createMessage('alert-danger', message, timeout);
+		}
+	};
+}]);
+angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert', function($location, $q, alert) {
+	return {
+		response: function(response) {
+			return promise.then(
+				function(response) {	// Success
+					return response;
+				}, function(response) {	// Error
+					if(response.status === 401) {
+						alert.danger('You do not have access to this page');
+						$location.path('/');
+						return $q.reject(response);
+					} else {
+						return $q.reject(response);
+					}
+				}
+			);
 		}
 	};
 }]);

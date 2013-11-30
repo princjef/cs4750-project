@@ -1,4 +1,4 @@
-angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
+angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
