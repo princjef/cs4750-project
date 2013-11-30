@@ -55,11 +55,11 @@
 		<div class="modal-footer" ng-show="badCoach">
 			<button class="btn btn-primary" ng-click="cancel('/official/new')">New Official</button>
 			<button class="btn btn-primary" ng-click="cancel('/official/lookup')">Go to Official Lookup</button>
-			<button class="btn btn-default" ng-click="removeCoach()">Cancel</button>
+			<button class="btn btn-default" ng-click="cancelCoach()">Cancel</button>
 			
 		</div>
 		<div class="modal-footer" ng-show="!badCoach">
-			<button class="btn btn-primary" ng-click="checkCoach()">Add Team</button>
+			<button class="btn btn-primary" ng-click="createTeam()">Add Team</button>
 			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
 		</div>
 	</div>
