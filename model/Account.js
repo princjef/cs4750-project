@@ -49,20 +49,25 @@ Account.prototype.create = function(callback) {
  * Returns: error (if there is one)
  */
 Account.prototype.update = function(callback) {
-	// THIS IS WRONG FOR NOW
-	// WILL FIX IT IF I EVER GET LOGIN TO WORK
 	var that = this;
-	connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
-	[this.email, Account.hashSaltPass(this.password), this.username], function(err, result) {
-		if(err) {
-			console.log(err);
-			callback(error.message(err), false);
-		} else if(result.affectedRows > 0) {
-			console.log('INFO', 'Updated Account with username:', that.username);
-			callback(null, true);
+
+	Account.hashSaltPass(this.password, function(err, hash) {
+		if (err) {
+			console.log('ERR', err);
 		} else {
-			console.log('INFO', 'User', that.username, 'does not exist!');
-			callback(null, false);
+			connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
+			[this.email, hash, this.username], function(err, result) {
+				if(err) {
+					console.log(err);
+					callback(error.message(err), false);
+				} else if(result.affectedRows > 0) {
+					console.log('INFO', 'Updated Account with username:', that.username);
+					callback(null, true);
+				} else {
+					console.log('INFO', 'User', that.username, 'does not exist!');
+					callback(null, false);
+				}
+			});
 		}
 	});
 };
@@ -86,7 +91,6 @@ Account.prototype.update = function(callback) {
 				var hashSalt = row[0].password;
 
 				Account.authenticate(that.password, hashSalt, function(err, result) {
-					console.log('result is:', result);
 					if (err || !result) {
 						console.log('INFO', 'Invalid username and/or password!');
 						callback(null, false);
@@ -96,10 +100,6 @@ Account.prototype.update = function(callback) {
 						callback(null, true);
 					}
 				});
-			// if (row.length > 0 && row[0].password == that.password) {
-			//	console.log('INFO', 'Logged in with username:', that.username);
-			//	that.email = row[0].email;
-			//	callback(null, true);
 			} else {
 				console.log('INFO', 'User', that.username, 'does not exist!');
 				callback(null, false);
@@ -149,37 +149,15 @@ Account.getByUsername = function(username, callback) {
 Account.hashSaltPass = function(password, callback) {
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(password, salt, function(err, hash) {
-			console.log('password is', password);
-			console.log('hash is', hash);
-			console.log('salt is', salt);
 			callback(err, hash);
 		});
 	});
-	// pass.hash(password, function(err, salt, hash) {
-	// 	callback(err, hash+'$'+salt);
-	// });
 };
 
 Account.authenticate = function(password, hashSalt, callback) {
 	bcrypt.compare(password, hashSalt, function(err, res) {
-		console.log('password is', password);
-		console.log('hashSalt is', hashSalt);
-		console.log('login result is:', res);
 		callback(err, res);
 	});
-	// var uHash = hashSalt.split('$')[0];
-	// console.log('len is', hashSalt.split('$').length);
-	// var uSalt = hashSalt.split('$')[1];
-	// pass.hash(password, uSalt, function(err, hash) {
-	// 	if (uHash == hash) {
-	// 		callback(err, true);
-	// 	} else {
-	// 		console.log('uHash is', uHash);
-	// 		console.log('uSalt is', uSalt);
-	// 		console.log('hash is', hash);
-	// 		callback(err, false);
-	// 	}
-	// });
 };
 
 module.exports = Account;
