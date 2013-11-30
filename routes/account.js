@@ -1,5 +1,6 @@
 var Account = require('../model/Account');
 var passport = require('passport');
+var permissions = require('../helper/permissions');
 
 exports.create = function(req, res) {
 	var account = new Account({
@@ -39,27 +40,29 @@ exports.create = function(req, res) {
 };
 
 exports.update = function(req, res) {
-	var account = new Account({
-		username: req.body.username,
-		email: req.body.email,
-		password: req.body.password
-	});
+	permissions.user(req, res, req.body.username, function() {
+		var account = new Account({
+			username: req.body.username,
+			email: req.body.email,
+			password: req.body.password
+		});
 
-	account.update(function(err, successful) {
-		if(err) {
-			res.send(500, err);
-		} else {
-			if (successful) {
-				res.json({
-					status: true,
-					user: account.toJson()
-				});
+		account.update(function(err, successful) {
+			if(err) {
+				res.send(500, err);
 			} else {
-				res.json({
-					status: false
-				});
+				if (successful) {
+					res.json({
+						status: true,
+						user: account.toJson()
+					});
+				} else {
+					res.json({
+						status: false
+					});
+				}
 			}
-		}
+		});
 	});
 };
 
