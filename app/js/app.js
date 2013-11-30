@@ -1019,6 +1019,7 @@ angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert
 		);
 	};
 }]);
+
 angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $http) {
 	return {
 		getTournamentLevels: function() {
