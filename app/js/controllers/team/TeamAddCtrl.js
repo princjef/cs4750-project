@@ -1,6 +1,9 @@
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', 'states', 'dropdowns', function($scope, $routeParams, $http, $modalInstance, states, dropdowns) {
-	$scope.cancel = function() {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', '$location', 'states', 'dropdowns', function($scope, $routeParams, $http, $modalInstance, $location, states, dropdowns) {
+	$scope.cancel = function(path) {
 		$modalInstance.dismiss('cancel');
+		if(path){
+			$location.path(path);
+		}
 	};
 	
 	dropdowns.getOfficials().then(function(data) {
@@ -16,21 +19,57 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	});
 	
 	$scope.form = {};
+	$scope.badCoach = false;
 	$scope.tournamentID = $routeParams.tournamentID;
 	$scope.states = states.getStates();
 	
 	$scope.form.state = $scope.states[0];
 	$scope.divisions = ['A', 'B', 'C'];
 	$scope.form.division = $scope.divisions[0];
-	$scope.createTeam = function() {
+	
+	var addCoach = function() {
+		
+	};
+	
+	var createTeam = function(andCoach) {
 		$http({
 			method:'POST',
 			url:'/tournament/' + $routeParams.tournamentID + '/addteam',
 			data:$scope.form
 		}).success(function(result) {
 			console.log('Added the team');
+			if(andCoach) {
+				addCoach();
+			}
 		}).error(function(err) {
 			console.log('Unable to add team');	
 		});
+	};
+	
+	$scope.checkCoach = function() {
+		if(!$scope.form.coach) {
+			console.log('No Coach');
+			createTeam(false);
+		} else {
+			console.log('Yes coach');
+			var coachValid = false;
+			$scope.officials.forEach(function(entry) {
+				if(entry.name === $scope.form.coach) {
+					coachValid = true;
+				}
+			});
+			if(coachValid) {
+				createTeam(true);
+			} else {
+				$scope.errorMessage = 'This coach does not exist. Create new official? (The current team will be lost)';
+				$scope.badCoach = true;
+			}
+		}
+	};
+	
+	$scope.removeCoach = function() {
+		$scope.badCoach = false;
+		$scope.form.coach = undefined;
+		$scope.errorMessage = undefined;
 	};
 }]);
