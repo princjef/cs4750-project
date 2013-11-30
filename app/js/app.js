@@ -620,7 +620,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	
 	$scope.form = {};
 	$scope.badCoach = false;
-	$scope.tournamentID = $routeParams.tournamentID;
+	$scope.form.tournamentID = $routeParams.tournamentID;
 	$scope.states = states.getStates();
 	
 	$scope.form.state = $scope.states[0];
@@ -628,7 +628,16 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	$scope.form.division = $scope.divisions[0];
 	
 	var addCoach = function() {
-		
+		$http({
+			method:'POST',
+			url:'/team/addcoach',
+			data:$scope.form
+		}).success(function(data) {
+			console.log('Added Coach');
+			$scope.cancel();
+		}).error(function(err) {
+			$scope.errorMessage = 'Team created, but coach failed';
+		});
 	};
 	
 	var createTeam = function(andCoach) {
@@ -640,6 +649,8 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			console.log('Added the team');
 			if(andCoach) {
 				addCoach();
+			} else {
+				$scope.cancel();
 			}
 		}).error(function(err) {
 			console.log('Unable to add team');	
@@ -656,6 +667,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			$scope.officials.forEach(function(entry) {
 				if(entry.name === $scope.form.coach) {
 					coachValid = true;
+					$scope.form.officialID = entry.value;
 				}
 			});
 			if(coachValid) {

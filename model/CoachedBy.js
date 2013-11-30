@@ -38,7 +38,7 @@ CoachedBy.prototype.remove = function(callback) {
 CoachedBy.prototype.toJson = function() {
 	return {
 		tournamentID:this.tournamentID,
-		teamNumber:his.teamNumber,
+		teamNumber:this.teamNumber,
 		division:this.division,
 		officialID:this.officialID
 	};

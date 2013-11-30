@@ -7,7 +7,7 @@ exports.create = function(req, res) {
 		division:req.body.division,
 		officialID:req.body.officialID
 	});
-	coachedby.create(function(err) {
+	coachedBy.create(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
@@ -23,7 +23,7 @@ exports.remove = function(req, res) {
 		division:req.body.division,
 		officialID:req.body.officialID
 	});
-	coachedby.remove(function(err) {
+	coachedBy.remove(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
