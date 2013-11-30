@@ -1,5 +1,7 @@
-angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
-	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
+	.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
+		$httpProvider.responseInterceptors.push('authInterceptor');
+
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/splash.html',
@@ -636,7 +638,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			console.log('Added Coach');
 			$scope.cancel();
 		}).error(function(err) {
-			$scope.errorMessage = 'Team created, but coach failed';
+			$scope.errorMessage = 'Team created, but coach could not be added';
 		});
 	};
 	
@@ -1064,6 +1066,24 @@ angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function(
 		}
 	};
 }]);
+angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert', function($location, $q, alert) {
+	return function(promise) {
+		return promise.then(
+			function(response) {	// Success
+				return response;
+			}, function(response) {	// Error
+				if(response.status === 401) {
+					alert.danger('You do not have access to this page');
+					$location.path('/');
+					return $q.reject(response);
+				} else {
+					return $q.reject(response);
+				}
+			}
+		);
+	};
+}]);
+
 angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $http) {
 	return {
 		getTournamentLevels: function() {

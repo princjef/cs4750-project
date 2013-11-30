@@ -1,5 +1,7 @@
-angular.module('scoreApp', ['ui.bootstrap', 'ngCookies'])
-	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
+	.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
+		$httpProvider.responseInterceptors.push('authInterceptor');
+
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/splash.html',

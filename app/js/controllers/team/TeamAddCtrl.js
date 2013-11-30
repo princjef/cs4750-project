@@ -36,7 +36,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			console.log('Added Coach');
 			$scope.cancel();
 		}).error(function(err) {
-			$scope.errorMessage = 'Team created, but coach failed';
+			$scope.errorMessage = 'Team created, but coach could not be added';
 		});
 	};
 	
