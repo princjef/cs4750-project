@@ -1,8 +1,8 @@
 INSERT INTO Account (username, email, password) VALUES
-	('bill', 'bill@localhost', 'awesome'),
-	('jane', 'jane@localhost', 'amazing'),
-	('john', 'john@localhost', 'meh'),
-	('derek', 'derek@localhost', 'password');
+	('bill', 'bill@localhost', '$2a$10$m.ebfOiyGQvLQ2L7BdDKAO4qOHiW3QD1ZsGjg1a4b/UPQoNtKOaGG'),
+	('jane', 'jane@localhost', '$2a$10$rW5b4Hm9Y6UYgylbFjX.s.C3AEGq0BqTs4Uz.HPxdrY5QaxJLmrJO'),
+	('john', 'john@localhost', '$2a$10$JjHgamdsbCmr6HSDUMQZbe6Hr5uWql19CPuJw3YV.cGjLVivIrL.q'),
+	('derek', 'derek@localhost', '$2a$10$hVnAMJXlxoSMOpnDb45dQ.RpxlGN4gWFT/B9JqHicGBKcxv4.PEaW');
 
 INSERT INTO Organization (orgID, orgName) VALUES
 	('10', 'Virginia Science Olympiad'),
