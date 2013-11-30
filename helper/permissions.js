@@ -1,6 +1,14 @@
 var connection = require('../sql/connection');
 var error = require('../sql/error');
 
+exports.user = function(req, res, username, callback) {
+	if(!req.user || !req.username || req.user.username !== username) {
+		res.send(401);
+	} else {
+		callback();
+	}
+};
+
 exports.organization = function(req, res, orgID, callback) {
 	if(!req.user || !req.user.username) {
 		res.send(401);
