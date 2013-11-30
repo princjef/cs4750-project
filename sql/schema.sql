@@ -91,3 +91,11 @@ CREATE TABLE ConsistsOf (
 	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
 	FOREIGN KEY (supervisor_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT,
 	FOREIGN KEY (writer_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT);
+	
+CREATE VIEW officialEventInfo AS (
+	SELECT tournamentName, tournamentID, eventName, division, writer_officialID, supervisor_officialID
+	FROM ((Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.supervisor_officialID));
+	
+CREATE VIEW coachedTeamInfo AS (
+	SELECT tournamentName, tournamentID, teamName, division, teamNumber, school, state, officialID
+	FROM Tournament NATURAL JOIN Team NATURAL JOIN CoachedBy);
