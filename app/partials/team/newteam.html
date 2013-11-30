@@ -25,6 +25,13 @@
 					<label for="new-team-state">State:</label>
 					<select id="new-team-state" type="text" ng-model="form.state" class="form-control" ng-options="s for s in states"/>
 				</div>
+				<div class="form-group">
+					<label for="new-team-coach">Coach:</label>
+					<input id="new-team-coach" type="text" ng-model="form.coach" class="form-control" list="coaches"/>
+					<datalist id="coaches" >
+						<option ng-repeat="o in officials">{{o.name}}</option>
+					</datalist>
+				</div>
 			</form>
 		</div>
 		<div class="modal-footer">

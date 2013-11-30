@@ -1,7 +1,20 @@
-angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', 'states', function($scope, $routeParams, $http, $modalInstance, states) {
+angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', 'states', 'dropdowns', function($scope, $routeParams, $http, $modalInstance, states, dropdowns) {
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
+	
+	dropdowns.getOfficials().then(function(data) {
+		var names = [];
+		data.forEach(function(entry) {
+			var entryName = entry.name_first + ' ' + entry.name_last + ' (' + entry.officialID + ')';
+			names.push({
+				name:entryName,
+				value:entry.officialID
+			});
+		});
+		$scope.officials = names;
+	});
+	
 	$scope.form = {};
 	$scope.tournamentID = $routeParams.tournamentID;
 	$scope.states = states.getStates();
