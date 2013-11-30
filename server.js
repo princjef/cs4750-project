@@ -102,6 +102,7 @@ app.get('/account/:username/organizations', organization.getByUsername);
 app.post('/account/logout', account.logout);
 
 // Team Routes
+app.get('/team/:id/getcoaches', team.getCoaches);
 app.post('/team/addcoach', coachedBy.create);
 app.post('/team/removecoach', coachedBy.remove);
 

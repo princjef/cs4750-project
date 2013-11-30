@@ -76,3 +76,23 @@ exports.remove = function(req, res) {
 		});
 	});
 };
+
+exports.getCoaches = function(req, res) {
+	permissions.tournament(req, res, req.params.id, function() {
+		var team = new Team({
+			tournamentID: req.params.id,
+			number: req.body.number,
+			division: req.body.division,
+			name: req.body.name,
+			state: req.body.state,
+			school: req.body.school
+		});
+		team.getCoaches(function(err, result) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				res.json(result);
+			}
+		});
+	});
+};
