@@ -1,7 +1,6 @@
 var connection = require('../sql/connection');
 var error = require('../sql/error');
 var bcrypt = require('bcrypt');
-var pass = require('pwd');
 
 var Account = function(obj) {
 	this.username = obj.username;
