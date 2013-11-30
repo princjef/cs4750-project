@@ -41,7 +41,7 @@ Official.prototype.update = function(callback) {
 
 Official.prototype.getSupervisedEvents = function(callback) {
 	var that = this;
-	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.supervisor_officialID WHERE officialID=?',
+	connection.query('SELECT * FROM officialEventInfo WHERE supervisor_officialID=?',
 	[this.officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
@@ -64,7 +64,7 @@ Official.prototype.getSupervisedEvents = function(callback) {
 
 Official.prototype.getWrittenEvents = function(callback) {
 	var that = this;
-	connection.query('SELECT tournamentID, tournamentName, eventName, division FROM (Tournament NATURAL JOIN ConsistsOf) INNER JOIN Official ON Official.officialID=ConsistsOf.writer_officialID WHERE officialID=?',
+	connection.query('SELECT * FROM officialEventInfo WHERE writer_officialID=?',
 	[this.officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
@@ -87,7 +87,7 @@ Official.prototype.getWrittenEvents = function(callback) {
 
 Official.prototype.getCoachedTeams = function(callback) {
 	var that = this;
-	connection.query('SELECT * FROM Official NATURAL JOIN CoachedBy NATURAL JOIN Team NATURAL JOIN Tournament WHERE officialID=?',
+	connection.query('SELECT * FROM coachedTeamInfo WHERE officialID=?',
 		[this.officialID], function(err, rows) {
 			if(err) {
 				console.log(err);
