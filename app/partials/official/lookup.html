@@ -1,8 +1,10 @@
 <h3>Official Lookup</h3>
 <div>
-	<label for="official-search-field">Official Name:</label>
 	<input type="text" ng-model="searchOfficial" class="form-control" placeholder="Search Officials..."/>
 </div>
-<div class="list-group">
-	<a class="list-group-item" ng-repeat="o in officials | filter:searchOfficial" href="/official/{{o.officialID}}/info">{{o.name_first}} {{o.name_last}} ({{o.email}})</li>
-</ul>
+<div>
+	<label>Available Officials:</label>
+	<div class="list-group">
+		<a class="list-group-item" ng-repeat="o in officials | filter:searchOfficial" href="/official/{{o.officialID}}/info">{{o.name_first}} {{o.name_last}} ({{o.email}})</li>
+	</ul>
+</div>
