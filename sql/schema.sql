@@ -1,7 +1,7 @@
 CREATE TABLE Account (
 	username VARCHAR(50) NOT NULL,
 	email VARCHAR(100),
-	password VARCHAR(50) NOT NULL,
+	password VARCHAR(200) NOT NULL,
 	PRIMARY KEY (username));
 
 CREATE TABLE Organization (

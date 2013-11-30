@@ -1,6 +1,7 @@
 var connection = require('../sql/connection');
 var error = require('../sql/error');
 var bcrypt = require('bcrypt');
+var pass = require('pwd');
 
 var Account = function(obj) {
 	this.username = obj.username;
@@ -20,10 +21,11 @@ Account.prototype.create = function(callback) {
 	var that = this;
 
 	Account.hashSaltPass(this.password, function(err, hash) {
-		if (err) console.log('ERR', err);
-		else {
+		if (err) {
+			console.log('ERR', err);
+		} else {
 			connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
-			[that.username, that.email, that.password/*hash*/], function(err, result) {
+			[that.username, that.email, hash], function(err, result) {
 				console.log('result is:', result);
 				if(err) {
 					console.log(err);
@@ -73,7 +75,6 @@ Account.prototype.update = function(callback) {
  */
  Account.prototype.login = function(callback) {
 	var that = this;
-	var hashedPass;
 
 	connection.query("SELECT * FROM Account WHERE username=?",
 	[this.username], function(err, row) {
@@ -81,25 +82,24 @@ Account.prototype.update = function(callback) {
 			console.log(err);
 			callback(error.message(err), null);
 		} else {
-			// if (row.length > 0) {
-				// hashedPass = row[0].password;
+			if (row.length > 0) {
+				var hashSalt = row[0].password;
 
-				// Account.comparePass(that.password, hashedPass, function(err, result) {
-				// 	console.log('result is:', result);
-				// 	if (err || !result) {
-				// 		console.log('INFO', 'Invalid username and/or password!');
-				// 		callback(null, false);
-				// 	} else {
-				// 		console.log('INFO', 'Logged in with username:', that.username);
-				// 		that.email = row[0].email;
-				// 		callback(null, true);
-				// 	}
-				// });
-			// }
-			if (row.length > 0 && row[0].password == that.password) {
-				console.log('INFO', 'Logged in with username:', that.username);
-				that.email = row[0].email;
-				callback(null, true);
+				Account.authenticate(that.password, hashSalt, function(err, result) {
+					console.log('result is:', result);
+					if (err || !result) {
+						console.log('INFO', 'Invalid username and/or password!');
+						callback(null, false);
+					} else {
+						console.log('INFO', 'Logged in with username:', that.username);
+						that.email = row[0].email;
+						callback(null, true);
+					}
+				});
+			// if (row.length > 0 && row[0].password == that.password) {
+			//	console.log('INFO', 'Logged in with username:', that.username);
+			//	that.email = row[0].email;
+			//	callback(null, true);
 			} else {
 				console.log('INFO', 'User', that.username, 'does not exist!');
 				callback(null, false);
@@ -147,16 +147,39 @@ Account.getByUsername = function(username, callback) {
 };
 
 Account.hashSaltPass = function(password, callback) {
-	bcrypt.hash(password, 10, function(err, hash) {
-		callback(err, hash);
+	bcrypt.genSalt(10, function(err, salt) {
+		bcrypt.hash(password, salt, function(err, hash) {
+			console.log('password is', password);
+			console.log('hash is', hash);
+			console.log('salt is', salt);
+			callback(err, hash);
+		});
 	});
+	// pass.hash(password, function(err, salt, hash) {
+	// 	callback(err, hash+'$'+salt);
+	// });
 };
 
-Account.comparePass = function(password, hash, callback) {
-	bcrypt.compare(password, hash, function(err, res) {
+Account.authenticate = function(password, hashSalt, callback) {
+	bcrypt.compare(password, hashSalt, function(err, res) {
+		console.log('password is', password);
+		console.log('hashSalt is', hashSalt);
 		console.log('login result is:', res);
 		callback(err, res);
 	});
+	// var uHash = hashSalt.split('$')[0];
+	// console.log('len is', hashSalt.split('$').length);
+	// var uSalt = hashSalt.split('$')[1];
+	// pass.hash(password, uSalt, function(err, hash) {
+	// 	if (uHash == hash) {
+	// 		callback(err, true);
+	// 	} else {
+	// 		console.log('uHash is', uHash);
+	// 		console.log('uSalt is', uSalt);
+	// 		console.log('hash is', hash);
+	// 		callback(err, false);
+	// 	}
+	// });
 };
 
 module.exports = Account;
