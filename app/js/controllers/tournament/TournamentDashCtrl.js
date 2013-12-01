@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', 'alert', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament, alert) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -47,5 +47,10 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 			templateUrl:'/partials/tournament/edittournament.html',
 			controller:'TournamentEditCtrl'
 		});
+	};
+
+	$scope.exportData = function() {
+		console.log('Download button pressed');
+		alert.success('Download started!');
 	};
 }]);
