@@ -708,7 +708,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 		$scope.coaches.splice(i, 1);
 	};
 }]);
-angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', function($scope, $modalInstance, $http, team, states) {
+angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', 'dropdowns', function($scope, $modalInstance, $http, team, states, dropdowns) {
 	dropdowns.getOfficials().then(function(data) {
 		var names = [];
 		data.forEach(function(entry) {
@@ -723,7 +723,8 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	
 	$scope.form = {};
 	$scope.states = states.getStates();
-	$scope.editTeam = team.get(); 
+	$scope.editTeam = team.get();
+	$scope.coaches = []; 
 	
 	$scope.form.tournamentID = $scope.editTeam.tournamentID;
 	$scope.form.number = $scope.editTeam.number;
@@ -732,33 +733,37 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	$scope.form.state = $scope.editTeam.state;
 	$scope.form.school = $scope.editTeam.school;
 	
-	var addCoaches = function() {
-		var err = false;
-		var added = 0;
-		$scope.coaches.forEach(function(entry) {
-			$http({
-				method:'POST',
-				url:'/team/addcoach',
-				data:{
-					tournamentID:$scope.form.tournamentID,
-					division:$scope.form.division,
-					teamNumber:$scope.form.teamNumber,
-					officialID:entry.value
-				}
-			}).success(function(data) {
-				added = added + 1;
-				console.log('Added Coach ' + entry.name);
-				if(!err && added === $scope.coaches.length) {
-					$scope.cancel();
-				}
-			}).error(function(err) {
-				if(!$scope.errorMessage) {
-					$scope.errorMessage = 'Team created, but could not add coach(es): ' + entry.name;
-				} else {
-					$scope.errorMessage = $scope.errorMessage + ', ' + entry.name;
-				}
-				err = true;
+	console.log('/team/' + $scope.form.number + '/getcoaches  ' + $scope.form.tournamentID);
+	
+	$http({
+		method:'GET',
+		url:'/team/' + $scope.form.tournamentID + '/' + $scope.form.division + '/' + $scope.form.number + '/getcoaches'
+	}).success(function(data) {
+		console.log(' ' + data.length);
+		data.forEach(function(entry) {
+			$scope.coaches.push({
+				name:entry.name_first + ' ' + entry.name_last + ' (' + entry.officialID + ')',
+				value:entry.officialID
 			});
+		});
+	}).error(function(err) {
+		$scope.errorMessage = 'Error getting team coaches';
+	});
+	
+	var addCoach = function(coach) {
+		$http({
+			method:'POST',
+			url:'/team/addcoach',
+			data:{
+				tournamentID:$scope.form.tournamentID,
+				division:$scope.form.division,
+				teamNumber:$scope.form.teamNumber,
+				officialID:coach.value
+			}
+		}).success(function(data) {
+			$scope.coaches.add(coach);
+		}).error(function(err) {
+			$scope.errorMessage = 'Could not add coach ' + coach.name;
 		});
 	};
 	

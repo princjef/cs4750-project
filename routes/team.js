@@ -78,14 +78,12 @@ exports.remove = function(req, res) {
 };
 
 exports.getCoaches = function(req, res) {
+	console.log(" " +req.params.id+" "+ req.params.teamNumber+" "+req.params.division);
 	permissions.tournament(req, res, req.params.id, function() {
 		var team = new Team({
 			tournamentID: req.params.id,
-			number: req.body.number,
-			division: req.body.division,
-			name: req.body.name,
-			state: req.body.state,
-			school: req.body.school
+			number: req.params.teamNumber,
+			division: req.params.division
 		});
 		team.getCoaches(function(err, result) {
 			if(err) {

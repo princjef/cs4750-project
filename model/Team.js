@@ -86,7 +86,7 @@ Team.prototype.addToTournament = function(callback) {
 
 Team.prototype.getCoaches = function(callback) {
 	connection.query('SELECT name_first, name_last, officialID FROM Official NATURAL JOIN CoachedBy WHERE tournamentID=? AND division=? AND teamNumber=?',
-		[this.tournamentID, this.number, this.division], function(err, rows) {
+		[this.tournamentID, this.division, this.number], function(err, rows) {
 			if(err) {
 				console.log('ERR', err);
 				callback(err);
@@ -97,7 +97,7 @@ Team.prototype.getCoaches = function(callback) {
 					result.push({
 						name_first:entry.name_first,
 						name_last:entry.name_last,
-						officialID:name_officialID
+						officialID:entry.officialID
 					});
 				});
 				callback(null, result);
