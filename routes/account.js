@@ -40,7 +40,7 @@ exports.create = function(req, res) {
 };
 
 exports.update = function(req, res) {
-	permissions.user(req, res, req.user.username, function() {
+	permissions.user(req, res, function() {
 		var account = new Account({
 			username: req.user.username,
 			email: req.body.newEmail,
