@@ -40,12 +40,20 @@ exports.create = function(req, res) {
 };
 
 exports.update = function(req, res) {
-	permissions.user(req, res, req.body.username, function() {
+	permissions.user(req, res, req.user.username, function() {
 		var account = new Account({
-			username: req.body.username,
-			email: req.body.email,
-			password: req.body.password
+			username: req.user.username,
+			email: req.body.newEmail,
+			password: req.body.newPassword
 		});
+
+		if (req.body.newPassword != req.body.newPasswordReentered) {
+			res.send(500, 'ERROR: Passwords do not match.');
+		}
+
+		if (req.body.newEmail != req.body.newEmailReentered) {
+			res.send(500, 'ERROR: Emails do not match.');
+		}
 
 		account.update(function(err, successful) {
 			if(err) {

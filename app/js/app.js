@@ -43,6 +43,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
+			.when('/account/update', {
+					templateUrl: '/partials/account/update.html',
+					controller: 'AccountUpdateCtrl'
+				})
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
 					controller: 'OfficialCreateCtrl'
@@ -182,6 +186,29 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 
 }]);
 
+angular.module('scoreApp').controller('AccountUpdateCtrl',
+	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+
+	$scope.form = {};
+
+	$scope.updateAccount = function() {
+		$http({
+			method: 'POST',
+			url: '/account/update',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully updated account!');
+				user.current();	// Update current user.
+			}
+			else {
+				alert.danger('Account update not successful!');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+}]);
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.form = {};
 	

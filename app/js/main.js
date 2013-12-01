@@ -43,6 +43,10 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/account/login.html',
 					controller: 'AccountLoginCtrl'
 				})
+			.when('/account/update', {
+					templateUrl: '/partials/account/update.html',
+					controller: 'AccountUpdateCtrl'
+				})
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
 					controller: 'OfficialCreateCtrl'

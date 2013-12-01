@@ -55,7 +55,7 @@ Account.prototype.update = function(callback) {
 			console.log('ERR', err);
 		} else {
 			connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
-			[this.email, hash, this.username], function(err, result) {
+			[that.email, hash, that.username], function(err, result) {
 				if(err) {
 					console.log(err);
 					callback(error.message(err), false);
