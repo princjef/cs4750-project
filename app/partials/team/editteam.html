@@ -17,9 +17,39 @@
 					<label for="new-team-state">State:</label>
 					<select id="new-team-state" type="text" ng-model="form.state" class="form-control" ng-options="s for s in states"/>
 				</div>
+				<div class="form-group">
+					<label for="new-team-coach">Coaches:</label>
+					<div class="list-group">
+						<div class="list-group-item" ng-repeat="c in coaches">
+							{{c.name}}
+							<button class="close pull-right" aria-hidden="true" ng-click="removeCoach(c)">&times;</button>
+						</div>
+					</div>
+					<div class="input-group">
+						<input id="new-team-coach" type="text" ng-model="form.coach" class="form-control" list="coaches"/>
+				        <span class="input-group-btn">
+				        	<button class="btn btn-default" type="button" ng-click="checkCoach()">Add</button>
+				        </span>
+					</div>
+					<datalist id="coaches" >
+						<option ng-repeat="o in officials">{{o.name}}</option>
+					</datalist>
+				</div>
 			</form>
+			<div ng-show="errorMessage">
+				<div class="animated alert" ng-class="alert-danger" animation-show-hide="errorMessage" show-animation="flipInX" hide-animation="flipOutX">
+					<div class="panel-danger">
+						<div class="panel-heading">{{errorMessage}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="modal-footer">
+		<div class="modal-footer" ng-show="badCoach">
+			<button class="btn btn-primary" ng-click="cancel('/official/new')">New Official</button>
+			<button class="btn btn-primary" ng-click="cancel('/official/lookup')">Go to Official Lookup</button>
+			<button class="btn btn-default" ng-click="cancelCoach()">Cancel</button>
+		</div>
+		<div class="modal-footer" ng-show="!badCoach">
 			<button class="btn btn-primary" ng-click="updateTeam()">Okay</button>
 			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
 		</div>

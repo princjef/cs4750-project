@@ -84,6 +84,27 @@ Team.prototype.addToTournament = function(callback) {
 		});
 };
 
+Team.prototype.getCoaches = function(callback) {
+	connection.query('SELECT name_first, name_last, officialID FROM Official NATURAL JOIN CoachedBy WHERE tournamentID=? AND division=? AND teamNumber=?',
+		[this.tournamentID, this.division, this.number], function(err, rows) {
+			if(err) {
+				console.log('ERR', err);
+				callback(err);
+			} else {
+				var result = [];
+				console.log('INFO: Got coaches for team');
+				rows.forEach(function(entry) {
+					result.push({
+						name_first:entry.name_first,
+						name_last:entry.name_last,
+						officialID:entry.officialID
+					});
+				});
+				callback(null, result);
+			}
+		});
+};
+
 // Setters
 Team.prototype.setTournamentID = function(id) {
 	this.tournamentID = id;

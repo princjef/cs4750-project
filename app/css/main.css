@@ -90,6 +90,11 @@
   margin-bottom: 10px;
 }
 
+/* line 51, ../scss/base/_utility.scss */
+.narrow {
+  max-width: 400px;
+}
+
 /*
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license

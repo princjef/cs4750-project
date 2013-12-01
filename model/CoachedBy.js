@@ -22,6 +22,7 @@ CoachedBy.prototype.create = function(callback) {
 };
 
 CoachedBy.prototype.remove = function(callback) {
+	console.log('DELETE FROM CoachedBy WHERE tournamentID=' + this.tournamentID+' AND teamNumber='+this.teamNumber+' AND division='+this.division+' AND officialID=' + this.officialID);
 	connection.query('DELETE FROM CoachedBy WHERE tournamentID=? AND teamNumber=? AND division=? AND officialID=?', 
 		[this.tournamentID, this.teamNumber, this.division, this.officialID], function(err, row) {
 		if(err) {
@@ -38,7 +39,7 @@ CoachedBy.prototype.remove = function(callback) {
 CoachedBy.prototype.toJson = function() {
 	return {
 		tournamentID:this.tournamentID,
-		teamNumber:his.teamNumber,
+		teamNumber:this.teamNumber,
 		division:this.division,
 		officialID:this.officialID
 	};
