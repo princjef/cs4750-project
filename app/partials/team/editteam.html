@@ -36,8 +36,20 @@
 					</datalist>
 				</div>
 			</form>
+			<div ng-show="errorMessage">
+				<div class="animated alert" ng-class="alert-danger" animation-show-hide="errorMessage" show-animation="flipInX" hide-animation="flipOutX">
+					<div class="panel-danger">
+						<div class="panel-heading">{{errorMessage}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="modal-footer">
+		<div class="modal-footer" ng-show="badCoach">
+			<button class="btn btn-primary" ng-click="cancel('/official/new')">New Official</button>
+			<button class="btn btn-primary" ng-click="cancel('/official/lookup')">Go to Official Lookup</button>
+			<button class="btn btn-default" ng-click="cancelCoach()">Cancel</button>
+		</div>
+		<div class="modal-footer" ng-show="!badCoach">
 			<button class="btn btn-primary" ng-click="updateTeam()">Okay</button>
 			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
 		</div>
