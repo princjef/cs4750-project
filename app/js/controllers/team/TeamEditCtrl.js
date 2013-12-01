@@ -52,17 +52,17 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	};
 	
 	$scope.form.tournamentID = $scope.editTeam.tournamentID;
-	$scope.form.number = $scope.editTeam.number;
+	$scope.form.teamNumber = $scope.editTeam.number;
 	$scope.form.division = $scope.editTeam.division;
 	$scope.form.name = $scope.editTeam.name;
 	$scope.form.state = $scope.editTeam.state;
 	$scope.form.school = $scope.editTeam.school;
 	
-	console.log('/team/' + $scope.form.number + '/getcoaches  ' + $scope.form.tournamentID);
+	console.log('/team/' + $scope.form.teamNumber + '/getcoaches  ' + $scope.form.tournamentID);
 	
 	$http({
 		method:'GET',
-		url:'/team/' + $scope.form.tournamentID + '/' + $scope.form.division + '/' + $scope.form.number + '/getcoaches'
+		url:'/team/' + $scope.form.tournamentID + '/' + $scope.form.division + '/' + $scope.form.teamNumber + '/getcoaches'
 	}).success(function(data) {
 		console.log(' ' + data.length);
 		data.forEach(function(entry) {
@@ -91,9 +91,13 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 				officialID:coach.value
 			}
 		}).success(function(data) {
-			$scope.coaches.add(coach);
+			coachesToAdd.splice(indexOfID(coachesToAdd, coach), 1);
 		}).error(function(err) {
-			$scope.errorMessage = 'Could not add coach ' + coach.name;
+			if(!$scope.errorMessage) {
+				$scope.errorMessage = 'Could not add ' + coach.name;
+			} else {
+				$scope.errorMessage = $scope.errorMessage + '\nCould not add ' + coach.name;
+			}
 		});
 	};
 	
@@ -108,11 +112,14 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 				officialID:coach.value
 			}
 		}).success(function(data) {
-			console.log('Removed Coach ' + entry.name);
-			var i = indexOfID($scope.coaches, coach);
-			$scope.coaches.splice(i, 1);
+			console.log('Removed Coach ' + coach.name + " " + data);
+			coachesToRemove.splice(indexOfID(coachesToRemove, coach), 1);
 		}).error(function(err) {
-			$scope.errorMessage = 'Could not remove ' + entry.name;
+			if(!$scope.errorMessage) {
+				$scope.errorMessage = 'Could not remove ' + coach.name;
+			} else {
+				$scope.errorMessage = $scope.errorMessage + '\nCould not remove ' + coach.name;
+			}
 		});
 	};
 	
@@ -125,9 +132,19 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 			$scope.editTeam.name = $scope.form.name;
 			$scope.editTeam.state = $scope.form.state;
 			$scope.editTeam.school = $scope.form.school;
-			$modalInstance.dismiss('success');
+			//$modalInstance.dismiss('success');
 		}).error(function(err) {
-
+			if(!$scope.errorMessage) {
+				$scope.errorMessage = "Failed to update Team";
+			} else {
+				$scope.errorMessage = $scope.errorMessage + "\nFailed to update Team";
+			}
+		});
+		coachesToAdd.forEach(function(entry) {
+			addCoach(entry);
+		});
+		coachesToRemove.forEach(function(entry) {
+			removeCoach(entry);
 		});
 	};
 	
