@@ -709,6 +709,25 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 	};
 }]);
 angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', 'dropdowns', function($scope, $modalInstance, $http, team, states, dropdowns) {
+	var print = function(a) {
+		var s = " a: ";
+		a.forEach(function(entry) { s = s + entry.value + " ";});
+		return s;
+	};
+	
+	var indexOfID = function(a, toCheck) {
+		var index = 0;
+		var returnV = -1;
+		a.forEach(function(entry) {
+			if(entry.value === toCheck.value) {
+				returnV =  index;
+			} else {
+				index = index + 1;
+			}
+		});
+		return returnV;
+	};
+	
 	dropdowns.getOfficials().then(function(data) {
 		var names = [];
 		data.forEach(function(entry) {
@@ -725,6 +744,22 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	$scope.states = states.getStates();
 	$scope.editTeam = team.get();
 	$scope.coaches = []; 
+	var originalCoaches = [];
+	var coachesToAdd = [];
+	var coachesToRemove = [];
+	
+	var printStatus = function() {
+		var addString = "Coaches To Add: ";
+		var removeString = "Coaches To Remove: ";
+		coachesToAdd.forEach(function(entry) {
+			addString = addString + ", " + entry.name;
+		});
+		coachesToRemove.forEach(function(entry) {
+			removeString = removeString + ", " + entry.name;
+		});
+		console.log(addString);
+		console.log(removeString);
+	};
 	
 	$scope.form.tournamentID = $scope.editTeam.tournamentID;
 	$scope.form.number = $scope.editTeam.number;
@@ -741,7 +776,12 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	}).success(function(data) {
 		console.log(' ' + data.length);
 		data.forEach(function(entry) {
-			$scope.coaches.push({
+			var o = {
+				name:entry.name_first + ' ' + entry.name_last + ' (' + entry.officialID + ')',
+				value:entry.officialID
+			};
+			$scope.coaches.push(o);
+			originalCoaches.push({
 				name:entry.name_first + ' ' + entry.name_last + ' (' + entry.officialID + ')',
 				value:entry.officialID
 			});
@@ -767,7 +807,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 		});
 	};
 	
-	$scope.removeCoach = function(coach) {
+	var removeCoach = function(coach) {
 		$http({
 			method:'POST',
 			url:'/team/removecoach',
@@ -779,7 +819,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 			}
 		}).success(function(data) {
 			console.log('Removed Coach ' + entry.name);
-			var i = $scope.coaches.indexOf(coach);
+			var i = indexOfID($scope.coaches, coach);
 			$scope.coaches.splice(i, 1);
 		}).error(function(err) {
 			$scope.errorMessage = 'Could not remove ' + entry.name;
@@ -820,15 +860,23 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 				}
 			});
 			if(coachValid) {
-				if($scope.coaches.indexOf(coachValid) === -1) {
+				if(indexOfID($scope.coaches, coachValid) === -1) {
 					$scope.coaches.push(coachValid);
+					if(indexOfID(originalCoaches, coachValid, true) === -1) {
+						coachesToAdd.push(coachValid);
+					}
+					var removeIndex = indexOfID(coachesToRemove, coachValid);
+					if(removeIndex !== -1) {
+						coachesToRemove.splice(removeIndex, 1);
+					}
 					$scope.form.coach = undefined;
 				}
 			} else {
-				$scope.errorMessage = 'This coach does not exist. Create new official? (The current team will be lost)';
+				$scope.errorMessage = 'This coach does not exist. Create new official? (The current team will not be updated)';
 				$scope.badCoach = true;
 			}
 		}
+		printStatus();
 	};
 	
 	$scope.cancelCoach = function() {
@@ -838,6 +886,15 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	};
 	
 	$scope.removeCoach = function(coach) {
+		var displayIndex = indexOfID($scope.coaches, coach);
+		var toAddIndex = indexOfID(coachesToAdd, coach);
+		$scope.coaches.splice(displayIndex, 1);
+		if(toAddIndex === -1) {
+			coachesToRemove.push(coach);
+		} else {
+			coachesToAdd.splice(toAddIndex, 1);
+		}
+		printStatus();
 	};
 }]);
 angular.module('scoreApp').controller('TeamListingCtrl', ['$scope', '$window', '$http', '$routeParams', '$modal', 'tournament', 'alert', 'team', function($scope, $window, $http, $routeParams, $modal, tournament, alert, team) {	
