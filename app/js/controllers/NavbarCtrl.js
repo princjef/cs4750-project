@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', 'user', 'alert', function($scope, $http, $modal, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', 'user', 'alert', function($scope, $http, $modal, $rootScope, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
@@ -18,6 +18,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	};
 
 	$scope.getUser();
+
+	$rootScope.$on('login', function() {
+		$scope.getUser();
+	});
 
 	$scope.openLogin = function() {
 		var loginForm = $modal.open({

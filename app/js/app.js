@@ -40,8 +40,8 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					controller: 'AccountCreateCtrl'
 				})
 			.when('/login', {
-					templateUrl: '/partials/account/login.html',
-					controller: 'AccountLoginCtrl'
+					templateUrl: '/partials/account/loginPage.html',
+					controller: 'AccountLoginPageCtrl'
 				})
 			.when('/official/new', {
 					templateUrl: '/partials/official/new.html',
@@ -64,7 +64,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', 'user', 'alert', function($scope, $http, $modal, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', 'user', 'alert', function($scope, $http, $modal, $rootScope, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
@@ -84,6 +84,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	};
 
 	$scope.getUser();
+
+	$rootScope.$on('login', function() {
+		$scope.getUser();
+	});
 
 	$scope.openLogin = function() {
 		var loginForm = $modal.open({
@@ -182,6 +186,32 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 
 }]);
 
+angular.module('scoreApp').controller('AccountLoginPageCtrl', ['$scope', '$http', '$location', '$routeParams', '$rootScope', 'alert', function($scope, $http, $location, $routeParams, $rootScope, alert) {
+	$scope.form = {};
+
+	$scope.login = function() {
+		$http({
+			method: 'POST',
+			url: '/account/login',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully logged in!');
+				if($routeParams.redirect) {
+					$location.url($routeParams.redirect);
+				} else {
+					console.log('no redirect :(');
+				}
+				$rootScope.$emit('login');
+			}
+			else {
+				alert.danger('Invalid login!');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+}]);
 angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.form = {};
 	
@@ -1270,7 +1300,10 @@ angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert
 			}, function(response) {	// Error
 				if(response.status === 401) {
 					alert.danger('You do not have access to this page');
-					$location.path('/');
+					if($location.path() !== '/login') {
+						$location.search('redirect', $location.path());
+						$location.path('/login');
+					}
 					return $q.reject(response);
 				} else {
 					return $q.reject(response);
