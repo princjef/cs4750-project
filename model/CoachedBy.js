@@ -9,7 +9,7 @@ var CoachedBy = function(obj) {
 };
 
 CoachedBy.prototype.create = function(callback) {
-	connection.query('INSERT INTO CoachedBy(tournamentID, teamNumber, division, officialID) VALUES (?, ?, ?, ?)', 
+	connection.query('INSERT INTO CoachedBy(tournamentID, teamNumber, division, officialID) VALUES (?, ?, ?, ?)',
 		[this.tournamentID, this.teamNumber, this.division, this.officialID], function(err, row) {
 		if(err) {
 			console.log(err);
@@ -23,7 +23,7 @@ CoachedBy.prototype.create = function(callback) {
 
 CoachedBy.prototype.remove = function(callback) {
 	console.log('DELETE FROM CoachedBy WHERE tournamentID=' + this.tournamentID+' AND teamNumber='+this.teamNumber+' AND division='+this.division+' AND officialID=' + this.officialID);
-	connection.query('DELETE FROM CoachedBy WHERE tournamentID=? AND teamNumber=? AND division=? AND officialID=?', 
+	connection.query('DELETE FROM CoachedBy WHERE tournamentID=? AND teamNumber=? AND division=? AND officialID=?',
 		[this.tournamentID, this.teamNumber, this.division, this.officialID], function(err, row) {
 		if(err) {
 			console.log(err);
