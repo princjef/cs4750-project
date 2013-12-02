@@ -105,7 +105,7 @@ Organization.getOrganizationByTournamentID = function(tournamentID, callback) {
 	connection.query("SELECT * FROM Organization NATURAL JOIN RunBy WHERE tournamentID=?", [tournamentID], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callabck(error.message(err));
+			callback(error.message(err));
 		} else {
 			if(rows.length === 0) {
 				callback('This tournament has no organizers on record');
