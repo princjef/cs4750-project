@@ -5,9 +5,22 @@
 		</div>
 		<div class="modal-body">
 			<form class="newevent-form">
-				<div class="form-group">
+				<div class="form-group" ng-hide="createForm.active">
 					<label for="add-event-name">Event Name</label>
 					<select id="add-event-name" class="form-control" ng-model="form.eventToAdd" ng-options="e.value as e.name for e in events"></select>
+					<em class="text-muted">Don't see the event you want? <a href="" ng-click="createForm.active = true">Create a new one</a></em>
+				</div>
+				<div ng-show="createForm.active" class="well">
+					<div class="pull-right close" ng-click="createForm.active = false">&times;</div>
+					<div class="form-group">
+						<label for="new-event-division">Division</label>
+						<select id="new-event-division" ng-model="createForm.division" ng-options="division for division in divisions" class="form-control"></select>
+					</div>
+
+					<div class="form-group">
+						<label for="new-event-name">Event Name</label>
+						<input id="new-event-name" type="text" ng-model="createForm.name" class="form-control" />
+					</div>
 				</div>
 				<div class="form-group">
 					<label for="add-event-type">Event Type</label>
