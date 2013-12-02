@@ -55,6 +55,14 @@ exports.update = function(req, res) {
 			res.send(500, 'ERROR: Emails do not match.');
 		}
 
+		if (req.body.newPassword.length === 0) {
+			account.password = req.user.password;
+		}
+
+		if (req.body.newEmail.length === 0) {
+			account.email = req.user.email;
+		}
+
 		account.update(function(err, successful) {
 			if(err) {
 				res.send(500, err);
