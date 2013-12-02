@@ -63,19 +63,6 @@ CREATE TABLE CoachedBy (
 	FOREIGN KEY (tournamentID, teamNumber, division) REFERENCES Team(tournamentID, teamNumber, division) ON DELETE CASCADE,
 	FOREIGN KEY (officialID) REFERENCES Official(officialID) ON DELETE RESTRICT);
 
-CREATE TABLE ParticipatesIn (
-	tournamentID INTEGER NOT NULL,
-	teamNumber INTEGER NOT NULL,
-	division ENUM('A', 'B', 'C') NOT NULL,
-	eventName VARCHAR(50) NOT NULL,
-	scoreCode ENUM('participated', 'NS', 'DQ'), -- NS = No Show, DQ = Disqualified
-	score FLOAT(24),
-	tiebreak FLOAT(24),
-	tier ENUM('1', '2', '3', '4'),
-	PRIMARY KEY (tournamentID, teamNumber, division, eventName),
-	FOREIGN KEY (tournamentID, teamNumber, division) REFERENCES Team(tournamentID, teamNumber, division) ON DELETE CASCADE,
-	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE);
-
 CREATE TABLE ConsistsOf (
 	tournamentID INTEGER NOT NULL,
 	eventName VARCHAR(50) NOT NULL,
@@ -91,6 +78,20 @@ CREATE TABLE ConsistsOf (
 	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
 	FOREIGN KEY (supervisor_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT,
 	FOREIGN KEY (writer_officialID) REFERENCES Official(officialID) ON DELETE RESTRICT);
+
+CREATE TABLE ParticipatesIn (
+	tournamentID INTEGER NOT NULL,
+	teamNumber INTEGER NOT NULL,
+	division ENUM('A', 'B', 'C') NOT NULL,
+	eventName VARCHAR(50) NOT NULL,
+	scoreCode ENUM('participated', 'NS', 'DQ'), -- NS = No Show, DQ = Disqualified
+	score FLOAT(24),
+	tiebreak FLOAT(24),
+	tier ENUM('1', '2', '3', '4'),
+	PRIMARY KEY (tournamentID, teamNumber, division, eventName),
+	FOREIGN KEY (tournamentID, teamNumber, division) REFERENCES Team(tournamentID, teamNumber, division) ON DELETE CASCADE,
+	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
+	FOREIGN KEY (tournamentID, eventName, division) REFERENCES ConsistsOf(tournamentID, eventName, division) ON DELETE CASCADE);
 	
 CREATE VIEW officialEventInfo AS (
 	SELECT tournamentName, tournamentID, eventName, division, writer_officialID, supervisor_officialID
