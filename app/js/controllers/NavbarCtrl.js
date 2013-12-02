@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', 'user', 'alert', function($scope, $http, $modal, $rootScope, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, $http, $modal, $rootScope, $location, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
@@ -58,7 +58,8 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 		});
 
 		newOrganization.result.then(function(organization) {
-			$rootScope.$emit('newOrganization', organization);
+			$scope.user.organizations.push(organization);
+			$location.path('/organization/' + organization.id + '/dashboard');
 		});
 	};
 }]);
