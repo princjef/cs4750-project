@@ -39,6 +39,21 @@ Official.prototype.update = function(callback) {
 	});
 };
 
+Official.prototype.remove = function(callback) {
+	var that = this;
+	connection.query("DELETE Official WHERE officialID=?",
+	[this.officialID], function(err, row) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			that.officialID = row.officialID;
+			console.log('INFO: Deleted official with ID:', that.officalID);
+			callback();
+		}
+	});
+};
+
 Official.prototype.getSupervisedEvents = function(callback) {
 	var that = this;
 	connection.query('SELECT * FROM officialEventInfo WHERE supervisor_officialID=?',
