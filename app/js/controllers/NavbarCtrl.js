@@ -50,4 +50,15 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			alert.danger(err);
 		});
 	};
+
+	$scope.createOrganization = function() {
+		var newOrganization = $modal.open({
+			templateUrl: '/partials/organization/new.html',
+			controller: 'OrganizationCreateCtrl'
+		});
+
+		newOrganization.result.then(function(organization) {
+			$rootScope.$emit('newOrganization', organization);
+		});
+	};
 }]);

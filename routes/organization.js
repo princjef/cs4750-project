@@ -1,4 +1,5 @@
 var Organization = require('../model/Organization');
+var BelongsTo = require('../model/BelongsTo');
 
 exports.info = function(req, res) {
 	Organization.getByID(req.params.organizationID, function(err, org) {
@@ -11,16 +12,29 @@ exports.info = function(req, res) {
 };
 
 exports.create = function(req, res) {
-	var organization = new Organization({
-		name: req.body.name
-	});
-	
-	organization.create(function(err) {
-		if(err) {
-			res.send(500, err);
-		} else {
-			res.json(organization.toJson());
-		}
+	permissions.user(req, res, null, function() {
+		var organization = new Organization({
+			name: req.body.name
+		});
+		
+		organization.create(function(err) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				var belongsTo = new BelongsTo({
+					orgID: organization.id,
+					username: req.user.username
+				});
+
+				belongsTo.create(function(err) {
+					if(err) {
+						res.send(500, err);
+					} else {
+						res.json(organization.toJson());
+					}
+				});
+			}
+		});
 	});
 };
 

@@ -120,6 +120,17 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			alert.danger(err);
 		});
 	};
+
+	$scope.createOrganization = function() {
+		var newOrganization = $modal.open({
+			templateUrl: '/partials/organization/new.html',
+			controller: 'OrganizationCreateCtrl'
+		});
+
+		newOrganization.result.then(function(organization) {
+			$rootScope.$emit('newOrganization', organization);
+		});
+	};
 }]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
@@ -229,7 +240,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully updated account!');
-				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Account update not successful!');
@@ -396,14 +406,20 @@ angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', 
 		console.log('Could not Get Officials');
 	});
 }]);
-angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', '$modalInstance', 'alert', function($scope, $http, $modalInstance, alert) {
 	$scope.form = {};
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
 	$scope.createOrganization = function() {
 		$http({
 			method: 'POST',
 			url: '/organization/create',
 			data: $scope.form
-		}).success(function(res) {
+		}).success(function(organization) {
+			$modalInstance.close(organization);
 			alert.success('Successfully created organization');
 		}).error(function(err) {
 			alert.danger(err);
