@@ -1,6 +1,7 @@
 var connection = require('../sql/connection');
 var Team = require('./Team');
 var Event = require('./Event');
+var ConsistsOf = require('./ConsistsOf');
 var error = require('../sql/error');
 
 var ParticipatesIn = function(obj) {
@@ -30,6 +31,19 @@ ParticipatesIn.getParticipatingTeamsByEventAndTournament = function(tournamentID
 			callback(null, entries);
 		}
 	});
+};
+
+ParticipatesIn.addByConsistsOf = function(consistsOf, callback) {
+	connection.query("INSERT INTO ParticipatesIn (tournamentID, teamNumber, division, eventName, scoreCode, score, tiebreak, tier) " +
+			"SELECT ?, Team.teamNumber, ?, ?, NULL, NULL, NULL, NULL FROM Team WHERE tournamentID=? AND division=?",
+			[consistsOf.tournamentID, consistsOf.division, consistsOf.eventName, consistsOf.tournamentID, consistsOf.division], function(err) {
+				if(err) {
+					console.log(err);
+					callback(error.message(err));
+				} else {
+					callback();
+				}
+			});
 };
 
 ParticipatesIn.populateMultiple = function(rows) {
