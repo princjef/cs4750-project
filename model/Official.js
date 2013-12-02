@@ -101,7 +101,8 @@ Official.prototype.getCoachedTeams = function(callback) {
 						division:entry.division,
 						number:entry.teamNumber,
 						school:entry.school,
-						state:entry.state
+						state:entry.state,
+						tournamentID:entry.tournamentID
 					});
 				});
 				console.log('INFO: Got ' + result.length + ' coached teams for official ' + that.officialID);

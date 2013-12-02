@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -37,4 +37,9 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 	}).error(function(err) {
 		console.log('Error getting supervised events');
 	});
+	
+	$scope.followPath =  function(path) {
+		console.log(path);
+		$location.path(path);
+	};
 }]);

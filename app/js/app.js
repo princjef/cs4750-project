@@ -229,7 +229,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully updated account!');
-				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Account update not successful!');
@@ -346,7 +345,7 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -385,6 +384,11 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 	}).error(function(err) {
 		console.log('Error getting supervised events');
 	});
+	
+	$scope.followPath =  function(path) {
+		console.log(path);
+		$location.path(path);
+	};
 }]);
 angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {
 	$http({
