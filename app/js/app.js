@@ -377,7 +377,7 @@ angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', 'official', function($scope, $http, $routeParams, $location, $modal, official) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', '$window', 'official', 'alert', function($scope, $http, $routeParams, $location, $modal, $window, official, alert) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -386,6 +386,7 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 		url:'/official/' + $routeParams.officialID + '/getbyid'
 	}).success(function(data) {
 		$scope.official = data;
+		$scope.official.officialID = $routeParams.officialID;
 	}).error(function(err) {
 		console.log('Error getting official');
 	});
@@ -428,6 +429,22 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 			templateUrl:'/partials/official/edit.html',
 			controller:'OfficialEditCtrl'
 		});
+	};
+	
+	$scope.removeOfficial = function() {
+		if($window.confirm('Are you sure you want to delete ' + $scope.official.name_first + ' ' +  $scope.official.name_last + ' (cannot be undone)?')) {
+			$http({
+				method:'POST',
+				url:'/official/remove',
+				data:$scope.official
+			}).success(function(data) {
+				console.log(data);
+				alert.success('Removed ' + $scope.official.name_first + ' ' +  $scope.official.name_last + ' from system.');
+				$scope.followPath('/official/lookup');
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
 	};
 }]);
 angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {

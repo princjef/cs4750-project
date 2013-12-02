@@ -47,6 +47,7 @@ exports.removeOfficial = function(req, res) {
 	if(!req.user) {
 		res.send(401);
 	} else {
+		console.log("ID: " + req.body.officialID);
 		var official = new Official({
 			name_first:req.body.name_first,
 			name_last:req.body.name_last,
@@ -55,7 +56,7 @@ exports.removeOfficial = function(req, res) {
 			officialID:req.body.officialID
 		});
 		
-		official.update(function(err) {
+		official.remove(function(err) {
 			if(err) {
 				res.send(500, err);
 			} else {

@@ -1,4 +1,7 @@
-<h3>{{official.name_first + ' ' + official.name_last}} <button class="btn btn-default pull-right" ng-click="editOfficial()">Edit</button></h3>
+<h3>{{official.name_first + ' ' + official.name_last}} 
+	<button class="btn btn-danger pull-right" ng-click="removeOfficial()">Delete</button>
+	<button class="btn btn-default pull-right" ng-click="editOfficial()">Edit</button>
+</h3>
 <strong>Email:</strong> {{official.email}}<br/>
 <strong>Phone:</strong> {{official.phone}}<br/>
 <div>

@@ -41,7 +41,7 @@ Official.prototype.update = function(callback) {
 
 Official.prototype.remove = function(callback) {
 	var that = this;
-	connection.query("DELETE Official WHERE officialID=?",
+	connection.query("DELETE FROM Official WHERE officialID=?",
 	[this.officialID], function(err, row) {
 		if(err) {
 			console.log(err);
