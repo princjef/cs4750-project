@@ -1,5 +1,6 @@
 var Organization = require('../model/Organization');
 var BelongsTo = require('../model/BelongsTo');
+var permissions = require('../helper/permissions');
 
 exports.info = function(req, res) {
 	Organization.getByID(req.params.organizationID, function(err, org) {
