@@ -1,0 +1,31 @@
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h3>Update Official</h3>
+		</div>
+		<div class="modal-body">
+			<form class='official-form'>
+				<div class='form-group'>
+					<label for='new-official-first-name'>First Name:</label>
+					<input id='new-official-first-name' type='text' ng-model='form.name_first' class='form-control'/>
+				</div>
+				<div class='form-group'>
+					<label for='new-official-last-name'>Last Name:</label>
+					<input id='new-official-last-name' type='text' ng-model='form.name_last' class='form-control'/>
+				</div>
+				<div class='form-group'>
+					<label for='new-official-email'>Email:</label>
+					<input id='new-official-email' type='email' ng-model='form.email' class='form-control'/>
+				</div>
+				<div class='form-group'>
+					<label for='new-official-phone'>Phone:</label>
+					<input id='new-official-phone' type='tel' ng-model='form.phone' class='form-control'/>
+				</div>
+			</form>
+			<div class="modal-footer">
+				<button class='btn btn-primary' ng-click='updateOfficial()'>Update</button>
+				<button class='btn btn-default' ng-click='cancel()'>Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
