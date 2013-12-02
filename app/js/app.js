@@ -357,7 +357,39 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$modalInstance', 'official', 'alert', function($scope, $http, $modalInstance, official, alert) {
+	var editOfficial = official.get();
+	$scope.form = {
+		name_first:editOfficial.name_first,
+		name_last:editOfficial.name_last,
+		officialID:editOfficial.officialID,
+		phone:editOfficial.phone,
+		email:editOfficial.email
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	
+	$scope.updateOfficial = function() {
+		$http({
+			method:'POST',
+			url:'/official/update',
+			data:$scope.form
+		}).success(function(data) {
+			editOfficial.name_first = $scope.form.name_first;
+			editOfficial.name_last = $scope.form.name_last;
+			editOfficial.phone = $scope.form.phone;
+			editOfficial.email = $scope.form.email;
+			$modalInstance.dismiss('success');
+			alert.success('Successfully updated official!');
+		}).error(function(err) {
+			console.log('Error updating official');
+			$scope.errorMessage = err;
+		});
+	};
+}]);
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', 'official', function($scope, $http, $routeParams, $location, $modal, official) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -396,6 +428,19 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 	}).error(function(err) {
 		console.log('Error getting supervised events');
 	});
+	
+	$scope.followPath =  function(path) {
+		console.log(path);
+		$location.path(path);
+	};
+	
+	$scope.editOfficial = function() {
+		official.set($scope.official);
+		$modal.open({
+			templateUrl:'/partials/official/edit.html',
+			controller:'OfficialEditCtrl'
+		});
+	};
 }]);
 angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {
 	$http({
@@ -1440,6 +1485,18 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 	};
 }]);
 
+angular.module('scoreApp').service('official', [function() {
+	var official = {};
+	
+	return{
+		set: function(officialData) {
+			official = officialData;
+		},
+		get: function() {
+			return official;
+		}
+	};
+}]);
 angular.module('scoreApp').service('states', [function() {
 	var states = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
 					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
