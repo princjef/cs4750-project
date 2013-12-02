@@ -43,6 +43,28 @@ exports.updateOfficial = function(req, res) {
 	}
 };
 
+exports.removeOfficial = function(req, res) {
+	if(!req.user) {
+		res.send(401);
+	} else {
+		var official = new Official({
+			name_first:req.body.name_first,
+			name_last:req.body.name_last,
+			email:req.body.email,
+			phone:req.body.phone,
+			officialID:req.body.officialID
+		});
+		
+		official.update(function(err) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				res.json(official.toJson());
+			}
+		});
+	}
+};
+
 exports.getAllOfficials = function(req, res) {
 	if(!req.user) {
 		res.send(401);
