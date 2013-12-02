@@ -38,7 +38,7 @@ exports.create = function(req, res) {
 };
 
 exports.updatePassword = function(req, res) {
-	permissions.user(req, res, req.user.username, function() {
+	permissions.user(req, res, null, function() {
 		var account = new Account({
 			username: req.user.username,
 			email: req.body.newEmail,
@@ -73,7 +73,7 @@ exports.updatePassword = function(req, res) {
 };
 
 exports.updateEmail = function(req, res) {
-	permissions.user(req, res, req.user.username, function() {
+	permissions.user(req, res, null, function() {
 		var account = new Account({
 			username: req.user.username,
 			email: req.body.newEmail,
