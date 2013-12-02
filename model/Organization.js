@@ -16,13 +16,14 @@ var Organization = function(obj) {
  * Returns: error (if there is one)
  */
 Organization.prototype.create = function(callback) {
+	var that = this;
 	connection.query("INSERT INTO Organization (orgName) VALUES (?)",
 			[this.name], function(err, info) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));
 		} else {
-			this.id = info.insertId;
+			that.id = info.insertId;
 			console.log('INFO', 'Organization created with ID:', info.insertId);
 			callback();
 		}

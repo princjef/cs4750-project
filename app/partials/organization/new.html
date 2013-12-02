@@ -1,10 +1,19 @@
-<h3>Create an Organization</h3>
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h3>Create an Organization</h3>
+		</div>
+		<div class="modal-body">
+			<div class="form-group">
+				<label for="new-organization-name">Name</label>
+				<input id="new-organization-name" class="form-control" type="text" ng-model="form.name" />
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" ng-click="createOrganization()">Create</button>
+			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+		</div>
+	</div>
+</div>
 <form class="organization-form">
-	<div class="form-group">
-		<label for="new-organization-name">Name</label>
-		<input id="new-organization-name" class="form-control" type="text" ng-model="form.name" />
-	</div>
-	<div class="form-group">
-		<button class="btn btn-primary" ng-click="createOrganization()">Create</button>
-	</div>
 </form>

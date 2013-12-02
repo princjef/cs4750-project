@@ -68,7 +68,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', 'user', 'alert', function($scope, $http, $modal, $rootScope, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, $http, $modal, $rootScope, $location, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
@@ -118,6 +118,18 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			}
 		}).error(function(err) {
 			alert.danger(err);
+		});
+	};
+
+	$scope.createOrganization = function() {
+		var newOrganization = $modal.open({
+			templateUrl: '/partials/organization/new.html',
+			controller: 'OrganizationCreateCtrl'
+		});
+
+		newOrganization.result.then(function(organization) {
+			$scope.user.organizations.push(organization);
+			$location.path('/organization/' + organization.id + '/dashboard');
 		});
 	};
 }]);
@@ -457,14 +469,20 @@ angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', 
 		console.log('Could not Get Officials');
 	});
 }]);
-angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', '$modalInstance', 'alert', function($scope, $http, $modalInstance, alert) {
 	$scope.form = {};
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
 	$scope.createOrganization = function() {
 		$http({
 			method: 'POST',
 			url: '/organization/create',
 			data: $scope.form
-		}).success(function(res) {
+		}).success(function(organization) {
+			$modalInstance.close(organization);
 			alert.success('Successfully created organization');
 		}).error(function(err) {
 			alert.danger(err);
