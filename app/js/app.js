@@ -31,10 +31,6 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/organization/dashboard.html',
 					controller: 'OrganizationDashCtrl'
 				})
-			.when('/event/new', {
-					templateUrl: '/partials/event/new.html',
-					controller: 'EventCreateCtrl'
-				})
 			.when('/account/new', {
 					templateUrl: '/partials/account/new.html',
 					controller: 'AccountCreateCtrl'
@@ -267,31 +263,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		});
 	};
 }]);
-angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
-	$scope.form = {};
-	
-	$scope.divisions = [
-	{value:'A'}, 
-	{value:'B'}, 
-	{value:'C'}
-	];
-	
-	$scope.form.division = $scope.divisions[0];
-	
-	$scope.create = function() {
-		$http({
-			method:'POST',
-			url:'/event/create',
-			data:$scope.form})
-			.success(function (res) {
-				$window.alert('Successfully created event');})
-			.error(function (error) {
-				console.log(err);
-			});
-	};
-}]);
-
-
 angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', '$window', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, $window, alert, tournament) {
 	$http({
 		method: 'GET',
