@@ -1219,13 +1219,14 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	$scope.exportData = function() {
 		console.log('Download button pressed');
 
-		var data = {
-			tournament: $scope.tournament,
-			organizers: $scope.organizers,
-			eventsByStatus: $scope.eventStatuses
-		};
-
-		console.log(data);
+		$http({
+			method:'GET',
+			url:'/exportData/' + $routeParams.tournamentID + '/getData'
+		}).success(function(data) {
+			console.log('data is', JSON.stringify(data));
+		}).error(function(err) {
+			console.log('Error exporting data!');
+		});
 	};
 }]);
 angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', '$modalInstance', 'tournament', 'dropdowns', function($scope, $http, $modalInstance, tournament, dropdowns) {

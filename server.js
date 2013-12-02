@@ -15,6 +15,7 @@ var team = require('./routes/team');
 var scoring = require('./routes/scoring');
 var runBy = require('./routes/runBy');
 var coachedBy = require('./routes/coachedBy');
+var exportData = require('./routes/exportData');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -58,6 +59,9 @@ app.post('/tournament/addevent', consistsOf.addEventToTournament);
 app.post('/tournament/:id/addteam', team.addToTournament);
 app.post('/tournament/:id/removeteam', team.remove);
 app.post('/tournament/:id/updateteam', team.update);
+
+// Export Routes
+app.get('/exportData/:tournamentID/getData', exportData.getData);
 
 // Scoring Routes
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
