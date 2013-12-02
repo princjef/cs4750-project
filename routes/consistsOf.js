@@ -1,4 +1,5 @@
 var ConsistsOf = require('../model/ConsistsOf');
+var ParticipatesIn = require('../model/ParticipatesIn');
 var permissions = require('../helper/permissions');
 
 exports.addEventToTournament = function(req, res) {
@@ -21,7 +22,13 @@ exports.addEventToTournament = function(req, res) {
 			if(err) {
 				res.send(500, err);
 			} else {
-				res.json(consistsOf.toJson());
+				ParticipatesIn.addByConsistsOf(consistsOf, function(err) {
+					if(err) {
+						res.send(500, err);
+					} else {
+						res.json(consistsOf.toJson());
+					}
+				});
 			}
 		});
 	});

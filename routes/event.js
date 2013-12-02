@@ -6,7 +6,7 @@ exports.createEvent = function(req, res) {
 		res.send(401);
 	} else {
 		var event = new Event({
-			division: req.body.division.value,
+			division: req.body.division,
 			name: req.body.name
 		});
 		
@@ -14,7 +14,7 @@ exports.createEvent = function(req, res) {
 			if(err) {
 				res.send(500, err);
 			} else {
-				res.json(eevent.toJson());
+				res.json(event.toJson());
 			}
 		});
 	}

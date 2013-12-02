@@ -46,7 +46,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 				}
 			}).success(function(res) {
 				$scope.divisions.forEach(function(division) {
-					for(var i = division.events.length - 1; i >= 0; i++) {
+					for(var i = division.events.length - 1; i >= 0; i--) {
 						if(division.events[i].eventName === event.eventName &&
 							division.events[i].division === event.division) {
 							division.events.splice(i, 1);

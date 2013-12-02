@@ -31,10 +31,6 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/organization/dashboard.html',
 					controller: 'OrganizationDashCtrl'
 				})
-			.when('/event/new', {
-					templateUrl: '/partials/event/new.html',
-					controller: 'EventCreateCtrl'
-				})
 			.when('/account/new', {
 					templateUrl: '/partials/account/new.html',
 					controller: 'AccountCreateCtrl'
@@ -267,31 +263,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		});
 	};
 }]);
-angular.module('scoreApp').controller('EventCreateCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
-	$scope.form = {};
-	
-	$scope.divisions = [
-	{value:'A'}, 
-	{value:'B'}, 
-	{value:'C'}
-	];
-	
-	$scope.form.division = $scope.divisions[0];
-	
-	$scope.create = function() {
-		$http({
-			method:'POST',
-			url:'/event/create',
-			data:$scope.form})
-			.success(function (res) {
-				$window.alert('Successfully created event');})
-			.error(function (error) {
-				console.log(err);
-			});
-	};
-}]);
-
-
 angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', '$window', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, $window, alert, tournament) {
 	$http({
 		method: 'GET',
@@ -340,7 +311,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 				}
 			}).success(function(res) {
 				$scope.divisions.forEach(function(division) {
-					for(var i = division.events.length - 1; i >= 0; i++) {
+					for(var i = division.events.length - 1; i >= 0; i--) {
 						if(division.events[i].eventName === event.eventName &&
 							division.events[i].division === event.division) {
 							division.events.splice(i, 1);
@@ -1130,8 +1101,11 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		$modalInstance.dismiss('cancel');
 	};
 
-	console.log(tournament);
+	$scope.createForm = {
+		active: false
+	};
 
+	$scope.divisions = ['A', 'B', 'C'];
 	$scope.tournament = tournament.get();
 
 	$scope.form = {};
@@ -1206,14 +1180,34 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 				$scope.form.writerID = entry.value;
 			}
 		});
-	
+
+		if($scope.createForm.active) {
+			console.log("Creating new event");
+			$http({
+				method: 'POST',
+				url: '/event/create',
+				data: $scope.createForm
+			}).success(function (res) {
+				$scope.form.eventToAdd.division = $scope.createForm.division;
+				$scope.form.eventToAdd.eventName = $scope.createForm.name;
+				$scope.submitAddEventForm();
+			}).error(function (err) {
+				alert.danger(err);
+			});
+		} else {
+			$scope.submitAddEventForm();
+		}
+	};
+
+	$scope.submitAddEventForm = function() {
+		console.log($scope.form);
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
-			data:$scope.form
-		}).success(function (res) {
+			data: $scope.form
+		}).success(function (event) {
 			alert.success('Successfully added event to tournament');
-			$modalInstance.close(res);
+			$modalInstance.close(event);
 		}).error(function (err) {
 			alert.danger(err);
 		});
@@ -1297,16 +1291,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	};
 
 	$scope.exportData = function() {
-		console.log('Download button pressed');
-
-		$http({
-			method:'GET',
-			url:'/exportData/' + $routeParams.tournamentID + '/getData'
-		}).success(function(data) {
-			console.log('data is', JSON.stringify(data));
-		}).error(function(err) {
-			console.log('Error exporting data!');
-		});
+		$window.open('/exportData/' + $routeParams.tournamentID + '/getData');
 	};
 }]);
 angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', '$modalInstance', 'tournament', 'dropdowns', function($scope, $http, $modalInstance, tournament, dropdowns) {

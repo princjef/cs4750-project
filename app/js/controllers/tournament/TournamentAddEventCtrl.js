@@ -3,8 +3,11 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 		$modalInstance.dismiss('cancel');
 	};
 
-	console.log(tournament);
+	$scope.createForm = {
+		active: false
+	};
 
+	$scope.divisions = ['A', 'B', 'C'];
 	$scope.tournament = tournament.get();
 
 	$scope.form = {};
@@ -79,14 +82,34 @@ angular.module('scoreApp').controller('TournamentAddEventCtrl', ['$window', '$sc
 				$scope.form.writerID = entry.value;
 			}
 		});
-	
+
+		if($scope.createForm.active) {
+			console.log("Creating new event");
+			$http({
+				method: 'POST',
+				url: '/event/create',
+				data: $scope.createForm
+			}).success(function (res) {
+				$scope.form.eventToAdd.division = $scope.createForm.division;
+				$scope.form.eventToAdd.eventName = $scope.createForm.name;
+				$scope.submitAddEventForm();
+			}).error(function (err) {
+				alert.danger(err);
+			});
+		} else {
+			$scope.submitAddEventForm();
+		}
+	};
+
+	$scope.submitAddEventForm = function() {
+		console.log($scope.form);
 		$http({
 			method:'POST',
 			url:'/tournament/addevent',
-			data:$scope.form
-		}).success(function (res) {
+			data: $scope.form
+		}).success(function (event) {
 			alert.success('Successfully added event to tournament');
-			$modalInstance.close(res);
+			$modalInstance.close(event);
 		}).error(function (err) {
 			alert.danger(err);
 		});
