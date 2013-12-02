@@ -1320,16 +1320,7 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	};
 
 	$scope.exportData = function() {
-		console.log('Download button pressed');
-
-		$http({
-			method:'GET',
-			url:'/exportData/' + $routeParams.tournamentID + '/getData'
-		}).success(function(data) {
-			console.log('data is', JSON.stringify(data));
-		}).error(function(err) {
-			console.log('Error exporting data!');
-		});
+		$window.open('/exportData/' + $routeParams.tournamentID + '/getData');
 	};
 }]);
 angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', '$modalInstance', 'tournament', 'dropdowns', function($scope, $http, $modalInstance, tournament, dropdowns) {

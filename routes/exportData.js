@@ -6,14 +6,14 @@ var permissions = require('../helper/permissions');
 
 exports.getData = function(req, res) {
 	// Setup vars to hold all results
-	var tournamentResult = {};
-	var organizationResult = {};
-	var eventsResult = {};
+	var tournamentResult = null;
+	var organizationResult = null;
+	var eventsResult = null;
 
 	// Tournament info
 	permissions.tournament(req, res, req.params.tournamentID, function() {
 		var tournament = new Tournament({
-			id: req.params.id
+			id: req.params.tournamentID
 		});
 
 		tournament.getByID(function(err) {
@@ -21,7 +21,7 @@ exports.getData = function(req, res) {
 				res.send(500, err);
 			} else {
 				tournamentResult = tournament.toJson();
-				// res.json(tournamentResult);
+				sendResult(res, tournamentResult, organizationResult, eventsResult);
 			}
 		});
 	});
@@ -31,13 +31,12 @@ exports.getData = function(req, res) {
 		if(err) {
 			res.send(500, err);
 		} else {
-			//var result = [];
 			organizationResult = [];
 			organizers.forEach(function(entry) {
-				//result.push(entry.toJson());
 				organizationResult.push(entry.toJson());
 			});
-			// res.send(organizationResult);
+
+			sendResult(res, tournamentResult, organizationResult, eventsResult);
 		}
 	});
 
@@ -47,15 +46,22 @@ exports.getData = function(req, res) {
 			if(err) {
 				res.send(500, err);
 			} else {
-				// var result = [];
 				eventsResult = [];
 				entries.forEach(function(entry) {
 					eventsResult.push(entry.toJson());
 				});
-				// res.json(eventsResult);
+				sendResult(res, tournamentResult, organizationResult, eventsResult);
 			}
 		});
 	});
+};
 
-	res.json(tournamentResult, organizationResult, eventsResult);
+var sendResult = function(res, tournament, organizers, eventsByStatus) {
+	if(tournament && organizers && eventsByStatus) {
+		res.json({
+			tournament: tournament,
+			organizers: organizers,
+			eventsByStatus: eventsByStatus
+		});
+	}
 };
