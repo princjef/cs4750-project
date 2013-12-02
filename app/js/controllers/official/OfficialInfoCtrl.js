@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', 'official', function($scope, $http, $routeParams, $location, $modal, official) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -41,5 +41,13 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 	$scope.followPath =  function(path) {
 		console.log(path);
 		$location.path(path);
+	};
+	
+	$scope.editOfficial = function() {
+		official.set($scope.official);
+		$modal.open({
+			templateUrl:'/partials/official/edit.html',
+			controller:'OfficialEditCtrl'
+		});
 	};
 }]);

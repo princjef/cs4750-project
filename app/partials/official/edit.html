@@ -15,13 +15,20 @@
 				</div>
 				<div class='form-group'>
 					<label for='new-official-email'>Email:</label>
-					<input id='new-official-email' type='email' ng-model='form.email' class='form-control'/>
+					<input id='new-official-email' type='text' ng-model='form.email' class='form-control'/>
 				</div>
 				<div class='form-group'>
 					<label for='new-official-phone'>Phone:</label>
 					<input id='new-official-phone' type='tel' ng-model='form.phone' class='form-control'/>
 				</div>
 			</form>
+			<div ng-show="errorMessage">
+				<div class="animated alert" ng-class="alert-danger" animation-show-hide="errorMessage" show-animation="flipInX" hide-animation="flipOutX">
+					<div class="panel-danger">
+						<div class="panel-heading">{{errorMessage}}</div>
+					</div>
+				</div>
+			</div>
 			<div class="modal-footer">
 				<button class='btn btn-primary' ng-click='updateOfficial()'>Update</button>
 				<button class='btn btn-default' ng-click='cancel()'>Cancel</button>

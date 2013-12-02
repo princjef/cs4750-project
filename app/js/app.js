@@ -345,7 +345,7 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$modalInstance', 'official', function($scope, $http, $modalInstance, official) {
+angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$modalInstance', 'official', 'alert', function($scope, $http, $modalInstance, official, alert) {
 	var editOfficial = official.get();
 	$scope.form = {
 		name_first:editOfficial.name_first,
@@ -359,19 +359,25 @@ angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$
 		$modalInstance.dismiss('cancel');
 	};
 	
-	$scop.updateOfficial = function() {
+	$scope.updateOfficial = function() {
 		$http({
 			method:'POST',
-			url:'',
+			url:'/official/update',
 			data:$scope.form
 		}).success(function(data) {
-			
+			editOfficial.name_first = $scope.form.name_first;
+			editOfficial.name_last = $scope.form.name_last;
+			editOfficial.phone = $scope.form.phone;
+			editOfficial.email = $scope.form.email;
+			$modalInstance.dismiss('success');
+			alert.success('Successfully updated official!');
 		}).error(function(err) {
-			
+			console.log('Error updating official');
+			$scope.errorMessage = err;
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', 'official', function($scope, $http, $routeParams, $location, $modal, official) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -414,6 +420,14 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 	$scope.followPath =  function(path) {
 		console.log(path);
 		$location.path(path);
+	};
+	
+	$scope.editOfficial = function() {
+		official.set($scope.official);
+		$modal.open({
+			templateUrl:'/partials/official/edit.html',
+			controller:'OfficialEditCtrl'
+		});
 	};
 }]);
 angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {
