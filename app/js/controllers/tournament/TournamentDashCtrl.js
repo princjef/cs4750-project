@@ -51,6 +51,13 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 
 	$scope.exportData = function() {
 		console.log('Download button pressed');
-		alert.success('Download started!');
+
+		var data = {
+			tournament: $scope.tournament,
+			organizers: $scope.organizers,
+			eventsByStatus: $scope.eventStatuses
+		};
+
+		console.log(data);
 	};
 }]);

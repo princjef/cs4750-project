@@ -229,7 +229,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully updated account!');
-				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Account update not successful!');
@@ -1202,7 +1201,14 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 
 	$scope.exportData = function() {
 		console.log('Download button pressed');
-		alert.success('Download started!');
+
+		var data = {
+			tournament: $scope.tournament,
+			organizers: $scope.organizers,
+			eventsByStatus: $scope.eventStatuses
+		};
+
+		console.log(data);
 	};
 }]);
 angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', '$modalInstance', 'tournament', 'dropdowns', function($scope, $http, $modalInstance, tournament, dropdowns) {
