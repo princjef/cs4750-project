@@ -1,8 +1,8 @@
 var connection = require('../sql/connection');
 var error = require('../sql/error');
 
-exports.user = function(req, res, callback) {
-	if(!req.user || !req.user.username) {
+exports.user = function(req, res, username, callback) {
+	if(!req.user || !req.user.username || req.user.username !== username) {
 		res.send(401);
 	} else {
 		callback();

@@ -11,7 +11,6 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 		}).success(function(res) {
 			if (res.status) {
 				alert.success('Successfully updated account!');
-				user.current();	// Update current user.
 			}
 			else {
 				alert.danger('Account update not successful!');
