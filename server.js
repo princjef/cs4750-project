@@ -15,6 +15,7 @@ var team = require('./routes/team');
 var scoring = require('./routes/scoring');
 var runBy = require('./routes/runBy');
 var coachedBy = require('./routes/coachedBy');
+var exportData = require('./routes/exportData');
 
 // MIME Types
 express.static.mime.define({'text/javascript': ['js']});
@@ -59,6 +60,9 @@ app.post('/tournament/:id/addteam', team.addToTournament);
 app.post('/tournament/:id/removeteam', team.remove);
 app.post('/tournament/:id/updateteam', team.update);
 
+// Export Routes
+app.get('/exportData/:tournamentID/getData', exportData.getData);
+
 // Scoring Routes
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
 app.post('/scoring/:tournamentID/:division/:eventName/save', scoring.update);
@@ -92,10 +96,12 @@ app.get('/official/:id/coachedteams', official.getCoachedTeams);
 app.get('/official/:id/getbyid', official.getOfficialByID);
 app.post('/official/create', official.createOfficial);
 app.post('/official/update', official.updateOfficial);
+app.post('/official/remove', official.removeOfficial);
 
 // Account Routes
 app.post('/account/create', account.create);
-app.post('/account/update', account.update);
+app.post('/account/updatePassword', account.updatePassword);
+app.post('/account/updateEmail', account.updateEmail);
 app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);

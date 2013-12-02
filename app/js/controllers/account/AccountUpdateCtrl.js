@@ -3,17 +3,34 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 
 	$scope.form = {};
 
-	$scope.updateAccount = function() {
+	$scope.updatePassword = function() {
 		$http({
 			method: 'POST',
-			url: '/account/update',
+			url: '/account/updatePassword',
 			data: $scope.form
 		}).success(function(res) {
 			if (res.status) {
-				alert.success('Successfully updated account!');
+				alert.success('Successfully updated password!');
 			}
 			else {
-				alert.danger('Account update not successful!');
+				alert.danger('Password update not successful!');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+
+	$scope.updateEmail = function() {
+		$http({
+			method: 'POST',
+			url: '/account/updateEmail',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully updated email!');
+			}
+			else {
+				alert.danger('Email update not successful!');
 			}
 		}).error(function(err) {
 			alert.danger(err);

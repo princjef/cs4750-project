@@ -39,7 +39,7 @@ exports.create = function(req, res) {
 	}
 };
 
-exports.update = function(req, res) {
+exports.updatePassword = function(req, res) {
 	permissions.user(req, res, req.user.username, function() {
 		var account = new Account({
 			username: req.user.username,
@@ -47,15 +47,55 @@ exports.update = function(req, res) {
 			password: req.body.newPassword
 		});
 
+		if (req.body.newPassword === null || req.body.newPasswordReentered === null ||
+				req.body.newPassword === undefined || req.body.newPasswordReentered === undefined ||
+				req.body.newPassword.length === 0 || req.body.newPasswordReentered.length === 0) {
+			res.send(500, 'ERROR: No password entered');
+		}
+
 		if (req.body.newPassword != req.body.newPasswordReentered) {
 			res.send(500, 'ERROR: Passwords do not match.');
+		}
+
+		account.updatePassword(function(err, successful) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				if (successful) {
+					res.json({
+						status: true,
+						user: account.toJson()
+					});
+				} else {
+					res.json({
+						status: false
+					});
+				}
+			}
+		});
+	});
+};
+
+exports.updateEmail = function(req, res) {
+	permissions.user(req, res, req.user.username, function() {
+		var account = new Account({
+			username: req.user.username,
+			email: req.body.newEmail,
+			password: req.body.newPassword
+		});
+
+		if (req.body.newEmail === null || req.body.newEmailReentered === null ||
+				req.body.newEmail === undefined || req.body.newEmailReentered === undefined ||
+				req.body.newEmail.indexOf("@") === -1 || req.body.newEmail.length === 0 ||
+				req.body.newEmailReentered.length === 0) {
+			res.send(500, 'ERROR: Invalid email entered.');
 		}
 
 		if (req.body.newEmail != req.body.newEmailReentered) {
 			res.send(500, 'ERROR: Emails do not match.');
 		}
 
-		account.update(function(err, successful) {
+		account.updateEmail(function(err, successful) {
 			if(err) {
 				res.send(500, err);
 			} else {

@@ -42,25 +42,25 @@ Account.prototype.create = function(callback) {
 };
 
 /*
- * Updates the current Account in the database
+ * Updates the current Account's password in the database
  *
  * Params: callback function
  * Returns: error (if there is one)
  */
-Account.prototype.update = function(callback) {
+Account.prototype.updatePassword = function(callback) {
 	var that = this;
 
 	Account.hashSaltPass(this.password, function(err, hash) {
 		if (err) {
 			console.log('ERR', err);
 		} else {
-			connection.query("UPDATE Account SET email=?, password=? WHERE username=?",
-			[that.email, hash, that.username], function(err, result) {
+			connection.query("UPDATE Account SET password=? WHERE username=?",
+			[hash, that.username], function(err, result) {
 				if(err) {
 					console.log(err);
 					callback(error.message(err), false);
 				} else if(result.affectedRows > 0) {
-					console.log('INFO', 'Updated Account with username:', that.username);
+					console.log('INFO', 'Updated password for username:', that.username);
 					callback(null, true);
 				} else {
 					console.log('INFO', 'User', that.username, 'does not exist!');
@@ -70,6 +70,30 @@ Account.prototype.update = function(callback) {
 		}
 	});
 };
+
+/*
+ * Updates the current Account's email in the database
+ *
+ * Params: callback function
+ * Returns: error (if there is one)
+ */
+Account.prototype.updateEmail = function(callback) {
+	connection.query("UPDATE Account SET email=? WHERE username=?",
+	[this.email, this.username], function(err, result) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err), false);
+		} else if(result.affectedRows > 0) {
+			console.log('INFO', 'Updated email for username:', this.username);
+			callback(null, true);
+		} else {
+			console.log('INFO', 'User', this.username, 'does not exist!');
+			callback(null, false);
+		}
+	});
+};
+
+
 
 /*
  * Logs a user into the system

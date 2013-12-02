@@ -233,17 +233,34 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 
 	$scope.form = {};
 
-	$scope.updateAccount = function() {
+	$scope.updatePassword = function() {
 		$http({
 			method: 'POST',
-			url: '/account/update',
+			url: '/account/updatePassword',
 			data: $scope.form
 		}).success(function(res) {
 			if (res.status) {
-				alert.success('Successfully updated account!');
+				alert.success('Successfully updated password!');
 			}
 			else {
-				alert.danger('Account update not successful!');
+				alert.danger('Password update not successful!');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+
+	$scope.updateEmail = function() {
+		$http({
+			method: 'POST',
+			url: '/account/updateEmail',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully updated email!');
+			}
+			else {
+				alert.danger('Email update not successful!');
 			}
 		}).error(function(err) {
 			alert.danger(err);
@@ -389,7 +406,7 @@ angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$
 		});
 	};
 }]);
-angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', 'official', function($scope, $http, $routeParams, $location, $modal, official) {
+angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$routeParams', '$location', '$modal', '$window', 'official', 'alert', function($scope, $http, $routeParams, $location, $modal, $window, official, alert) {
 	$scope.supervisedEvents = [];
 	$scope.writtenEvents = [];
 	
@@ -398,6 +415,7 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 		url:'/official/' + $routeParams.officialID + '/getbyid'
 	}).success(function(data) {
 		$scope.official = data;
+		$scope.official.officialID = $routeParams.officialID;
 	}).error(function(err) {
 		console.log('Error getting official');
 	});
@@ -440,6 +458,22 @@ angular.module('scoreApp').controller('OfficialInfoCtrl', ['$scope', '$http', '$
 			templateUrl:'/partials/official/edit.html',
 			controller:'OfficialEditCtrl'
 		});
+	};
+	
+	$scope.removeOfficial = function() {
+		if($window.confirm('Are you sure you want to delete ' + $scope.official.name_first + ' ' +  $scope.official.name_last + ' (cannot be undone)?')) {
+			$http({
+				method:'POST',
+				url:'/official/remove',
+				data:$scope.official
+			}).success(function(data) {
+				console.log(data);
+				alert.success('Removed ' + $scope.official.name_first + ' ' +  $scope.official.name_last + ' from system.');
+				$scope.followPath('/official/lookup');
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
 	};
 }]);
 angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', function($scope, $http) {
@@ -1234,7 +1268,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		$modalInstance.dismiss('cancel');
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', 'alert', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament, alert) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -1282,6 +1316,19 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		$modal.open({
 			templateUrl:'/partials/tournament/edittournament.html',
 			controller:'TournamentEditCtrl'
+		});
+	};
+
+	$scope.exportData = function() {
+		console.log('Download button pressed');
+
+		$http({
+			method:'GET',
+			url:'/exportData/' + $routeParams.tournamentID + '/getData'
+		}).success(function(data) {
+			console.log('data is', JSON.stringify(data));
+		}).error(function(err) {
+			console.log('Error exporting data!');
 		});
 	};
 }]);
