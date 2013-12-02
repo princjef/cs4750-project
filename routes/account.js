@@ -11,9 +11,7 @@ exports.create = function(req, res) {
 
 	if (req.body.password != req.body.passwordReentered) {
 		res.send(500, 'ERROR: Passwords do not match.');
-	}
-
-	else {
+	} else {
 		account.create(function(err, successful) {
 			if(err) {
 				if (err.code == 'ER_DUP_ENTRY') {
@@ -51,28 +49,26 @@ exports.updatePassword = function(req, res) {
 				req.body.newPassword === undefined || req.body.newPasswordReentered === undefined ||
 				req.body.newPassword.length === 0 || req.body.newPasswordReentered.length === 0) {
 			res.send(500, 'ERROR: No password entered');
-		}
-
-		if (req.body.newPassword != req.body.newPasswordReentered) {
+		} else if (req.body.newPassword != req.body.newPasswordReentered) {
 			res.send(500, 'ERROR: Passwords do not match.');
-		}
-
-		account.updatePassword(function(err, successful) {
-			if(err) {
-				res.send(500, err);
-			} else {
-				if (successful) {
-					res.json({
-						status: true,
-						user: account.toJson()
-					});
+		} else {
+			account.updatePassword(function(err, successful) {
+				if(err) {
+					res.send(500, err);
 				} else {
-					res.json({
-						status: false
-					});
+					if (successful) {
+						res.json({
+							status: true,
+							user: account.toJson()
+						});
+					} else {
+						res.json({
+							status: false
+						});
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 };
 
@@ -89,28 +85,26 @@ exports.updateEmail = function(req, res) {
 				req.body.newEmail.indexOf("@") === -1 || req.body.newEmail.length === 0 ||
 				req.body.newEmailReentered.length === 0) {
 			res.send(500, 'ERROR: Invalid email entered.');
-		}
-
-		if (req.body.newEmail != req.body.newEmailReentered) {
+		} else if (req.body.newEmail != req.body.newEmailReentered) {
 			res.send(500, 'ERROR: Emails do not match.');
-		}
-
-		account.updateEmail(function(err, successful) {
-			if(err) {
-				res.send(500, err);
-			} else {
-				if (successful) {
-					res.json({
-						status: true,
-						user: account.toJson()
-					});
+		} else {
+			account.updateEmail(function(err, successful) {
+				if(err) {
+					res.send(500, err);
 				} else {
-					res.json({
-						status: false
-					});
+					if (successful) {
+						res.json({
+							status: true,
+							user: account.toJson()
+						});
+					} else {
+						res.json({
+							status: false
+						});
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 };
 
