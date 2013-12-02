@@ -68,7 +68,7 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', 'user', 'alert', function($scope, $http, $modal, $rootScope, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, $http, $modal, $rootScope, $location, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
@@ -118,6 +118,18 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			}
 		}).error(function(err) {
 			alert.danger(err);
+		});
+	};
+
+	$scope.createOrganization = function() {
+		var newOrganization = $modal.open({
+			templateUrl: '/partials/organization/new.html',
+			controller: 'OrganizationCreateCtrl'
+		});
+
+		newOrganization.result.then(function(organization) {
+			$scope.user.organizations.push(organization);
+			$location.path('/organization/' + organization.id + '/dashboard');
 		});
 	};
 }]);
@@ -221,17 +233,34 @@ angular.module('scoreApp').controller('AccountUpdateCtrl',
 
 	$scope.form = {};
 
-	$scope.updateAccount = function() {
+	$scope.updatePassword = function() {
 		$http({
 			method: 'POST',
-			url: '/account/update',
+			url: '/account/updatePassword',
 			data: $scope.form
 		}).success(function(res) {
 			if (res.status) {
-				alert.success('Successfully updated account!');
+				alert.success('Successfully updated password!');
 			}
 			else {
-				alert.danger('Account update not successful!');
+				alert.danger('Password update not successful!');
+			}
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+
+	$scope.updateEmail = function() {
+		$http({
+			method: 'POST',
+			url: '/account/updateEmail',
+			data: $scope.form
+		}).success(function(res) {
+			if (res.status) {
+				alert.success('Successfully updated email!');
+			}
+			else {
+				alert.danger('Email update not successful!');
 			}
 		}).error(function(err) {
 			alert.danger(err);
@@ -457,14 +486,20 @@ angular.module('scoreApp').controller('OfficialLookupCtrl', ['$scope', '$http', 
 		console.log('Could not Get Officials');
 	});
 }]);
-angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', 'alert', function($scope, $http, alert) {
+angular.module('scoreApp').controller('OrganizationCreateCtrl', ['$scope', '$http', '$modalInstance', 'alert', function($scope, $http, $modalInstance, alert) {
 	$scope.form = {};
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
 	$scope.createOrganization = function() {
 		$http({
 			method: 'POST',
 			url: '/organization/create',
 			data: $scope.form
-		}).success(function(res) {
+		}).success(function(organization) {
+			$modalInstance.close(organization);
 			alert.success('Successfully created organization');
 		}).error(function(err) {
 			alert.danger(err);
@@ -1210,7 +1245,7 @@ angular.module('scoreApp').controller('TournamentCreateCtrl', ['$scope', '$http'
 		$modalInstance.dismiss('cancel');
 	};
 }]);
-angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament) {
+angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootScope', '$window', 'dropdowns', '$http', '$routeParams', '$filter', '$modal', 'tournament', 'alert', function($scope, $rootScope, $window, dropdowns, $http, $routeParams, $filter, $modal, tournament, alert) {
 	$scope.form = {};
 	// Get the tournament information
 	$http({
@@ -1258,6 +1293,19 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 		$modal.open({
 			templateUrl:'/partials/tournament/edittournament.html',
 			controller:'TournamentEditCtrl'
+		});
+	};
+
+	$scope.exportData = function() {
+		console.log('Download button pressed');
+
+		$http({
+			method:'GET',
+			url:'/exportData/' + $routeParams.tournamentID + '/getData'
+		}).success(function(data) {
+			console.log('data is', JSON.stringify(data));
+		}).error(function(err) {
+			console.log('Error exporting data!');
 		});
 	};
 }]);
