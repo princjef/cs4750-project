@@ -1,11 +1,11 @@
-<h3>{{official.name_first + ' ' + official.name_last}}</h3>
+<h3>{{official.name_first + ' ' + official.name_last}} <button class="btn btn-default pull-right" ng-click="editOfficial()">Edit</button></h3>
 <strong>Email:</strong> {{official.email}}<br/>
 <strong>Phone:</strong> {{official.phone}}<br/>
 <div>
 	<div>
 		<h4>Coached Teams</h4>
-		<h4 ng-show="coachedTeams.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has no coached teams.</small></h4>
-		<table class="table table-striped" ng-show="coachedTeams.length > 0">
+		<h4 ng-show="coachedTeams.length == 0"><small>There are no coached teams.</small></h4>
+		<table class="table table-striped table-hover" ng-show="coachedTeams.length > 0">
 			<tr>
 				<th>Tournament</th>
 				<th>Name</th>
@@ -14,7 +14,7 @@
 				<th>School</th>
 				<th>State</th>
 			</tr>
-			<tr ng-repeat='t in coachedTeams'>
+			<tr ng-repeat='t in coachedTeams' ng-click="followPath('/tournament/' + t.tournamentID + '/dashboard')">
 				<td>{{t.tournamentName}}</td>
 				<td>{{t.name}}</td>
 				<td>{{t.division}}</td>
@@ -25,14 +25,14 @@
 		</table>
 		<div class="col-md-6">
 			<h4>Written Events</h4>
-			<h4 ng-show="writtenEvents.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has not written any events.</small></h4>
-			<table class="table table-striped" ng-show="writtenEvents.length > 0">
+			<h4 ng-show="writtenEvents.length == 0"><small>There are no written events.</small></h4>
+			<table class="table table-striped table-hover" ng-show="writtenEvents.length > 0">
 				<tr>
 					<th>Tournament</th>
 					<th>Event Name</th>
 					<th>Division</th>
 				</tr>
-				<tr ng-repeat='e in writtenEvents'>
+				<tr ng-repeat='e in writtenEvents' ng-click="followPath('/tournament/' + e.tournamentID + '/scoring/' + e.division + '/' + e.eventName)">
 					<td>{{e.tournamentName}}</td>
 					<td>{{e.eventName}}</td>
 					<td>{{e.division}}</td>
@@ -41,14 +41,14 @@
 		</div>
 		<div class="col-md-6">
 			<h4>Supervised Events</h4>
-			<h4 ng-show="supervisedEvents.length == 0"><small>{{official.name_first + ' ' + official.name_last}} has no supervised events.</small></h4>
-			<table class="table table-striped" ng-show="supervisedEvents.length > 0">
+			<h4 ng-show="supervisedEvents.length == 0"><small>There are no supervised events.</small></h4>
+			<table class="table table-striped table-hover" ng-show="supervisedEvents.length > 0">
 				<tr>
 					<th>Tournament</th>
 					<th>Event Name</th>
 					<th>Division</th>
 				</tr>
-				<tr ng-repeat='e in supervisedEvents'>
+				<tr ng-repeat='e in supervisedEvents' ng-click="followPath('/tournament/' + e.tournamentID + '/scoring/' + e.division + '/' + e.eventName)">
 					<td>{{e.tournamentName}}</td>
 					<td>{{e.eventName}}</td>
 					<td>{{e.division}}</td>

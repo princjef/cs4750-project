@@ -95,6 +95,7 @@ app.get('/official/:id/writtenevents', official.getWrittenEvents);
 app.get('/official/:id/coachedteams', official.getCoachedTeams);
 app.get('/official/:id/getbyid', official.getOfficialByID);
 app.post('/official/create', official.createOfficial);
+app.post('/official/update', official.updateOfficial);
 
 // Account Routes
 app.post('/account/create', account.create);
