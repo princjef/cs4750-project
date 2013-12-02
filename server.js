@@ -94,7 +94,8 @@ app.post('/official/create', official.createOfficial);
 
 // Account Routes
 app.post('/account/create', account.create);
-app.post('/account/update', account.update);
+app.post('/account/updatePassword', account.updatePassword);
+app.post('/account/updateEmail', account.updateEmail);
 app.post('/account/login', account.login);
 app.post('/account/addorganization', belongsTo.create);
 app.get('/account/current', account.current);
