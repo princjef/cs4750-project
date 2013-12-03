@@ -23,6 +23,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 		$scope.getUser();
 	});
 
+	$rootScope.$on('updateUser', function() {
+		$scope.getUser();
+	});
+
 	$scope.openLogin = function() {
 		var loginForm = $modal.open({
 			templateUrl: '/partials/account/login.html',

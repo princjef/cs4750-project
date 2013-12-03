@@ -107,4 +107,20 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 		$event.cancelBubble = true;
 		$event.returnValue = false;
 	};
+
+	$scope.updateOrganization = function() {
+		var updateOrganization = $modal.open({
+			templateUrl: '/partials/organization/update.html',
+			controller: 'OrganizationUpdateCtrl',
+			resolve: {
+				organization: function() {
+					return $scope.organization;
+				}
+			}
+		});
+
+		updateOrganization.result.then(function(org) {
+			$scope.organization = org;
+		});
+	};
 }]);
