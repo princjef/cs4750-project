@@ -337,7 +337,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 		$event.returnValue = false;
 	};
 }]);
-angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', '$http', function($scope, $window, $http) {
+angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', '$http', '$modalInstance', 'alert', function($scope, $window, $http, $modalInstance, alert) {
 	$scope.form = {};
 	
 	$scope.createOfficial = function() {
@@ -346,10 +346,16 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 			url:'/official/create',
 			data:$scope.form
 		}).success(function(res) {
-			$window.alert('Created a new official');
+			$modalInstance.dismiss('success');
+			alert.success('New official created successfully!');
 		}).error(function(err) {
 			console.log(err);
+			$scope.errorMessage = err;
 		});
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }]);
 angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$modalInstance', 'official', 'alert', function($scope, $http, $modalInstance, official, alert) {
