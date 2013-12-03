@@ -49,7 +49,7 @@ Team.prototype.update = function(callback) {
 	[this.name, this.state, this.school, this.tournamentID, this.number, this.division], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			console.log('Updated team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
 			callback();
@@ -62,7 +62,7 @@ Team.prototype.remove = function(callback) {
 	[this.tournamentID, this.number, this.division], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			console.log('Deleted team ' + this.number + ' from tournament ' + this.tournamentID + ' in division ' + this.division);
 			callback();
@@ -76,7 +76,7 @@ Team.prototype.addToTournament = function(callback) {
 		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {
 			if(err) {
 				console.log('ERR', err);
-				callback(err);
+				callback(error.message(err));
 			} else {
 				console.log('INFO: Created a new team');
 				callback();
@@ -89,7 +89,7 @@ Team.prototype.getCoaches = function(callback) {
 		[this.tournamentID, this.division, this.number], function(err, rows) {
 			if(err) {
 				console.log('ERR', err);
-				callback(err);
+				callback(error.message(err));
 			} else {
 				var result = [];
 				console.log('INFO: Got coaches for team');

@@ -67,7 +67,7 @@ angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', 
 			console.log('Added the team');
 			addCoaches();
 		}).error(function(err) {
-			$scope.errorMessage = 'Unable to add team';
+			$scope.errorMessage = err;
 			console.log('Unable to add team');	
 		});
 	};

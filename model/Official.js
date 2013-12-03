@@ -60,7 +60,7 @@ Official.prototype.getSupervisedEvents = function(callback) {
 	[this.officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			result = [];
 			rows.forEach(function(entry) {
@@ -83,7 +83,7 @@ Official.prototype.getWrittenEvents = function(callback) {
 	[this.officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			result = [];
 			rows.forEach(function(entry) {
@@ -106,7 +106,7 @@ Official.prototype.getCoachedTeams = function(callback) {
 		[this.officialID], function(err, rows) {
 			if(err) {
 				console.log(err);
-				callback(err);
+				callback(error.message(err));
 			} else {
 				var result = [];
 				rows.forEach(function(entry) {
@@ -172,7 +172,7 @@ Official.getOfficialByID = function(officialID, callback) {
 	connection.query('SELECT * FROM Official WHERE officialID=?', [officialID], function(err, rows) {
 		if(err) {
 			console.log(err);
-			callback(err);
+			callback(error.message(err));
 		} else {
 			console.log('INFO: got official');
 			callback(null, rows[0]);
