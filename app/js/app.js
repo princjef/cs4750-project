@@ -7,33 +7,13 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 				templateUrl: '/partials/splash.html',
 				controller: 'SplashCtrl'
 			})
-			.when('/tournament/new', {
-					templateUrl: '/partials/tournament/new.html',
-					controller: 'TournamentCreateCtrl'
-				})
-			.when('/tournament/:tournamentID/newevent', {
-					templateUrl: '/partials/tournament/newevent.html',
-					controller: 'TournamentAddEventCtrl'
-			})
 			.when('/tournament/:tournamentID/dashboard', {
 					templateUrl: '/partials/tournament/dashboard.html',
 					controller: 'TournamentDashCtrl'
 				})
-			.when('/tournament/:tournamentID/newteam', {
-					templateUrl: '/partials/team/newteam.html',
-					controller: 'TeamAddCtrl'
-				})
-			.when('/organization/new', {
-					templateUrl: '/partials/organization/new.html',
-					controller: 'OrganizationCreateCtrl'
-				})
 			.when('/organization/:organizationID/dashboard', {
 					templateUrl: '/partials/organization/dashboard.html',
 					controller: 'OrganizationDashCtrl'
-				})
-			.when('/account/new', {
-					templateUrl: '/partials/account/new.html',
-					controller: 'AccountCreateCtrl'
 				})
 			.when('/login', {
 					templateUrl: '/partials/account/loginPage.html',
@@ -42,10 +22,6 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 			.when('/account/update', {
 					templateUrl: '/partials/account/update.html',
 					controller: 'AccountUpdateCtrl'
-				})
-			.when('/official/new', {
-					templateUrl: '/partials/official/new.html',
-					controller: 'OfficialCreateCtrl'
 				})
 			.when('/official/:officialID/info', {
 					templateUrl: '/partials/official/info.html',
@@ -58,6 +34,9 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 			.when('/tournament/:tournamentID/scoring/:eventDivision/:eventName', {
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
+				})
+			.when('/401', {
+					templateUrl: '/partials/denied.html'
 				})
 			;
 
@@ -126,6 +105,13 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 		newOrganization.result.then(function(organization) {
 			$scope.user.organizations.push(organization);
 			$location.path('/organization/' + organization.id + '/dashboard');
+		});
+	};
+	
+	$scope.createOfficial = function() {
+		var newOfficial = $modal.open({
+			templateUrl: '/partials/official/new.html',
+			controller: 'OfficialCreateCtrl'
 		});
 	};
 }]);
@@ -330,7 +316,7 @@ angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$
 		$event.returnValue = false;
 	};
 }]);
-angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', '$http', function($scope, $window, $http) {
+angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window', '$http', '$modalInstance', 'alert', function($scope, $window, $http, $modalInstance, alert) {
 	$scope.form = {};
 	
 	$scope.createOfficial = function() {
@@ -339,10 +325,16 @@ angular.module('scoreApp').controller('OfficialCreateCtrl', ['$scope', '$window'
 			url:'/official/create',
 			data:$scope.form
 		}).success(function(res) {
-			$window.alert('Created a new official');
+			$modalInstance.dismiss('success');
+			alert.success('New official created successfully!');
 		}).error(function(err) {
 			console.log(err);
+			$scope.errorMessage = err;
 		});
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }]);
 angular.module('scoreApp').controller('OfficialEditCtrl', ['$scope', '$http', '$modalInstance', 'official', 'alert', function($scope, $http, $modalInstance, official, alert) {
@@ -1413,7 +1405,7 @@ angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function(
 		}
 	};
 }]);
-angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert', function($location, $q, alert) {
+angular.module('scoreApp').factory('authInterceptor', ['$rootScope', '$location', '$q', 'alert', 'userCache', function($rootScope, $location, $q, alert, userCache) {
 	return function(promise) {
 		return promise.then(
 			function(response) {	// Success
@@ -1421,9 +1413,13 @@ angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert
 			}, function(response) {	// Error
 				if(response.status === 401) {
 					alert.danger('You do not have access to this page');
-					if($location.path() !== '/login') {
-						$location.search('redirect', $location.path());
-						$location.path('/login');
+					if(!userCache.get().username) {
+						if($location.path() !== '/login') {
+							$location.search('redirect', $location.path());
+							$location.path('/login');
+						}
+					} else {
+						$location.path('/401');
 					}
 					return $q.reject(response);
 				} else {
@@ -1628,13 +1624,26 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 				url: '/account/current',
 				cache: false
 			}).success(function(user) {
-				$rootScope.username = user.username;
+				$rootScope.$emit('fetchUser', user);
 				d.resolve(user);
 			}).error(function(err) {
 				d.reject(err);
 			});
 			
 			return d.promise;
+		}
+	};
+}]);
+angular.module('scoreApp').service('userCache', ['$rootScope', function($rootScope) {
+	var cachedUser = {};
+
+	$rootScope.$on('fetchUser', function(event, user) {
+		cachedUser = user;
+	});
+
+	return {
+		get: function() {
+			return cachedUser;
 		}
 	};
 }]);

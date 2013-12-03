@@ -7,7 +7,7 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 				url: '/account/current',
 				cache: false
 			}).success(function(user) {
-				$rootScope.username = user.username;
+				$rootScope.$emit('fetchUser', user);
 				d.resolve(user);
 			}).error(function(err) {
 				d.reject(err);
