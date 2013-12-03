@@ -1,4 +1,4 @@
-<h3>{{official.name_first + ' ' + official.name_last}} 
+<h3>{{official.name_first + ' ' + official.name_last}} ({{official.officialID}})
 	<button class="btn btn-danger pull-right" ng-click="removeOfficial()" ng-disabled="coachedTeams.length != 0 || writtenEvents.length != 0 || supervisedEvents.length != 0">Delete</button>
 	<button class="btn btn-default pull-right" ng-click="editOfficial()">Edit</button>
 </h3>
