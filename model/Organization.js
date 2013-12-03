@@ -50,6 +50,18 @@ Organization.prototype.update = function(callback) {
 	});
 };
 
+Organization.prototype.remove = function(callback) {
+	connection.query("DELETE FROM Organization WHERE orgID=?",
+			[this.id], function(err) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			callback();
+		}
+	});
+};
+
 Organization.prototype.getAdmins = function(callback) {
 	var that = this;
 	connection.query("SELECT Account.* FROM Account NATURAL JOIN BelongsTo WHERE orgID=?",

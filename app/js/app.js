@@ -68,6 +68,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 		$scope.getUser();
 	});
 
+	$rootScope.$on('updateUser', function() {
+		$scope.getUser();
+	});
+
 	$scope.openLogin = function() {
 		var loginForm = $modal.open({
 			templateUrl: '/partials/account/login.html',
@@ -577,6 +581,69 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 		if ($event.preventDefault) $event.preventDefault();
 		$event.cancelBubble = true;
 		$event.returnValue = false;
+	};
+
+	$scope.updateOrganization = function() {
+		var updateOrganization = $modal.open({
+			templateUrl: '/partials/organization/update.html',
+			controller: 'OrganizationUpdateCtrl',
+			resolve: {
+				organization: function() {
+					return $scope.organization;
+				}
+			}
+		});
+
+		updateOrganization.result.then(function(org) {
+			$scope.organization = org;
+		});
+	};
+}]);
+angular.module('scoreApp').controller('OrganizationUpdateCtrl', ['$scope', '$rootScope', '$http', '$modalInstance', 'alert', '$location', '$window', 'organization', function($scope, $rootScope, $http, $modalInstance, alert, $location, $window, organization) {
+	$scope.organization = organization;
+	$scope.form = {
+		name: organization.name
+	};
+
+	$scope.updateOrganization = function() {
+		$http({
+			method: 'POST',
+			url: '/organization/update',
+			data: {
+				name: $scope.form.name,
+				id: organization.id
+			}
+		}).success(function(org) {
+			alert.success('Organization successfully updated');
+			$rootScope.$emit('updateUser');
+			$modalInstance.close(org);
+		}).error(function(err) {
+			alert.danger(err);
+		});
+	};
+
+	$scope.removeOrganization = function() {
+		if($window.confirm('Are you sure you want to remove ' + organization.name + '? This cannot be undone!')) {
+			$http({
+				method: 'POST',
+				url: '/organization/remove',
+				data: {
+					orgID: organization.id
+				}
+			}).success(function() {
+				alert.success($scope.organization.name + ' successfully removed');
+				$rootScope.$emit('updateUser');
+				$location.path('/');
+				$modalInstance.dismiss('cancel');
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
+		$location.path('/account/update');
+	};
+
+	$scope.close = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }]);
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {

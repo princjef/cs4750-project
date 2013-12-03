@@ -79,6 +79,7 @@ app.post('/organization/:organizationID/admins/add', belongsTo.addToOrganization
 app.post('/organization/:organizationID/admins/remove', belongsTo.remove);
 app.post('/organization/create', organization.create);
 app.post('/organization/update', organization.update);
+app.post('/organization/remove', organization.remove);
 app.post('/organization/addtournament', runBy.create);
 
 // Event Routes

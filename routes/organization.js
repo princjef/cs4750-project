@@ -45,11 +45,25 @@ exports.update = function(req, res) {
 		id: req.body.id
 	});
 
-	organization.create(function(err) {
+	organization.update(function(err) {
 		if(err) {
 			res.send(500, err);
 		} else {
 			res.json(organization.toJson());
+		}
+	});
+};
+
+exports.remove = function(req, res) {
+	var organization = new Organization({
+		id: req.body.orgID
+	});
+
+	organization.remove(function(err) {
+		if(err) {
+			res.send(500, err);
+		} else {
+			res.send(200);
 		}
 	});
 };
