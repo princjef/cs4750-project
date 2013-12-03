@@ -128,6 +128,13 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			$location.path('/organization/' + organization.id + '/dashboard');
 		});
 	};
+	
+	$scope.createOfficial = function() {
+		var newOfficial = $modal.open({
+			templateUrl: '/partials/official/new.html',
+			controller: 'OfficialCreateCtrl'
+		});
+	};
 }]);
 angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 

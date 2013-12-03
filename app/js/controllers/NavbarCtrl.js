@@ -62,4 +62,11 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 			$location.path('/organization/' + organization.id + '/dashboard');
 		});
 	};
+	
+	$scope.createOfficial = function() {
+		var newOfficial = $modal.open({
+			templateUrl: '/partials/official/new.html',
+			controller: 'OfficialCreateCtrl'
+		});
+	};
 }]);
