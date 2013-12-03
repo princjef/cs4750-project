@@ -78,6 +78,22 @@ exports.update = function(req, res) {
 	});
 };
 
+exports.remove = function(req, res) {
+	permissions.tournament(req, res, req.body.tournamentID, function() {
+		var tournament = new Tournament({
+			id: req.body.tournamentID
+		});
+
+		tournament.remove(function(err) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				res.send(200);
+			}
+		});
+	});
+};
+
 exports.getByOrganizationID = function(req, res) {
 	permissions.organization(req, res, req.params.organizationID, function() {
 		Tournament.getByOrganizationID(req.params.organizationID, function(err, tournaments) {

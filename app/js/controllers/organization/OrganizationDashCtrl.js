@@ -81,4 +81,30 @@ angular.module('scoreApp').controller('OrganizationDashCtrl', ['$scope', '$http'
 			});
 		}
 	};
+
+	$scope.removeTournament = function($event, tournament) {
+		if($window.confirm('Are you sure you want to remove ' + tournament.name + ' from ' + $scope.organization.name + '? This cannot be undone!')) {
+			$http({
+				method: 'POST',
+				url: '/tournament/remove',
+				data: {
+					tournamentID: tournament.id
+				}
+			}).success(function() {
+				for(var i = 0; i < $scope.tournaments.length; i++) {
+					if($scope.tournaments[i].id === tournament.id) {
+						$scope.tournaments.splice(i, 1);
+					}
+				}
+				alert.success(tournament.name + ' successfully removed');
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
+
+		if ($event.stopPropagation) $event.stopPropagation();
+		if ($event.preventDefault) $event.preventDefault();
+		$event.cancelBubble = true;
+		$event.returnValue = false;
+	};
 }]);

@@ -121,6 +121,19 @@ Tournament.prototype.update = function(callback) {
 	});
 };
 
+Tournament.prototype.remove = function(callback) {
+	var that = this;
+	connection.query("DELETE FROM Tournament WHERE tournamentID=?",
+			[this.id], function(err, result) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			callback();
+		}
+	});
+};
+
 // Setters
 Tournament.prototype.setID = function(id) {
 	this.id = id;

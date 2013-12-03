@@ -55,6 +55,7 @@ app.get('/tournament/:id/events', consistsOf.getByTournament);
 app.get('/tournament/levels', tournament.levels);
 app.post('/tournament/create', tournament.create);
 app.post('/tournament/update', tournament.update);
+app.post('/tournament/remove', tournament.remove);
 app.post('/tournament/addevent', consistsOf.addEventToTournament);
 app.post('/tournament/:id/addteam', team.addToTournament);
 app.post('/tournament/:id/removeteam', team.remove);
