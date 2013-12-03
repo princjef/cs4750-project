@@ -1,10 +1,4 @@
-angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', 'dropdowns', function($scope, $modalInstance, $http, team, states, dropdowns) {
-	var print = function(a) {
-		var s = " a: ";
-		a.forEach(function(entry) { s = s + entry.value + " ";});
-		return s;
-	};
-	
+angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance', '$http', 'team', 'states', 'dropdowns', 'alert', function($scope, $modalInstance, $http, team, states, dropdowns, alert) {
 	var indexOfID = function(a, toCheck) {
 		var index = 0;
 		var returnV = -1;
@@ -38,21 +32,25 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	var coachesToAdd = [];
 	var coachesToRemove = [];
 	
-	var printStatus = function() {
-		var addString = "Coaches To Add: ";
-		var removeString = "Coaches To Remove: ";
-		coachesToAdd.forEach(function(entry) {
-			addString = addString + ", " + entry.name;
-		});
-		coachesToRemove.forEach(function(entry) {
-			removeString = removeString + ", " + entry.name;
-		});
-		console.log(addString);
-		console.log(removeString);
+	
+	var queryCounter;
+	var numQuery;
+	var startCounting = function() {
+		queryCounter = 0;
+		numQuery = coachesToAdd.length + coachesToRemove.length + 1;
+	};
+	var signalFinished = function() {
+		console.log('Success');
+		queryCounter++;
+		if(queryCounter === numQuery) {
+			$modalInstance.dismiss('success');
+			alert.success('Team successfully updated!');
+		}
 	};
 	
 	$scope.form.tournamentID = $scope.editTeam.tournamentID;
 	$scope.form.teamNumber = $scope.editTeam.number;
+	$scope.form.number = $scope.editTeam.number;
 	$scope.form.division = $scope.editTeam.division;
 	$scope.form.name = $scope.editTeam.name;
 	$scope.form.state = $scope.editTeam.state;
@@ -92,6 +90,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 			}
 		}).success(function(data) {
 			coachesToAdd.splice(indexOfID(coachesToAdd, coach), 1);
+			signalFinished();
 		}).error(function(err) {
 			if(!$scope.errorMessage) {
 				$scope.errorMessage = 'Could not add ' + coach.name;
@@ -114,6 +113,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 		}).success(function(data) {
 			console.log('Removed Coach ' + coach.name + " " + data);
 			coachesToRemove.splice(indexOfID(coachesToRemove, coach), 1);
+			signalFinished();
 		}).error(function(err) {
 			if(!$scope.errorMessage) {
 				$scope.errorMessage = 'Could not remove ' + coach.name;
@@ -124,6 +124,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 	};
 	
 	$scope.updateTeam = function() {
+		startCounting();
 		$http({
 			method:'POST',
 			url:'/tournament/' + $scope.editTeam.tournamentID + '/updateteam',
@@ -132,7 +133,7 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 			$scope.editTeam.name = $scope.form.name;
 			$scope.editTeam.state = $scope.form.state;
 			$scope.editTeam.school = $scope.form.school;
-			//$modalInstance.dismiss('success');
+			signalFinished();
 		}).error(function(err) {
 			if(!$scope.errorMessage) {
 				$scope.errorMessage = "Failed to update Team";
@@ -183,7 +184,6 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 				$scope.badCoach = true;
 			}
 		}
-		printStatus();
 	};
 	
 	$scope.cancelCoach = function() {
@@ -201,6 +201,5 @@ angular.module('scoreApp').controller('TeamEditCtrl', ['$scope', '$modalInstance
 		} else {
 			coachesToAdd.splice(toAddIndex, 1);
 		}
-		printStatus();
 	};
 }]);
