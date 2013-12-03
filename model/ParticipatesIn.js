@@ -33,6 +33,19 @@ ParticipatesIn.getParticipatingTeamsByEventAndTournament = function(tournamentID
 	});
 };
 
+ParticipatesIn.getParticipatingTeamsByTournament = function(tournamentID, callback) {
+	connection.query("SELECT * FROM ParticipatesIn NATURAL JOIN Team NATURAL JOIN Event WHERE tournamentID=? ORDER BY eventName",
+			[tournamentID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var entries = ParticipatesIn.populateMultiple(rows);
+			callback(null, entries);
+		}
+	});
+};
+
 ParticipatesIn.addByConsistsOf = function(consistsOf, callback) {
 	connection.query("INSERT INTO ParticipatesIn (tournamentID, teamNumber, division, eventName, scoreCode, score, tiebreak, tier) " +
 			"SELECT ?, Team.teamNumber, ?, ?, NULL, NULL, NULL, NULL FROM Team WHERE tournamentID=? AND division=?",

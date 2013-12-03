@@ -22,7 +22,6 @@ CoachedBy.prototype.create = function(callback) {
 };
 
 CoachedBy.prototype.remove = function(callback) {
-	console.log('DELETE FROM CoachedBy WHERE tournamentID=' + this.tournamentID+' AND teamNumber='+this.teamNumber+' AND division='+this.division+' AND officialID=' + this.officialID);
 	connection.query('DELETE FROM CoachedBy WHERE tournamentID=? AND teamNumber=? AND division=? AND officialID=?',
 		[this.tournamentID, this.teamNumber, this.division, this.officialID], function(err, row) {
 		if(err) {
@@ -31,6 +30,27 @@ CoachedBy.prototype.remove = function(callback) {
 		} else {
 			console.log('INFO: Removed a coach from a team');
 			callback();
+		}
+	});
+};
+
+CoachedBy.getCoachesByTournament = function(tournamentID, callback) {
+	connection.query("SELECT * FROM CoachedBy WHERE tournamentID=?",
+			[tournamentID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var entries = [];
+			rows.forEach(function(row) {
+				entries.push(new CoachedBy({
+					tournamentID: row.tournamentID,
+					teamNumber: row.teamNumber,
+					division: row.division,
+					officialID: row.officialID
+				}));
+			});
+			callback(null, entries);
 		}
 	});
 };
