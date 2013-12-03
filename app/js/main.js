@@ -59,6 +59,9 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
+			.when('/401', {
+					templateUrl: '/partials/denied.html'
+				})
 			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');

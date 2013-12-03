@@ -59,6 +59,9 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
+			.when('/401', {
+					templateUrl: '/partials/denied.html'
+				})
 			;
 
 		$locationProvider.html5Mode(true).hashPrefix('!');
@@ -1413,7 +1416,7 @@ angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function(
 		}
 	};
 }]);
-angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert', function($location, $q, alert) {
+angular.module('scoreApp').factory('authInterceptor', ['$rootScope', '$location', '$q', 'alert', 'userCache', function($rootScope, $location, $q, alert, userCache) {
 	return function(promise) {
 		return promise.then(
 			function(response) {	// Success
@@ -1421,9 +1424,13 @@ angular.module('scoreApp').factory('authInterceptor', ['$location', '$q', 'alert
 			}, function(response) {	// Error
 				if(response.status === 401) {
 					alert.danger('You do not have access to this page');
-					if($location.path() !== '/login') {
-						$location.search('redirect', $location.path());
-						$location.path('/login');
+					if(!userCache.get().username) {
+						if($location.path() !== '/login') {
+							$location.search('redirect', $location.path());
+							$location.path('/login');
+						}
+					} else {
+						$location.path('/401');
 					}
 					return $q.reject(response);
 				} else {
@@ -1628,13 +1635,26 @@ angular.module('scoreApp').service('user', ['$rootScope', '$http', '$q', functio
 				url: '/account/current',
 				cache: false
 			}).success(function(user) {
-				$rootScope.username = user.username;
+				$rootScope.$emit('fetchUser', user);
 				d.resolve(user);
 			}).error(function(err) {
 				d.reject(err);
 			});
 			
 			return d.promise;
+		}
+	};
+}]);
+angular.module('scoreApp').service('userCache', ['$rootScope', function($rootScope) {
+	var cachedUser = {};
+
+	$rootScope.$on('fetchUser', function(event, user) {
+		cachedUser = user;
+	});
+
+	return {
+		get: function() {
+			return cachedUser;
 		}
 	};
 }]);

@@ -65,34 +65,51 @@
 }
 
 /* line 41, ../scss/base/_utility.scss */
+.huge {
+  font-size: 192px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* line 47, ../scss/base/_utility.scss */
+.big {
+  font-size: 40px;
+}
+
+/* line 51, ../scss/base/_utility.scss */
 .small-right-pad {
   padding-right: 3px;
 }
 
-/* line 42, ../scss/base/_utility.scss */
+/* line 52, ../scss/base/_utility.scss */
 .small-left-pad {
   padding-left: 3px;
 }
 
-/* line 43, ../scss/base/_utility.scss */
+/* line 53, ../scss/base/_utility.scss */
 .medium-right-pad {
   padding-right: 8px;
 }
 
-/* line 44, ../scss/base/_utility.scss */
+/* line 54, ../scss/base/_utility.scss */
 .medium-left-pad {
   padding-left: 8px;
 }
 
-/* line 46, ../scss/base/_utility.scss */
+/* line 56, ../scss/base/_utility.scss */
 .h1-margin, .h2-margin, .h3-margin {
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
-/* line 51, ../scss/base/_utility.scss */
+/* line 61, ../scss/base/_utility.scss */
 .narrow {
   max-width: 400px;
+}
+
+/* line 65, ../scss/base/_utility.scss */
+.medium {
+  max-width: 700px;
 }
 
 /*
