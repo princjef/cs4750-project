@@ -25,11 +25,11 @@ Account.prototype.create = function(callback) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err), false);
-		} else if (result !== null) {
+		} else if (result.length !== 0) {
 			console.log('Username already in use!');
 			callback('inUse', false);
 		} else {
-			Account.hashSaltPass(this.password, function(err, hash) {
+			Account.hashSaltPass(that.password, function(err, hash) {
 				if (err) {
 					console.log('ERR', err);
 				} else {
