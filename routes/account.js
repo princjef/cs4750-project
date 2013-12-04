@@ -19,7 +19,11 @@ exports.create = function(req, res) {
 					res.send(500, 'ERROR: Duplicate account name exists.');
 				} else {
 					console.log('Err', err);
-					res.send(500, 'ERROR: The server encountered an error.');
+					if (err === "inUse") {	// Hard-coded this in for now. Can't find a better way to do it.
+						res.send(500, 'ERROR: Username is already in use!');
+					} else {
+						res.send(500, 'ERROR: The server encountered an error.');
+					}
 				}
 			} else {
 				if (successful) {

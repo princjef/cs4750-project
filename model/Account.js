@@ -19,22 +19,34 @@ var Account = function(obj) {
 Account.prototype.create = function(callback) {
 	var that = this;
 
-	Account.hashSaltPass(this.password, function(err, hash) {
-		if (err) {
-			console.log('ERR', err);
+	connection.query("SELECT * FROM Account WHERE username=?",
+	[this.username], function(err, result) {
+		console.log('matching usernames?', result);
+		if(err) {
+			console.log(err);
+			callback(error.message(err), false);
+		} else if (result !== null) {
+			console.log('Username already in use!');
+			callback('inUse', false);
 		} else {
-			connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
-			[that.username, that.email, hash], function(err, result) {
-				console.log('result is:', result);
-				if(err) {
-					console.log(err);
-					callback(error.message(err), false);
-				} else if (result.affectedRows > 0) {
-					console.log('INFO', 'Created Account', that.username);
-					callback(null, true);
+			Account.hashSaltPass(this.password, function(err, hash) {
+				if (err) {
+					console.log('ERR', err);
 				} else {
-					console.log('INFO', 'User', that.username, 'does not exist!');
-					callback(null, false);
+					connection.query("INSERT INTO Account(username, email, password) VALUES (?, ?, ?)",
+					[that.username, that.email, hash], function(err, result) {
+						console.log('result is:', result);
+						if(err) {
+							console.log(err);
+							callback(error.message(err), false);
+						} else if (result.affectedRows > 0) {
+							console.log('INFO', 'Created Account', that.username);
+							callback(null, true);
+						} else {
+							console.log('INFO', 'User', that.username, 'does not exist!');
+							callback(null, false);
+						}
+					});
 				}
 			});
 		}
