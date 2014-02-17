@@ -50,6 +50,7 @@ exports.update = function(req, res) {
 		var succeeded = true;
 		var returnCount = 0;
 		req.body.participants.forEach(function(entry) {
+			console.log("Updating", entry.team.name);
 			var participant = new ParticipatesIn({
 				team: new Team(entry.team),
 				event: new Event(req.body.event),

@@ -37,10 +37,10 @@
 		<tr ng-repeat="participator in participators|orderBy:team.number">
 			<td>{{participator.team.number}}</td>
 			<td>{{participator.team.name}} ({{participator.team.state}})</td>
-			<td><select class="form-control" ng-model="participator.scoreCode" ng-change="updateRankings()" ng-options="code for code in scoreCodes"></select></td>
-			<td><input type="text" class="form-control" ng-model="participator.score" ng-change="updateRankings()" ng-disabled="participator.scoreCode != 'participated'" /></td>
-			<td><select class="form-control" ng-model="participator.tier" ng-change="updateRankings()" ng-options="tier for tier in tiers" ng-disabled="participator.scoreCode != 'participated'"></select></td>
-			<td><input type="text" class="form-control" ng-model="participator.tiebreak" ng-change="updateRankings()"  ng-disabled="participator.scoreCode != 'participated'" /></td>
+			<td><select class="form-control" ng-model="participator.scoreCode" ng-change="updateRankings($index)" ng-options="code for code in scoreCodes"></select></td>
+			<td><input type="text" class="form-control" ng-model="participator.score" ng-change="updateRankings($index)" ng-disabled="participator.scoreCode != 'participated'" /></td>
+			<td><select class="form-control" ng-model="participator.tier" ng-change="updateRankings($index)" ng-options="tier for tier in tiers" ng-disabled="participator.scoreCode != 'participated'"></select></td>
+			<td><input type="text" class="form-control" ng-model="participator.tiebreak" ng-change="updateRankings($index)"  ng-disabled="participator.scoreCode != 'participated'" /></td>
 			<td>{{participator.place}}</td>
 		</tr>
 	</tbody>

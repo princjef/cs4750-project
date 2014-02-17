@@ -730,29 +730,45 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		}
 	};
 
+	$scope.entriesToUpdate = [];
+
 	$scope.updateScoreOrder = function() {
 		$scope.updateRankings();
 		$scope.saveEvent();
 	};
 
 	$scope.saveScores = function() {
-		$http({
-			method: 'POST',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
-			data: {
-				participants: $scope.participators,
-				event: $scope.event
+		var updateList = [];
+		$scope.participators.forEach(function(participant, index) {
+			if($scope.entriesToUpdate.indexOf(index) !== -1) {
+				updateList.push(participant);
 			}
-		}).success(function(res) {
-			alert.success('Scoring information successfully saved');
-		}).error(function(err) {
-			alert.danger(err);
 		});
+
+		if(updateList.length > 0) {
+			$http({
+				method: 'POST',
+				url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
+				data: {
+					participants: updateList,
+					event: $scope.event
+				}
+			}).success(function(res) {
+				alert.success('Scoring information successfully saved');
+				$scope.entriesToUpdate = [];
+			}).error(function(err) {
+				alert.danger(err);
+			});
+		}
 	};
 
 	$scope.debouncedScores = underscore.debounce($scope.saveScores, 3000);
 
-	$scope.updateRankings = function() {
+	$scope.updateRankings = function(index) {
+		if($scope.entriesToUpdate.indexOf(index) === -1) {
+			$scope.entriesToUpdate.push(index);
+		}
+
 		var teams = $scope.participators.slice(0);
 		var started = false;
 		var finished = true;
