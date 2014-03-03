@@ -7,6 +7,9 @@ var Tournament = function(obj) {
 	this.type = obj.type;
 	this.location = obj.location || null;
 	this.date = obj.date || null;
+	this.eventMedalCount = obj.eventMedalCount;
+	this.overallTrophyCount = obj.overallTrophyCount;
+	this.oneTrophyPerSchool = obj.oneTrophyPerSchool ? true : false;
 };
 
 // Static Functions
@@ -43,7 +46,10 @@ Tournament.getByOrganizationID = function(organizationID, callback) {
 					name: row.tournamentName,
 					type: row.tournamentType,
 					location: row.location,
-					date: row.tournamentDate
+					date: row.tournamentDate,
+					eventMedalCount: row.eventMedalCount,
+					overallTrophyCount: row.overallTrophyCount,
+					oneTrophyPerSchool: row.oneTrophyPerSchool ? true : false
 				}));
 			});
 			callback(null, tournaments);
@@ -74,6 +80,9 @@ Tournament.prototype.getByID = function(callback) {
 				that.location = rows[0].location;
 				that.name = rows[0].tournamentName;
 				that.date = rows[0].tournamentDate;
+				that.eventMedalCount = rows[0].eventMedalCount;
+				that.overallTrophyCount = rows[0].overallTrophyCount;
+				that.oneTrophyPerSchool = rows[0].oneTrophyPerSchool;
 				callback();
 			}
 		}
@@ -88,8 +97,8 @@ Tournament.prototype.getByID = function(callback) {
  */
 Tournament.prototype.create = function(callback) {
 	var that = this;
-	connection.query("INSERT INTO Tournament (tournamentName, tournamentType, location, tournamentDate) VALUES (?, ?, ?, ?)",
-			[this.name, this.type, this.location, this.date], function(err, row) {
+	connection.query("INSERT INTO Tournament (tournamentName, tournamentType, location, tournamentDate, eventMedalCount, overallTrophyCount, oneTrophyPerSchool) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			[this.name, this.type, this.location, this.date, this.eventMedalCount, this.overallTrophyCount, this.oneTrophyPerSchool], function(err, row) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));
@@ -109,8 +118,8 @@ Tournament.prototype.create = function(callback) {
  */
 Tournament.prototype.update = function(callback) {
 	var that = this;
-	connection.query("UPDATE Tournament SET tournamentName=?, tournamentType=?, location=?, tournamentDate=? WHERE tournamentID=?",
-			[this.name, this.type, this.location, this.date, this.id], function(err, row) {
+	connection.query("UPDATE Tournament SET tournamentName=?, tournamentType=?, location=?, tournamentDate=?, eventMedalCount=?, overallTrophyCount=?, oneTrophyPerSchool=? WHERE tournamentID=?",
+			[this.name, this.type, this.location, this.date, this.eventMedalCount, this.overallTrophyCount, this.oneTrophyPerSchool, this.id], function(err, row) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));
@@ -160,6 +169,21 @@ Tournament.prototype.setDate = function(date) {
 	return this;
 };
 
+Tournament.prototype.setEventMedalCount = function(eventMedalCount) {
+	this.eventMedalCount = eventMedalCount;
+	return this;
+};
+
+Tournament.prototype.setOverallTrophyCount = function(overallTrophyCount) {
+	this.overallTrophyCount = overallTrophyCount;
+	return this;
+};
+
+Tournament.prototype.setOneTrophyPerSchool = function(oneTrophyPerSchool) {
+	this.oneTrophyPerSchool = oneTrophyPerSchool ? true : false;
+	return this;
+};
+
 // To JSON
 Tournament.prototype.toJson = function() {
 	return {
@@ -167,7 +191,10 @@ Tournament.prototype.toJson = function() {
 		name: this.name,
 		type: this.type,
 		location: this.location,
-		date: this.date
+		date: this.date,
+		eventMedalCount: this.eventMedalCount,
+		overallTrophyCount: this.overallTrophyCount,
+		oneTrophyPerSchool: this.oneTrophyPerSchool
 	};
 };
 

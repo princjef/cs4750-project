@@ -1,0 +1,51 @@
+/* line 1, ../../scss/presentation/presentation.scss */
+.slide {
+  height: 100%;
+  width: 100%;
+  vertical-align: baseline;
+}
+
+/* line 7, ../../scss/presentation/presentation.scss */
+.slide-header {
+  height: 20%;
+  width: 100%;
+  text-align: center;
+}
+
+/* line 13, ../../scss/presentation/presentation.scss */
+.slide-title {
+  margin: 0;
+  height: 75%;
+  width: 100%;
+  font-size: 3px;
+}
+
+/* line 20, ../../scss/presentation/presentation.scss */
+.slide-subtitle {
+  margin-top: 0;
+  height: 25%;
+  width: 100%;
+  font-style: italic;
+  font-size: 3px;
+}
+
+/* line 28, ../../scss/presentation/presentation.scss */
+.slide-body {
+  margin-top: 2%;
+  height: 70%;
+  width: 100%;
+  text-align: left;
+}
+
+/* line 35, ../../scss/presentation/presentation.scss */
+.slide-place {
+  margin: 3%;
+  height: 10%;
+  width: 100%;
+  font-size: 3px;
+}
+
+/* line 42, ../../scss/presentation/presentation.scss */
+.slide-invisible {
+  visibility: hidden;
+}

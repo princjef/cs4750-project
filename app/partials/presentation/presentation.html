@@ -1,0 +1,21 @@
+<div class="slide-wrap" style="width: 700px; height: 350px;">
+	<div id="slide" tabindex="1" class="slide" advance-slide reveal="reveal()" next-slide="nextSlide()" index="currentIndex" max-index="placesLength" disabled="keysDisabled">
+		<div class="slide-inner" ng-hide="disabled">
+			<div class="slide-header">
+				<h1 class="slide-title"><span autosize-text>{{currentevent.eventName}}</span></h1>
+				<h2 class="slide-subtitle"><span autosize-text>Division {{currentevent.division}}</span></h2>
+			</div>
+			<div class="slide-body">
+				<div class="slide-place" style="height: {{entryHeight}}%;" ng-repeat="participant in currentevent.topTeams" ng-class="{ 'slide-invisible' : !participant.revealed}">
+					<span ng-show="inProgress" autosize-text ng-bind-template="{{participant.place}}. {{participant.team.name}} ({{participant.team.division}}-{{participant.team.number}})"></span>
+					<span ng-hide="inProgress" autosize-text ng-bind-template="{{participant.place + '. ' + participant.team.name}} {{tournament.oneTrophyPerSchool ? '' : (' (' + participant.team.division + '-' + participant.team.number + ')')}}"></span>
+				</div>
+			</div>
+		</div>
+		<div class="slide-inner center-text" ng-show="disabled">
+			<h1 class="centered">Scoring in Progress</h1>
+			<button class="form-control btn btn-primary input-lg" ng-click="nextEvent()">Get Results</button>
+		</div>
+	</div>
+</div>
+<button class="btn btn-primary form-control input-lg" ng-click="launchFullscreen()">Launch Presentation</button>

@@ -3,18 +3,20 @@ var Team = require('../model/Team');
 var Event = require('../model/Event');
 var permissions = require('../helper/permissions');
 
-exports.scoreCodes = function(req, res) {
-	ParticipatesIn.getScoreCodes(function(err, result) {
-		if(err) {
-			res.send(500, err);
-		} else {
-			res.json(result);
-		}
+exports.divisionRanks = function(req, res) {
+	permissions.tournament(req, res, req.params.tournamentID, function() {
+		ParticipatesIn.getRanksByDivisionAndTournament(req.params.tournamentID, req.params.division, function(err, result) {
+			if(err) {
+				res.send(500, err);
+			} else {
+				res.json(result);
+			}
+		});
 	});
 };
 
-exports.tiers = function(req, res) {
-	ParticipatesIn.getTiers(function(err, result) {
+exports.scoreCodes = function(req, res) {
+	ParticipatesIn.getScoreCodes(function(err, result) {
 		if(err) {
 			res.send(500, err);
 		} else {
@@ -50,14 +52,15 @@ exports.update = function(req, res) {
 		var succeeded = true;
 		var returnCount = 0;
 		req.body.participants.forEach(function(entry) {
-			console.log("Updating", entry.team.name);
+			console.log("Updating", entry.team.name, "in place:", entry.place, "with tier", entry.tier);
 			var participant = new ParticipatesIn({
 				team: new Team(entry.team),
 				event: new Event(req.body.event),
-				scoreCode: entry.scoreCode,
-				score: entry.score,
-				tiebreak: entry.tiebreak,
-				tier: entry.tier
+				place: entry.place || null,
+				scoreCode: entry.scoreCode || null,
+				score: entry.score || null,
+				tiebreak: entry.tiebreak || null,
+				tier: entry.tier || null
 			});
 			participant.save(function(err) {
 				if(err) {

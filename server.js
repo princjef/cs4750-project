@@ -65,10 +65,10 @@ app.post('/tournament/:id/updateteam', team.update);
 app.get('/exportData/:tournamentID/getData', exportData.getData);
 
 // Scoring Routes
+app.get('/scoring/:tournamentID/:division/ranks', scoring.divisionRanks);
 app.get('/scoring/:tournamentID/:division/:eventName/participators', scoring.participators);
 app.post('/scoring/:tournamentID/:division/:eventName/save', scoring.update);
 app.get('/scoring/scoreCodes', scoring.scoreCodes);
-app.get('/scoring/tiers', scoring.tiers);
 
 // Organization Routes
 app.get('/organization/:tournamentID/getorganizers', organization.getByTournamentID);

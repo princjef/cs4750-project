@@ -52,19 +52,6 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 			});
 			return d.promise;
 		},
-		getTiers: function() {
-			var d = $q.defer();
-			$http({
-				method: 'GET',
-				url: '/scoring/tiers',
-				cache: true
-			}).success(function(tiers) {
-				d.resolve(tiers);
-			}).error(function(err) {
-				d.reject(err);
-			});
-			return d.promise;
-		},
 		getEventStatuses: function() {
 			var d = $q.defer();
 			$http({

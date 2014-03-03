@@ -1,3 +1,60 @@
 .table-vertically-centered>tbody>tr>td {
 	vertical-align: middle;
 }
+
+.table>tbody>tr>td.thick-left-border, .table>thead>tr>th.thick-left-border {
+	border-left-width: 2px;
+}
+
+.table>tbody>tr>td.thick-right-border, .table>thead>tr>th.thick-right-border {
+	border-right-width: 2px;
+}
+
+table>tbody>tr>td.no-pad {
+	padding: 0;
+}
+
+table.table-extra-condensed>tbody>tr>td, table.table-extra-condensed>tbody>tr>th {
+	padding: 2px;
+}
+
+input[type="text"].clear {
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	background-color: transparent;
+}
+
+.scoring-table input[type="text"].clear.ng-invalid-pattern, table>tbody>tr>td.ng-invalid {
+	background-color: rgba(185, 74, 72, 0.5) !important;	// danger color
+}
+
+.vertical-text {
+	display: inline-block;
+	overflow: hidden;
+	width: 1.1em;
+}
+
+.vertical-text-inner {
+	display: inline-block;
+	white-space: nowrap;
+	line-height: 1.1;
+	-webkit-transform: translate(0, 100%) rotate(-90deg);
+	-moz-transform: translate(0, 100%) rotate(-90deg);
+	-o-transform: translate(0, 100%) rotate(-90deg);
+	-ms-transform: translate(0, 100%) rotate(-90deg);
+	transform: translate(0, 100%) rotate(-90deg);
+	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	transform-origin: 0 0;
+
+	&:after {
+		content: "";
+		display: block;
+		margin: -1.1em 0 100%;
+	}
+}

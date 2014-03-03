@@ -15,6 +15,9 @@ CREATE TABLE Tournament (
 	location VARCHAR(100),
 	tournamentName VARCHAR(100) NOT NULL,
 	tournamentDate DATE,
+	eventMedalCount INTEGER NOT NULL,
+	overallTrophyCount INTEGER NOT NULL,
+	oneTrophyPerSchool BOOLEAN DEFAULT 0,
 	PRIMARY KEY (tournamentID));
 
 CREATE TABLE Official (
@@ -37,6 +40,7 @@ CREATE TABLE Team (
 	teamName VARCHAR(50) NOT NULL,
 	state VARCHAR(2) NOT NULL,
 	school VARCHAR(100) NOT NULL,
+	scoreAdjustment INTEGER DEFAULT 0,
 	PRIMARY KEY (teamNumber, division, tournamentID),
 	FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID) ON DELETE CASCADE);
 
@@ -73,6 +77,7 @@ CREATE TABLE ConsistsOf (
 	status ENUM('Not Started', 'In Progress', 'Completed') NOT NULL DEFAULT 'Not Started',
 	highScoreWins BOOLEAN NOT NULL DEFAULT 1,
 	highTiebreakWins BOOLEAN NOT NULL DEFAULT 1,
+	presented BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY (tournamentID, eventName, division),
 	FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID) ON DELETE CASCADE,
 	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,
@@ -84,10 +89,11 @@ CREATE TABLE ParticipatesIn (
 	teamNumber INTEGER NOT NULL,
 	division ENUM('A', 'B', 'C') NOT NULL,
 	eventName VARCHAR(50) NOT NULL,
-	scoreCode ENUM('participated', 'NS', 'DQ'), -- NS = No Show, DQ = Disqualified
+	scoreCode ENUM('participated', 'NS', 'DQ', 'P'), -- NS = No Show, DQ = Disqualified
 	score FLOAT(24),
 	tiebreak FLOAT(24),
-	tier ENUM('1', '2', '3', '4'),
+	tier INTEGER,
+	place INTEGER,
 	PRIMARY KEY (tournamentID, teamNumber, division, eventName),
 	FOREIGN KEY (tournamentID, teamNumber, division) REFERENCES Team(tournamentID, teamNumber, division) ON DELETE CASCADE,
 	FOREIGN KEY (eventName, division) REFERENCES Event(eventName, division) ON DELETE CASCADE,

@@ -14,8 +14,11 @@
 			<span class="sr-only">{{eventStatuses[0].events.length}}% Complete (success) </span>
 		</div>
 	</div>
-	<button class="btn btn-primary" ng-click="editTournament()">Settings</button>
-	<button class="btn btn-primary" ng-click="exportData()">Export data</button>
+	<button class="btn btn-default" ng-click="editTournament()">Settings</button>
+	<button class="btn btn-default" ng-click="exportData()">Export data</button>
+	<button class="btn btn-primary" ng-click="loadPresentation()">Present Awards</button>
+	<a class="btn btn-primary" ng-href="/tournament/{{tournament.id}}/B/scoresheet">View Division B Scoresheet</a>
+	<a class="btn btn-primary" ng-href="/tournament/{{tournament.id}}/C/scoresheet">View Division C Scoresheet</a>
 </div>
 <div class="col-md-5" ng-include="'/partials/event/listing.html'">
 </div>

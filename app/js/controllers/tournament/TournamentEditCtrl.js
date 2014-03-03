@@ -10,6 +10,9 @@ angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 
 	$scope.form.location = $scope.editTournament.location;
 	$scope.form.type = $scope.editTournament.type;
 	$scope.form.id = $scope.editTournament.id;
+	$scope.form.eventMedalCount = $scope.editTournament.eventMedalCount;
+	$scope.form.overallTrophyCount = $scope.editTournament.overallTrophyCount;
+	$scope.form.oneTrophyPerSchool = $scope.editTournament.oneTrophyPerSchool;
 
 	$scope.updateTournament = function() {
 		$http({
@@ -22,6 +25,9 @@ angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 
 			$scope.editTournament.location = $scope.form.location;
 			$scope.editTournament.type = $scope.form.type;
 			$scope.editTournament.id = $scope.form.id;
+			$scope.editTournament.eventMedalCount = $scope.form.eventMedalCount;
+			$scope.editTournament.overallTrophyCount = $scope.form.overallTrophyCount;
+			$scope.editTournament.oneTrophyPerSchool = $scope.form.oneTrophyPerSchool;
 			$modalInstance.dismiss('success');
 		}).error(function(err) {
 			console.log('Error editing tournament');

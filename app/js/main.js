@@ -35,6 +35,14 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
+			.when('/tournament/:tournamentID/presentation', {
+					templateUrl: '/partials/presentation/presentation.html',
+					controller: 'PresentationCtrl'
+				})
+			.when('/tournament/:tournamentID/:division/scoresheet', {
+					templateUrl: '/partials/scoring/tournament.html',
+					controller: 'TournamentScoringCtrl'
+				})
 			.when('/401', {
 					templateUrl: '/partials/denied.html'
 				})

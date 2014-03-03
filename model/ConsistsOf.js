@@ -13,6 +13,8 @@ var ConsistsOf = function(obj) {
 	
 	this.supervisorID = obj.supervisorID;
 	this.writerID = obj.writerID;
+
+	this.presented = obj.presented ? true : false;
 };
 
 ConsistsOf.prototype.get = function(callback) {
@@ -29,6 +31,7 @@ ConsistsOf.prototype.get = function(callback) {
 			that.highTiebreakWins = rows[0].highTiebreakWins;
 			that.writerID = rows[0].writer_officialID;
 			that.supervisorID = rows[0].supervisor_officialID;
+			that.presented = rows[0].presented ? true : false;
 			callback();
 		}
 	});
@@ -36,9 +39,9 @@ ConsistsOf.prototype.get = function(callback) {
 
 ConsistsOf.prototype.addEventToTournament = function(callback) {
 	connection.query('INSERT INTO ConsistsOf(tournamentID, eventName, division, eventType,'+
-		' highScoreWins, highTiebreakWins, status, supervisor_officialID, writer_officialID)'+
+		' highScoreWins, highTiebreakWins, status, supervisor_officialID, writer_officialID, presented)'+
 		' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.tournamentID, this.eventName, this.division, this.eventType,
-		this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID],
+		this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID, this.presented],
 		function(err, row) {
 			if(err) {
 				console.log(err);
@@ -52,9 +55,9 @@ ConsistsOf.prototype.addEventToTournament = function(callback) {
 
 ConsistsOf.prototype.save = function(callback) {
 	connection.query("UPDATE ConsistsOf SET eventType=?, highScoreWins=?, highTiebreakWins=?, status=?,"+
-		" supervisor_officialID=?, writer_officialID=? WHERE tournamentID=? AND eventName=? AND division=?",
+		" supervisor_officialID=?, writer_officialID=? WHERE tournamentID=? AND eventName=? AND division=? AND presented=?",
 		[this.eventType, this.highScoreWins, this.highTiebreakWins, this.status, this.supervisorID, this.writerID,
-		this.tournamentID, this.eventName, this.division], function(err, row) {
+		this.tournamentID, this.eventName, this.division, this.presented], function(err, row) {
 			if(err) {
 				console.log(err);
 				callback(error.message(err));
@@ -97,7 +100,8 @@ ConsistsOf.getByTournamentID = function(tournamentID, callback) {
 					highTiebreakWins: row.highTiebreakWins,
 					status: row.status,
 					supervisorID: row.writer_officialID,
-					writerID: row.supervisor_officialID
+					writerID: row.supervisor_officialID,
+					presented: row.presented ? true : false
 				}));
 			});
 			callback(null, entries);
@@ -129,7 +133,9 @@ ConsistsOf.prototype.toJson = function() {
 		status:this.status,
 
 		supervisorID:this.supervisorID,
-		writerID:this.writerID
+		writerID:this.writerID,
+
+		presented: this.presented
 	};
 };
 
@@ -164,6 +170,11 @@ ConsistsOf.prototype.setSupervisorID = function(supervisorID) {
 
 ConsistsOf.prototype.setOfficialID = function(officialID) {
 	this.officialID = officialID;
+	return this;
+};
+
+ConsistsOf.prototype.setPresented = function(presented) {
+	this.presented = presented ? true : false;
 	return this;
 };
 

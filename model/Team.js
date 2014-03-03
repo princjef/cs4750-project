@@ -8,6 +8,7 @@ var Team = function(obj) {
 	this.name = obj.name;
 	this.state = obj.state;
 	this.school = obj.school;
+	this.scoreAdjustment = obj.scoreAdjustment;
 };
 
 // Static Functions
@@ -28,7 +29,8 @@ Team.getByTournamentID = function(tournamentID, callback) {
 			division: row.division,
 			name: row.teamName,
 			state: row.state,
-			school: row.school
+			school: row.school,
+			scoreAdjustment: row.scoreAdjustment
 		}));
 	};
 
@@ -45,8 +47,8 @@ Team.getByTournamentID = function(tournamentID, callback) {
 };
 
 Team.prototype.update = function(callback) {
-	connection.query("UPDATE Team SET teamName=?, state=?, school=? WHERE tournamentID=? AND teamNumber=? AND division=?", 
-	[this.name, this.state, this.school, this.tournamentID, this.number, this.division], function(err, row) {
+	connection.query("UPDATE Team SET teamName=?, state=?, school=? WHERE tournamentID=? AND teamNumber=? AND division=? AND scoreAdjustment=?",
+	[this.name, this.state, this.school, this.tournamentID, this.number, this.division, this.scoreAdjustment], function(err, row) {
 		if(err) {
 			console.log('ERR', err);
 			callback(error.message(err));
@@ -72,8 +74,8 @@ Team.prototype.remove = function(callback) {
 };
 
 Team.prototype.addToTournament = function(callback) {
-	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school) VALUES(?, ?, ?, ?, ?, ?)",
-		[this.tournamentID, this.number, this.division, this.name, this.state, this.school], function(err, row) {
+	connection.query("INSERT INTO Team(tournamentID, teamNumber, division, teamName, state, school, scoreAdjustment) VALUES(?, ?, ?, ?, ?, ?, ?)",
+		[this.tournamentID, this.number, this.division, this.name, this.state, this.school, this.scoreAdjustment], function(err, row) {
 			if(err) {
 				console.log('ERR', err);
 				callback(error.message(err));
@@ -138,7 +140,8 @@ Team.prototype.toJson = function() {
 		division: this.division,
 		name: this.name,
 		state: this.state,
-		school: this.school
+		school: this.school,
+		scoreAdjustmnt: this.scoreAdjustment
 	};
 };
 

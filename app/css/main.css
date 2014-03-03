@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* line 2, ../scss/base/_bugfixes.scss */
 .modal {
   display: block;
@@ -112,6 +113,31 @@
   max-width: 700px;
 }
 
+/* line 69, ../scss/base/_utility.scss */
+.center-text {
+  text-align: center;
+}
+
+/* line 73, ../scss/base/_utility.scss */
+.centered {
+  display: inline-block;
+  vertical-align: middle;
+}
+/* line 74, ../scss/base/_utility.scss */
+.centered:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em;
+}
+
+@media print {
+  /* line 87, ../scss/base/_utility.scss */
+  .no-display-print {
+    display: none;
+  }
+}
 /*
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license
@@ -4992,4 +5018,126 @@ body {
 /* line 1, ../scss/base/_tables.scss */
 .table-vertically-centered > tbody > tr > td {
   vertical-align: middle;
+}
+
+/* line 5, ../scss/base/_tables.scss */
+.table > tbody > tr > td.thick-left-border, .table > thead > tr > th.thick-left-border {
+  border-left-width: 2px;
+}
+
+/* line 9, ../scss/base/_tables.scss */
+.table > tbody > tr > td.thick-right-border, .table > thead > tr > th.thick-right-border {
+  border-right-width: 2px;
+}
+
+/* line 13, ../scss/base/_tables.scss */
+table > tbody > tr > td.no-pad {
+  padding: 0;
+}
+
+/* line 17, ../scss/base/_tables.scss */
+table.table-extra-condensed > tbody > tr > td, table.table-extra-condensed > tbody > tr > th {
+  padding: 2px;
+}
+
+/* line 21, ../scss/base/_tables.scss */
+input[type="text"].clear {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+
+/* line 30, ../scss/base/_tables.scss */
+.scoring-table input[type="text"].clear.ng-invalid-pattern, table > tbody > tr > td.ng-invalid {
+  background-color: rgba(185, 74, 72, 0.5) !important;
+}
+
+/* line 34, ../scss/base/_tables.scss */
+.vertical-text {
+  display: inline-block;
+  overflow: hidden;
+  width: 1.1em;
+}
+
+/* line 40, ../scss/base/_tables.scss */
+.vertical-text-inner {
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1.1;
+  -webkit-transform: translate(0, 100%) rotate(-90deg);
+  -moz-transform: translate(0, 100%) rotate(-90deg);
+  -o-transform: translate(0, 100%) rotate(-90deg);
+  -ms-transform: translate(0, 100%) rotate(-90deg);
+  transform: translate(0, 100%) rotate(-90deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+/* line 55, ../scss/base/_tables.scss */
+.vertical-text-inner:after {
+  content: "";
+  display: block;
+  margin: -1.1em 0 100%;
+}
+
+/* line 1, ../scss/presentation/_presentation.scss */
+.slide {
+  height: 100%;
+  width: 100%;
+  vertical-align: baseline;
+}
+
+/* line 7, ../scss/presentation/_presentation.scss */
+.slide-inner {
+  height: 100%;
+  width: 100%;
+}
+
+/* line 12, ../scss/presentation/_presentation.scss */
+.slide-header {
+  height: 20%;
+  width: 100%;
+  text-align: center;
+}
+
+/* line 18, ../scss/presentation/_presentation.scss */
+.slide-title {
+  margin: 0;
+  height: 75%;
+  width: 100%;
+  font-size: 3px;
+}
+
+/* line 25, ../scss/presentation/_presentation.scss */
+.slide-subtitle {
+  margin-top: 0;
+  height: 25%;
+  width: 100%;
+  font-style: italic;
+  font-size: 3px;
+}
+
+/* line 33, ../scss/presentation/_presentation.scss */
+.slide-body {
+  margin-top: 2%;
+  height: 70%;
+  width: 100%;
+  text-align: left;
+}
+
+/* line 40, ../scss/presentation/_presentation.scss */
+.slide-place {
+  margin: 2.5%;
+  width: 100%;
+  font-size: 3px;
+}
+
+/* line 46, ../scss/presentation/_presentation.scss */
+.slide-invisible {
+  visibility: hidden;
 }

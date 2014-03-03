@@ -1,0 +1,48 @@
+.slide {
+	height: 100%;
+	width: 100%;
+	vertical-align: baseline;
+}
+
+.slide-inner {
+	height: 100%;
+	width: 100%;
+}
+
+.slide-header {
+	height: 20%;
+	width: 100%;
+	text-align: center;
+}
+
+.slide-title {
+	margin: 0;
+	height: 75%;
+	width: 100%;
+	font-size: 3px;
+}
+
+.slide-subtitle {
+	margin-top: 0;
+	height: 25%;
+	width: 100%;
+	font-style: italic;
+	font-size: 3px;
+}
+
+.slide-body {
+	margin-top: 2%;
+	height: 70%;
+	width: 100%;
+	text-align: left;
+}
+
+.slide-place {
+	margin: 2.5%;
+	width: 100%;
+	font-size: 3px;
+}
+
+.slide-invisible {
+	visibility: hidden;
+}

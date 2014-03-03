@@ -1,0 +1,26 @@
+<a href="javascript:window.print()" class="btn btn-primary pull-right no-display-print">Print/Export</a>
+
+<h2 class="center-text">{{tournament.name}} - Division {{division}} Master Score Sheet</h2>
+
+<table class="table table-striped table-hover table-condensed table-responsive table-bordered table-vertically-centered smaller">
+	<thead>
+		<tr>
+			<th class="center-text">#</th>
+			<th class="center-text thick-right-border">Team Name (State)</th>
+			<th class="center-text" ng-repeat="event in events" ng-class=" { 'danger' : event.incomplete } "><div class="vertical-text"><div class="vertical-text-inner">{{event.eventName}}</div></div></th>
+			<th class="center-text thick-left-border"><div class="vertical-text"><div class="vertical-text-inner">Team Penalties</div></div></th>
+			<th class="center-text"><div class="vertical-text"><div class="vertical-text-inner">Total Team Points</div></div></th>
+			<th class="center-text"><div class="vertical-text"><div class="vertical-text-inner">Final Team Rank</div></div></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="team in teams|orderBy: 'team.number'">
+			<td class="center-text">{{team.team.number}}</td>
+			<td class="thick-right-border">{{team.team.name}} ({{team.team.state}})</td>
+			<td class="center-text" ng-repeat="event in team.events">{{event.place}}</td>
+			<td class="center-text thick-left-border"></td>
+			<td class="center-text">{{team.totalScore}}</td>
+			<td class="center-text">{{team.finalRank}}</td>
+		</tr>
+	</tbody>
+</table>

@@ -34,7 +34,10 @@ exports.create = function(req, res) {
 			name: req.body.name,
 			type: req.body.type,
 			location: req.body.location,
-			date: req.body.date
+			date: req.body.date,
+			eventMedalCount: req.body.eventMedalCount,
+			overallTrophyCount: req.body.overallTrophyCount,
+			oneTrophyPerSchool: req.body.oneTrophyPerSchool
 		});
 
 		tournament.create(function(err) {
@@ -65,7 +68,10 @@ exports.update = function(req, res) {
 			type: req.body.type,
 			location: req.body.location,
 			date: req.body.date,
-			id: req.body.id
+			id: req.body.id,
+			eventMedalCount: req.body.eventMedalCount,
+			overallTrophyCount: req.body.overallTrophyCount,
+			oneTrophyPerSchool: req.body.oneTrophyPerSchool
 		});
 
 		tournament.update(function(err) {

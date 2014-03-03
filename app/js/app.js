@@ -35,6 +35,14 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 					templateUrl: '/partials/scoring/event.html',
 					controller: 'EventScoringCtrl'
 				})
+			.when('/tournament/:tournamentID/presentation', {
+					templateUrl: '/partials/presentation/presentation.html',
+					controller: 'PresentationCtrl'
+				})
+			.when('/tournament/:tournamentID/:division/scoresheet', {
+					templateUrl: '/partials/scoring/tournament.html',
+					controller: 'TournamentScoringCtrl'
+				})
 			.when('/401', {
 					templateUrl: '/partials/denied.html'
 				})
@@ -646,16 +654,335 @@ angular.module('scoreApp').controller('OrganizationUpdateCtrl', ['$scope', '$roo
 		$modalInstance.dismiss('cancel');
 	};
 }]);
-angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, alert, dropdowns, underscore) {
+angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$routeParams', '$q', 'tournament', function($scope, $http, $routeParams, $q, tournament) {
+	var element = document.getElementById("slide");
+
+	$scope.events = {};
+	$scope.currentIndex = 0;
+	$scope.keysDisabled = false;
+	$scope.results = {};
+
+	var divisions = [];
+	var overallDivisionIndex = 0;
+	var overallRevealed = false;
+
+	$scope.currentevent = null;
+
+	$scope.inProgress = true;
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/info'
+	}).success(function(data) {
+		$scope.tournament = data;
+
+		$scope.placesLength = $scope.tournament.eventMedalCount;
+
+		console.log($scope.tournament);
+
+		$scope.entryHeight = 100/$scope.tournament.eventMedalCount - 6;
+		tournament.set($scope.tournament);
+
+		$scope.nextEvent();
+	}).error(function(err) {
+		console.log('Error getting tournament info');
+	});
+
+	var containsEvent = function(arr, evt, remove) {
+		var foundEvent = false;
+		arr.forEach(function(entry, index) {
+			if(entry.eventName == evt.eventName && entry.division == evt.division) {
+				console.log("Contains event:", evt.eventName);
+				foundEvent = true;
+				if(remove) {
+					arr.splice(index, 1);
+				}
+			}
+		});
+		if(foundEvent) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	var getEvents = function() {
+		var d = $q.defer();
+		$http({
+			method: 'GET',
+			url: '/tournament/' + $routeParams.tournamentID + '/events'
+		}).success(function(data) {
+			manageEventStatuses(data);
+			d.resolve();
+		}).error(function(err) {
+			console.log('Error getting tournament events');
+			d.reject(err);
+		});
+
+		return d.promise;
+	};
+
+	var manageEventStatuses = function(events) {
+		events.forEach(function(evt) {
+			if($scope.events[evt.division] === undefined) {
+				$scope.events[evt.division] = {
+					presented: [],
+					pending: [],
+					unfinished: []
+				};
+			}
+			if(evt.status === 'Completed' &&
+					!containsEvent($scope.events[evt.division].presented, evt) &&
+					!containsEvent($scope.events[evt.division].pending, evt)) {
+				console.log("Adding", evt.eventName, "to pending");
+				$scope.events[evt.division].pending.push(evt);
+				$scope.events[evt.division].unfinished = $scope.events[evt.division].unfinished.filter(function(elem) {
+					return elem.eventName !== evt.eventName;
+				});
+				containsEvent($scope.events[evt.division].unfinished, evt, true);
+			} else if(evt.status !== 'Completed' && !containsEvent($scope.events[evt.division].unfinished, evt)) {
+				$scope.events[evt.division].unfinished.push(evt);
+			}
+		});
+
+		var sortByName = function(a, b) {
+			if(a.eventName < b.eventName) return -1;
+			else return 1;
+		};
+
+		divisions = [];
+		for(var key in $scope.events) {
+			divisions.push(key);
+			$scope.events[key].pending.sort(sortByName);
+		}
+		divisions.sort();
+	};
+
+	$scope.nextEvent = function() {
+		getEvents().then(function() {
+			console.log("got events", $scope.events, "divisions", divisions);
+			var iterations = 0;
+			if(!$scope.currentevent) {
+				for(var j = 0; j < divisions.length; j++) {
+					console.log("iterating through division", divisions[j]);
+					if($scope.events[divisions[j]].pending.length > 0) {
+						console.log("found one");
+						$scope.currentevent = $scope.events[divisions[j]].pending[0];
+						if($scope.disabled) {
+							$scope.disabled = false;
+							element.focus();
+						}
+						break;
+					}
+				}
+			} else {
+				for(var p = 0; p < $scope.events[$scope.currentevent.division].pending.length; p++) {
+					if($scope.events[$scope.currentevent.division].pending[p].eventName === $scope.currentevent.eventName) {
+						$scope.events[$scope.currentevent.division].pending.splice(p, 1);
+						console.log("removed old event", $scope.events[$scope.currentevent.division].pending);
+						p--;
+					}
+				}
+				$scope.events[$scope.currentevent.division].presented.push($scope.currentevent);
+				var i = divisions.indexOf($scope.currentevent.division);
+				console.log("setting null");
+				$scope.currentevent = null;
+				console.log($scope.events);
+				for(var k = 0; k < divisions.length; k++) {
+					if(++i === divisions.length) i = 0;
+					if($scope.events[divisions[i]].pending.length > 0) {
+						$scope.currentevent = $scope.events[divisions[i]].pending[0];
+						break;
+					}
+				}
+			}
+			if($scope.currentevent !== null) {
+				getCurrentEventScores();
+			} else {
+				var unfinished = false;
+				for(var division in $scope.events) {
+					console.log("pending", $scope.events[division].pending);
+					console.log("unfinished", $scope.events[division].unfinished);
+					if($scope.events[division].pending.length > 0 || $scope.events[division].unfinished.length > 0) {
+						unfinished = true;
+					}
+				}
+				if(unfinished) {
+					$scope.disabled = true;
+				} else {
+					$scope.inProgress = false;
+					divisions.forEach(function(division, index) {
+						finalScores(division, index === 0);
+					});
+				}
+			}
+		});
+	};
+
+	var getCurrentEventScores = function() {
+		$http({
+			method: 'GET',
+			url: '/scoring/' + $routeParams.tournamentID + '/' + $scope.currentevent.division + '/' + $scope.currentevent.eventName + '/participators'
+		}).success(function(data) {
+			data.participators.sort(function(a, b) {
+				if(a.place < b.place) {
+					return -1;
+				} else if(a.place > b.place) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+			$scope.currentevent.topTeams = [];
+			for(var i = 0; i < Number($scope.tournament.eventMedalCount); i++) {
+				data.participators[i].revealed = false;
+				$scope.currentevent.topTeams.unshift(data.participators[i]);
+			}
+		}).error(function(err) {
+			console.log('Error fetching event scores');
+		});
+	};
+
+	var finalScores = function(division, setCurrent) {
+		$http({
+			method: 'GET',
+			url: '/scoring/' + $routeParams.tournamentID + '/' + division + '/ranks'
+		}).success(function(data) {
+			$scope.results[division] = {};
+			$scope.results[division].eventName = "Overall Results";
+			$scope.results[division].division = division;
+			$scope.results[division].currentIndex = 0;
+			$scope.results[division].teams = [];
+			data.forEach(function(entry) {
+				if($scope.results[division].teams[entry.team.number] === undefined) {
+					$scope.results[division].teams.push({
+						name: entry.team.name,
+						school: entry.team.school,
+						number: entry.team.number,
+						totalScore: 0,
+						firsts: 0
+					});
+				}
+
+				$scope.results[division].teams.forEach(function(team) {
+					if(team.number === entry.team.number) {
+						team.totalScore += entry.place;
+						if(entry.place === 1) {
+							team.firsts++;
+						}
+					}
+				});
+			});
+
+			$scope.results[division].teams.sort(function (a, b) {
+				if(a.totalScore < b.totalScore) {
+					return -1;
+				} else if(a.totalScore > b.totalScore) {
+					return 1;
+				} else if(a.firsts > b.firsts) {
+					return -1;
+				} else if(a.firsts < b.firsts) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+
+			var currentIndex = 0;
+			console.log($scope.results[division].teams);
+			$scope.results[division].topTeams = [];
+			for(var i = 1; i <= Number($scope.tournament.overallTrophyCount); i++) {
+				if($scope.tournament.oneTrophyPerSchool) {
+					while($scope.results[division].topTeams.some(function(elem) { return elem.school === $scope.results[division].teams[currentIndex].school; })) {
+						currentIndex++;
+					}
+					$scope.results[division].topTeams.unshift({
+						team: {
+							name: $scope.results[division].teams[currentIndex++].school
+						},
+						place: i
+					});
+				} else {
+					$scope.results[division].topTeams.unshift({
+						revealed: false,
+						team: {
+							name: $scope.results[division].teams[currentIndex].name,
+							division: division,
+							number: $scope.results[division].teams[currentIndex].number
+						},
+						place: i
+					});
+					currentIndex++;
+				}
+			}
+
+			if(setCurrent) {
+				$scope.placesLength = $scope.tournament.overallTrophyCount;
+				$scope.entryHeight = 100/$scope.tournament.overallTrophyCount - 6;
+				$scope.currentevent = $scope.results[division];
+				console.log($scope.currentevent);
+			}
+		});
+	};
+
+	$scope.launchFullscreen = function() {
+		if(element.requestFullscreen) {
+			element.requestFullscreen();
+		} else if(element.mozRequestFullScreen) {
+			element.mozRequestFullScreen();
+		} else if(element.webkitRequestFullscreen) {
+			console.log("requesting fullscreen");
+			element.webkitRequestFullscreen();
+		} else if(element.msRequestFullscreen) {
+			element.msRequestFullscreen();
+		}
+
+		element.focus();
+	};
+
+	$scope.reveal = function() {
+		console.log("revealing");
+		if($scope.inProgress) {
+			$scope.currentevent.topTeams[$scope.currentIndex].revealed = true;
+		} else {
+			if(!overallRevealed) {
+				console.log($scope.currentIndex);
+				$scope.currentevent.topTeams[$scope.currentevent.currentIndex++].revealed = true;
+				overallRevealed = true;
+			} else if(!($scope.currentevent.division === divisions[divisions.length - 1] && $scope.currentevent.currentIndex === $scope.tournament.overallTrophyCount)) {
+				if(overallDivisionIndex === divisions.length - 1) {
+					overallDivisionIndex = 0;
+				} else {
+					overallDivisionIndex++;
+				}
+				overallRevealed = false;
+				$scope.currentevent = $scope.results[divisions[overallDivisionIndex]];
+			}
+			$scope.currentIndex = 0;
+		}
+		console.log("Current index:", $scope.currentIndex);
+	};
+
+	$scope.nextSlide = function() {
+		$scope.nextEvent();
+		console.log($scope.currentevent);
+	};
+}]);
+angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', '$location', '$window', '$q', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, $location, $window, $q, alert, dropdowns, underscore) {
 	$scope.form = {};
+
+	$scope.focusCell = {
+		row: 0,
+		col: 0
+	};
+
+	$scope.dirty = false;
 	
 	dropdowns.getScoreCodes().then(function(data) {
 		$scope.scoreCodes = data;
 	});
 
-	dropdowns.getTiers().then(function(data) {
-		$scope.tiers = data;
-	});
+	$scope.rankConflicts = [];
 
 	$http({
 		method: 'GET',
@@ -685,134 +1012,213 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 		url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/participators'
 	}).success(function(res) {
 		$scope.participators = res.participators;
-		$scope.updateRankings();
+		$scope.participators.forEach(function(participant) {
+			switch(participant.scoreCode) {
+				case "NS":
+					participant.rawDisplay = 'ns';
+					break;
+				case "DQ":
+					participant.rawDisplay = 'dq';
+					break;
+				case "P":
+					participant.rawDisplay = 'p';
+					break;
+				default:
+					participant.rawDisplay = participant.score || '';
+					break;
+			}
+		});
+		$scope.updateRankings(0);
 	}).error(function(err) {
 		alert.danger(err);
 	});
 
 	var compareParticipators = function(a, b) {
-		a.tier = Number(a.tier);
-		b.tier = Number(b.tier);
-		if(a.tier < b.tier) {
+		// Deal with other score codes
+		if(a.scoreCode !== 'participated') {
+			if(b.scoreCode !== 'participated') {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if(b.scoreCode !== 'participated') {
 			return -1;
-		} else if(a.tier > b.tier) {
+		}
+
+		// Tiers first
+		var tierA = isNumber(a.tier) ? Number(a.tier) : 1;
+		var tierB = isNumber(b.tier) ? Number(b.tier) : 1;
+
+		var scoreA = isNumber(a.score) ? Number(a.score) : null;
+		var scoreB = isNumber(b.score) ? Number(b.score) : null;
+
+		var tiebreakA = isNumber(a.tiebreak) ? Number(a.tiebreak) : null;
+		var tiebreakB = isNumber(b.tiebreak) ? Number(b.tiebreak) : null;
+		if(tierA < tierB) {
+			return -1;
+		} else if(tierA > tierB) {
 			return 1;
 		} else {	// Same tier
-			if(a.score > b.score) {
+			if(scoreA !== null && scoreB === null) {
+				return -1;
+			} else if(scoreA === null && scoreB !== null) {
+				return 1;
+			} else if(scoreA > scoreB) {
 				if($scope.event.highScoreWins) {
 					return -1;
 				} else {
 					return 1;
 				}
-			} else if(a.score < b.score) {
+			} else if(scoreA < scoreB) {
 				if($scope.event.highScoreWins) {
 					return 1;
 				} else {
 					return -1;
 				}
 			} else {	// tie
-				if(a.tiebreak > b.tiebreak) {
+				console.log("tiebreak!");
+				if(tiebreakA !== null && tiebreakB === null) {
+					return -1;
+				} else if(tiebreakA === null && tiebreakB !== null) {
+					return 1;
+				} else if(tiebreakA > tiebreakB) {
 					if($scope.event.highTiebreakWins) {
 						return -1;
 					} else {
 						return 1;
 					}
-				} else if(a.tiebreak < b.tiebreak) {
+				} else if(tiebreakA < tiebreakB) {
 					if($scope.event.highTiebreakWins) {
 						return 1;
 					} else {
 						return -1;
 					}
 				} else {
+					console.log("tie!");
+					$scope.rankConflicts[a.index] = true;
+					$scope.rankConflicts[b.index] = true;
 					return 0;	// This is an issue, this should never be hit
 				}
 			}
 		}
 	};
 
-	$scope.entriesToUpdate = [];
-
 	$scope.updateScoreOrder = function() {
-		$scope.updateRankings();
+		$scope.updateRankings(0);
 		$scope.saveEvent();
 	};
 
 	$scope.saveScores = function() {
-		var updateList = [];
-		$scope.participators.forEach(function(participant, index) {
-			if($scope.entriesToUpdate.indexOf(index) !== -1) {
-				updateList.push(participant);
+		var d = $q.defer();
+		$http({
+			method: 'POST',
+			url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
+			data: {
+				participants: $scope.participators,
+				event: $scope.event
 			}
+		}).success(function(res) {
+			alert.success('Scoring information successfully saved');
+			$scope.dirty = false;
+			d.resolve();
+		}).error(function(err) {
+			alert.danger(err);
+			d.reject();
 		});
-
-		if(updateList.length > 0) {
-			$http({
-				method: 'POST',
-				url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.eventDivision + '/' + $routeParams.eventName + '/save',
-				data: {
-					participants: updateList,
-					event: $scope.event
-				}
-			}).success(function(res) {
-				alert.success('Scoring information successfully saved');
-				$scope.entriesToUpdate = [];
-			}).error(function(err) {
-				alert.danger(err);
-			});
-		}
+		return d.promise;
 	};
 
-	$scope.debouncedScores = underscore.debounce($scope.saveScores, 3000);
+	var isNumber = function(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	};
 
 	$scope.updateRankings = function(index) {
-		if($scope.entriesToUpdate.indexOf(index) === -1) {
-			$scope.entriesToUpdate.push(index);
-		}
+		$scope.dirty = true;
+		if(index !== undefined && index !== null) {
+			// console.log($scope.participators, "index:",index);
+			if($scope.participators[index].rawDisplay) {
+				switch(isNumber($scope.participators[index].rawDisplay) ? $scope.participators[index].rawDisplay : $scope.participators[index].rawDisplay.toLowerCase()) {
+					case "ns":
+						$scope.participators[index].scoreCode = "NS";
+						$scope.participators[index].place = $scope.participators.length + 1;
+						$scope.participators[index].tier = null;
+						$scope.participators[index].tiebreak = null;
+						break;
+					case "dq":
+						$scope.participators[index].scoreCode = "DQ";
+						$scope.participators[index].place = $scope.participators.length + 2;
+						$scope.participators[index].tier = null;
+						$scope.participators[index].tiebreak = null;
+						break;
+					case "p":
+						$scope.participators[index].scoreCode = "P";
+						$scope.participators[index].place = $scope.participators.length;
+						$scope.participators[index].tier = null;
+						$scope.participators[index].tiebreak = null;
+						break;
+					default:
+						if(isNumber($scope.participators[index].rawDisplay)) {
+							$scope.participators[index].scoreCode = "participated";
+							$scope.participators[index].score = parseFloat($scope.participators[index].rawDisplay);
+						} else {
+							$scope.participators[index].scoreCode = null;
+							$scope.participators[index].score = null;
+						}
 
-		var teams = $scope.participators.slice(0);
-		var started = false;
-		var finished = true;
-		for(var i = teams.length - 1; i >= 0; i--) {
-			teams[i].index = i;
-			if(teams[i].scoreCode === null ||
-					(teams[i].scoreCode === 'participated' && (teams[i].score === null || teams[i].score.length === 0))) {
-				$scope.participators[i].place = null;
-				teams.splice(i, 1);
-				finished = false;
-			} else if(teams[i].scoreCode === 'NS') {
-				$scope.participators[i].place = $scope.participators.length + 1;
-				teams.splice(i, 1);
-				started = true;
-			} else if(teams[i].scoreCode === 'DQ') {
-				$scope.participators[i].place = $scope.participators.length + 2;
-				teams.splice(i, 1);
-				started = true;
-			} else if(teams[i].scoreCode === 'participated' && teams[i].score !== null && teams[i].score.length !== 0) {
-				console.log("started");
-				started = true;
+						break;
+				}
+			} else {
+				console.log("empty raw display");
+				$scope.participators[index].scoreCode = null;
+				$scope.participators[index].place = null;
+			}
+
+			var teams = $scope.participators.slice(0);
+			var started = false;
+			var finished = true;
+			var conflicts = false;
+			for(var i = $scope.participators.length - 1; i >= 0; i--) {
+				teams[i].index = i;
+				if(teams[i].scoreCode === null || teams[i].scoreCode === undefined) {
+					finished = false;
+				} else {
+					started = true;
+				}
+			}
+
+			$scope.rankConflicts = [];
+			teams.sort(compareParticipators);
+			var currentPlace = 1;
+
+			teams.forEach(function(team, i) {
+				$scope.participators[team.index].rankConflict = false;
+				if(team.scoreCode === 'participated') {
+					if(i > 0 && compareParticipators(team, teams[i - 1]) === 0) {
+						$scope.participators[team.index].place = $scope.participators[teams[i-1].index].place;
+						$scope.participators[team.index].rankConflict = true;
+						$scope.participators[teams[i-1].index].rankConflict = true;
+						conflicts = true;
+					} else {
+						$scope.participators[team.index].place = currentPlace++;
+					}
+				} else if(team.scoreCode === null) {
+					$scope.participators[team.index].place = null;
+				}
+			});
+
+			var oldStatus = $scope.event.status;
+			if(!started) {
+				$scope.event.status = 'Not Started';
+			} else if(started && (!finished || conflicts)) {
+				$scope.event.status = 'In Progress';
+			} else {
+				$scope.event.status = 'Completed';
+			}
+
+			if($scope.event.status !== oldStatus) {
+				$scope.saveEvent();
 			}
 		}
-		teams.sort(compareParticipators);
-		var currentPlace = 1;
-
-		teams.forEach(function(team) {
-			$scope.participators[team.index].place = currentPlace++;
-		});
-
-		var oldStatus = $scope.event.status;
-		if(!started) {
-			$scope.event.status = 'Not Started';
-		} else if(started && !finished) {
-			$scope.event.status = 'In Progress';
-		} else {
-			$scope.event.status = 'Completed';
-		}
-
-		if($scope.event.status !== oldStatus) {
-			$scope.saveEvent();
-		}
-
-		$scope.debouncedScores();
 	};
 
 	$scope.saveEvent = function() {
@@ -824,6 +1230,131 @@ angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$
 			alert.danger(err);
 		});
 	};
+
+	$window.onbeforeunload = function() {
+		console.log("Leaving page");
+		if($scope.dirty) {
+			return "You have not saved your changes. All unsaved changes will be lost when you leave this page.";
+		}
+	};
+}]);
+angular.module('scoreApp').controller('TournamentScoringCtrl', ['$scope', '$http', '$routeParams', 'alert', function($scope, $http, $routeParams, alert) {
+	$scope.division = $routeParams.division;
+
+	var sortByEventName = function(a, b) {
+		if(a.eventName < b.eventName) {
+			b.
+			return -1;
+		} else if(a.eventName > b.eventName) {
+			return 1;
+		} else {
+			return 0;
+		}
+	};
+
+	var sum = function(acc, element) {
+		return acc + Number(element.place);
+	};
+
+	var sortByTotalScore = function(a, b) {
+		if(a.totalScore < b.totalScore) {
+			return -1;
+		} else if(a.totalScore > b.totalScore) {
+			return 1;
+		} else {
+			var aPlaceCount = {};
+			a.events.forEach(function(evt) {
+				if(aPlaceCount[evt.place] == null) {
+					aPlaceCount[evt.place] = 1;
+				} else {
+					aPlaceCount[evt.place]++;
+				}
+			});
+			var bPlaceCount = {};
+			b.events.forEach(function(evt) {
+				if(bPlaceCount[evt.place] == null) {
+					bPlaceCount[evt.place] = 1;
+				} else {
+					bPlaceCount[evt.place]++;
+				}
+			});
+
+			if(aPlaceCount["1"] > bPlaceCount["1"]) {
+				return -1;
+			} else if(aPlaceCount["1"] < bPlaceCount["1"]) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	};
+
+	$scope.tournament = {};
+
+	$http({
+		method: 'GET',
+		url: '/tournament/' + $routeParams.tournamentID + '/info'
+	}).success(function(data) {
+		$scope.tournament = data;
+	}).error(function(err) {
+		console.log('Error getting tournament info');
+	});
+
+	$http({
+		method: 'GET',
+		url: '/scoring/' + $routeParams.tournamentID + '/' + $routeParams.division + '/ranks'
+	}).success(function(res) {
+		$scope.teams = [];
+		$scope.events = [];
+		res.forEach(function(entry) {
+			var teamExists = false;
+			$scope.teams.forEach(function(team) {
+				if(team.team.number === entry.team.number) {
+					teamExists = true;
+					team.events.push({
+						eventName: entry.event.name,
+						place: entry.place
+					});
+				}
+			});
+			if(!teamExists) {
+				$scope.teams.push({
+					team: entry.team,
+					events: [{
+						eventName: entry.event.name,
+						place: entry.place
+					}]
+				});
+			}
+
+			if(!$scope.events.some(function(evt) { return evt.eventName === entry.event.name; })) {
+				$scope.events.push({
+					eventName: entry.event.name,
+					incomplete: (entry.place === null || entry.place === undefined) ? true : false
+				});
+			} else if(entry.place === null || entry.place === undefined) {
+				$scope.events.forEach(function(evt) {
+					if(evt.eventName === entry.event.name) {
+						evt.incomplete = true;
+					}
+				});
+			}
+		});
+
+		$scope.teams.forEach(function(team) {
+			team.totalScore = team.events.reduce(sum, 0);
+		});
+		
+		$scope.teams.sort(sortByTotalScore);
+
+		var currentRank = 1;
+		$scope.teams.forEach(function(team) {
+			team.finalRank = currentRank++;
+		});
+
+	}).error(function(err) {
+		alert.danger(err);
+	});
 }]);
 angular.module('scoreApp').controller('TeamAddCtrl', ['$scope', '$routeParams', '$http', '$modalInstance', '$location', 'states', 'dropdowns', function($scope, $routeParams, $http, $modalInstance, $location, states, dropdowns) {
 	$scope.cancel = function(path) {
@@ -1393,6 +1924,10 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	$scope.exportData = function() {
 		$window.open('/exportData/' + $routeParams.tournamentID + '/getData');
 	};
+
+	$scope.loadPresentation = function() {
+		$window.open('/tournament/' + $routeParams.tournamentID + '/presentation', 'newwindow', config='left=200, top=100, height=500, width=800, toolbar=no, menubar=no, location=no, directories=no, status=no');
+	};
 }]);
 angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', '$modalInstance', 'tournament', 'dropdowns', function($scope, $http, $modalInstance, tournament, dropdowns) {
 	$scope.form = {};
@@ -1406,6 +1941,9 @@ angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 
 	$scope.form.location = $scope.editTournament.location;
 	$scope.form.type = $scope.editTournament.type;
 	$scope.form.id = $scope.editTournament.id;
+	$scope.form.eventMedalCount = $scope.editTournament.eventMedalCount;
+	$scope.form.overallTrophyCount = $scope.editTournament.overallTrophyCount;
+	$scope.form.oneTrophyPerSchool = $scope.editTournament.oneTrophyPerSchool;
 
 	$scope.updateTournament = function() {
 		$http({
@@ -1418,6 +1956,9 @@ angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 
 			$scope.editTournament.location = $scope.form.location;
 			$scope.editTournament.type = $scope.form.type;
 			$scope.editTournament.id = $scope.form.id;
+			$scope.editTournament.eventMedalCount = $scope.form.eventMedalCount;
+			$scope.editTournament.overallTrophyCount = $scope.form.overallTrophyCount;
+			$scope.editTournament.oneTrophyPerSchool = $scope.form.oneTrophyPerSchool;
 			$modalInstance.dismiss('success');
 		}).error(function(err) {
 			console.log('Error editing tournament');
@@ -1426,6 +1967,39 @@ angular.module('scoreApp').controller('TournamentEditCtrl', ['$scope', '$http', 
 	
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
+	};
+}]);
+angular.module('scoreApp').directive('advanceSlide', [function() {
+	return {
+		restrict: 'A',
+		scope: {
+			reveal: '&',
+			nextSlide: '&',
+			index: '=',
+			maxIndex: '=',
+			disabled: '='
+		},
+		link: function(scope, elem, attrs) {
+			elem.bind("keyup", function(evt) {
+				console.log("key pressed", evt.which);
+				if([39,40,13].indexOf(evt.which) !== -1) {	// right arrow (39), down arrow (40), enter (13)
+					console.log("right key pressed");
+					if(!scope.disabled) {
+						scope.$apply(function() {
+							console.log("index:",scope.index,"maxindex:",parseInt(scope.maxIndex, 10));
+							if(scope.index < parseInt(scope.maxIndex, 10)) {
+								console.log("about to reveal");
+								scope.reveal(scope.index);
+								scope.index++;
+							} else {
+								scope.nextSlide();
+								scope.index = 0;
+							}
+						});
+					}
+				}
+			});
+		}
 	};
 }]);
 angular.module('scoreApp').directive('animationShowHide', function() {
@@ -1454,6 +2028,105 @@ angular.module('scoreApp').directive('animationShowHide', function() {
 		});
 	};
 });
+angular.module('scoreApp').directive('autosizeText', ['$window', function($window) {
+	var resize = function(elem) {
+		// console.log("elem:",elem.height(),", parent:", elem.parent().height());
+		elem.css('font-size', elem.parent().height() + 'px');
+		var iterations = 0;
+		while((elem.height() < elem.parent().height() - 1 || elem.height() > elem.parent().height() + 1) && iterations < 100) {
+			if(elem.height() < elem.parent().height() - 1) {
+				elem.css('font-size', (parseInt(elem.css('font-size').slice(0, -2), 10) + 1) + 'px');
+			} else {
+				elem.css('font-size', (parseInt(elem.css('font-size').slice(0, -2), 10) - 1) + 'px');
+			}
+			iterations += 1;
+			// console.log("elem:",elem.height(),", parent:", elem.parent().height(), "font-size:", (parseInt(elem.css('font-size').slice(0, -2), 10) + 1));
+		}
+
+		console.log("iterations", iterations);
+	};
+
+	return function(scope, elem, attrs) {
+		var tryResize = function(elem, tries) {
+			if(elem.text().length > 0) {
+				resize(elem);
+			} else if(tries < 3) {
+				setTimeout(function() {
+					tryResize(elem, tries + 1);
+				}, 1000);
+			}
+		};
+
+		tryResize(elem, 0);
+
+		angular.element($window).bind('resize', function() {
+			tryResize(elem, 0);
+		});
+	};
+}]);
+angular.module('scoreApp').directive('cellNavigation', ['$timeout', function($timeout) {
+	return {
+		restrict: 'A',
+		scope: {
+			row: '=',
+			col: '=',
+			rowCount: '=',
+			colCount: '=',
+			focusCell: '='
+		},
+		link: function(scope, elem, attrs) {
+			scope.$watch('focusCell', function(newVal) {
+				if(newVal.row === scope.row && newVal.col === Number(scope.col)) {
+					$timeout(function() {
+						elem[0].focus();
+					});
+				}
+			}, true);
+
+			elem.bind("keydown", function(evt) {
+				if([40,13].indexOf(evt.which) !== -1) {	// down arrow (40) or enter (13)
+					if(scope.row >= scope.rowCount - 1) {
+						if(Number(scope.col) >= Number(scope.colCount) - 1) {
+							scope.$apply(function() {
+								scope.focusCell.row = 0;
+								scope.focusCell.col = 0;
+							});
+						} else {
+							scope.$apply(function() {
+								scope.focusCell.row = 0;
+								scope.focusCell.col = Number(scope.col) + 1;
+							});
+						}
+					} else {
+						scope.$apply(function() {
+							scope.focusCell.row = scope.row + 1;
+							scope.focusCell.col = Number(scope.col);
+						});
+					}
+				} else if(evt.which === 38) {	// up arrow (38)
+					if(scope.row <= 0) {
+						if(Number(scope.col) <= 0) {
+							scope.$apply(function() {
+								scope.focusCell.row = scope.rowCount - 1;
+								scope.focusCell.col = Number(scope.colCount) - 1;
+							});
+						} else {
+							scope.$apply(function() {
+								scope.focusCell.row = scope.rowCount - 1;
+								scope.focusCell.col = Number(scope.col) - 1;
+							});
+						}
+					} else {
+						scope.$apply(function() {
+							scope.focusCell.row = scope.row - 1;
+							scope.focusCell.col = Number(scope.col);
+						});
+					}
+				}
+			});
+		}
+	};
+}]);
 angular.module('scoreApp').filter('division', [function() {
 	return function(inputs, value) {
 		var result = [];
@@ -1587,19 +2260,6 @@ angular.module('scoreApp').service('dropdowns', ['$q', '$http', function($q, $ht
 				cache: true
 			}).success(function(data) {
 				d.resolve(data);
-			}).error(function(err) {
-				d.reject(err);
-			});
-			return d.promise;
-		},
-		getTiers: function() {
-			var d = $q.defer();
-			$http({
-				method: 'GET',
-				url: '/scoring/tiers',
-				cache: true
-			}).success(function(tiers) {
-				d.resolve(tiers);
 			}).error(function(err) {
 				d.reject(err);
 			});

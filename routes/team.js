@@ -25,7 +25,8 @@ exports.addToTournament = function(req, res) {
 			division: req.body.division,
 			name: req.body.teamName,
 			state: req.body.state,
-			school: req.body.school
+			school: req.body.school,
+			scoreAdjustment: req.body.scoreAdjustment
 		});
 		team.addToTournament(function(err) {
 			if(err) {
@@ -45,7 +46,8 @@ exports.update = function(req, res) {
 			division: req.body.division,
 			name: req.body.name,
 			state: req.body.state,
-			school: req.body.school
+			school: req.body.school,
+			scoreAdjustment: req.body.scoreAdjustment
 		});
 		team.update(function(err) {
 			if(err) {
@@ -65,7 +67,8 @@ exports.remove = function(req, res) {
 			division: req.body.division,
 			name: req.body.name,
 			state: req.body.state,
-			school: req.body.school
+			school: req.body.school,
+			scoreAdjustment: req.body.scoreAdjustment
 		});
 		team.remove(function(err) {
 			if(err) {

@@ -52,4 +52,8 @@ angular.module('scoreApp').controller('TournamentDashCtrl', ['$scope', '$rootSco
 	$scope.exportData = function() {
 		$window.open('/exportData/' + $routeParams.tournamentID + '/getData');
 	};
+
+	$scope.loadPresentation = function() {
+		$window.open('/tournament/' + $routeParams.tournamentID + '/presentation', 'newwindow', config='left=200, top=100, height=500, width=800, toolbar=no, menubar=no, location=no, directories=no, status=no');
+	};
 }]);

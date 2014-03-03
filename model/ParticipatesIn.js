@@ -11,6 +11,21 @@ var ParticipatesIn = function(obj) {
 	this.score = obj.score;
 	this.tiebreak = obj.tiebreak;
 	this.tier = obj.tier;
+	this.place = obj.place;
+};
+
+ParticipatesIn.getRanksByDivisionAndTournament = function(tournamentID, division, callback) {
+	connection.query("SELECT * FROM ParticipatesIn NATURAL JOIN Team NATURAL JOIN ConsistsOf WHERE tournamentID=? AND division=?",
+			[tournamentID, division], function(err, rows) {
+		if(err) {
+			console.log(err);
+			callback(error.message(err));
+		} else {
+			var entries = ParticipatesIn.populateMultiple(rows);
+			callback(null, entries);
+		}
+	});
+
 };
 
 /*
@@ -47,8 +62,8 @@ ParticipatesIn.getParticipatingTeamsByTournament = function(tournamentID, callba
 };
 
 ParticipatesIn.addByConsistsOf = function(consistsOf, callback) {
-	connection.query("INSERT INTO ParticipatesIn (tournamentID, teamNumber, division, eventName, scoreCode, score, tiebreak, tier) " +
-			"SELECT ?, Team.teamNumber, ?, ?, NULL, NULL, NULL, NULL FROM Team WHERE tournamentID=? AND division=?",
+	connection.query("INSERT INTO ParticipatesIn (tournamentID, teamNumber, division, eventName, scoreCode, score, tiebreak, tier, place) " +
+			"SELECT ?, Team.teamNumber, ?, ?, NULL, NULL, NULL, NULL, NULL FROM Team WHERE tournamentID=? AND division=?",
 			[consistsOf.tournamentID, consistsOf.division, consistsOf.eventName, consistsOf.tournamentID, consistsOf.division], function(err) {
 				if(err) {
 					console.log(err);
@@ -78,7 +93,8 @@ ParticipatesIn.populateMultiple = function(rows) {
 			scoreCode: row.scoreCode,
 			score: row.score,
 			tiebreak: row.tiebreak,
-			tier: row.tier
+			tier: row.tier,
+			place: row.place
 		}));
 	};
 
@@ -94,22 +110,6 @@ ParticipatesIn.getScoreCodes = function(callback) {
 		} else {
 			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
 			callback(null, match.split('\',\''));
-		}
-	});
-};
-
-ParticipatesIn.getTiers = function(callback) {
-	connection.query("SHOW COLUMNS FROM ParticipatesIn LIKE 'tier'", function(err, rows) {
-		if(err) {
-			console.log(err);
-			callback(error.message(err));
-		} else {
-			var match = rows[0].Type.match(/^enum\(\'(.*)\'\)$/)[1];
-			var tiers = match.split('\',\'');
-			for(var i = 0; i < tiers.length; i++) {
-				tiers[i] = Number(tiers[i]);
-			}
-			callback(null, tiers);
 		}
 	});
 };
@@ -231,9 +231,9 @@ ParticipatesIn.getTiers = function(callback) {
 
 ParticipatesIn.prototype.save = function(callback) {
 	var that = this;
-	connection.query("UPDATE ParticipatesIn SET scoreCode=?, score=?, tiebreak=?, tier=? WHERE " +
+	connection.query("UPDATE ParticipatesIn SET scoreCode=?, score=?, tiebreak=?, tier=?, place=? WHERE " +
 			"tournamentID=? AND teamNumber=? AND division=? AND eventName=?",
-			[this.scoreCode, this.score, this.tiebreak, this.tier, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err, result) {
+			[this.scoreCode, this.score, this.tiebreak, this.tier, this.place, this.team.tournamentID, this.team.number, this.team.division, this.event.name], function(err, result) {
 		if(err) {
 			console.log(err);
 			callback(error.message(err));
@@ -275,7 +275,8 @@ ParticipatesIn.prototype.toJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		tier: this.tier
+		tier: this.tier,
+		place: this.place
 	};
 };
 
@@ -285,7 +286,8 @@ ParticipatesIn.prototype.toParticipatorJson = function() {
 		scoreCode: this.scoreCode,
 		score: this.score,
 		tiebreak: this.tiebreak,
-		tier: this.tier
+		tier: this.tier,
+		place: this.place
 	};
 };
 
