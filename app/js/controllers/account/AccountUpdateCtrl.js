@@ -1,38 +1,20 @@
 angular.module('scoreApp').controller('AccountUpdateCtrl',
-	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+	['$scope', 'api', 'alert', 'user', function($scope, api, alert, user) {
 
 	$scope.form = {};
 
 	$scope.updatePassword = function() {
-		$http({
-			method: 'POST',
-			url: '/account/updatePassword',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully updated password!');
-			}
-			else {
-				alert.danger('Password update not successful!');
-			}
-		}).error(function(err) {
-			alert.danger(err);
+		api.updatePassword($scope.form).then(function(msg) {
+			alert.success(msg);
+		}, function(err) {
+			alert.error(err);
 		});
 	};
 
 	$scope.updateEmail = function() {
-		$http({
-			method: 'POST',
-			url: '/account/updateEmail',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully updated email!');
-			}
-			else {
-				alert.danger('Email update not successful!');
-			}
-		}).error(function(err) {
+		api.updateEmail($scope.form).then(function(msg) {
+			alert.success(msg);
+		}, function(err) {
 			alert.danger(err);
 		});
 	};

@@ -1,19 +1,14 @@
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, $http, $modal, $rootScope, $location, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', 'api', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, api, $modal, $rootScope, $location, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
 		user.current().then(function(user) {
 			$scope.user = user;
-			if(user.username) {
-				$http({
-					method: 'GET',
-					url: '/account/' + user.username + '/organizations'
-				}).success(function(organizations) {
-					$scope.user.organizations = organizations;
-				}).error(function(err) {
-					alert.danger(err);
-				});
-			}
+			api.getUserOrganizations(user).then(function(organizations) {
+				$scope.user.organizations = organizations;
+			}, function(err) {
+				alert.danger(err);
+			});
 		});
 	};
 
@@ -39,18 +34,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	};
 
 	$scope.logout = function() {
-		$http({
-			method: 'POST',
-			url: '/account/logout'
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged out');
-				$scope.getUser();
-			}
-			else {
-				alert.danger('Logout not successful');
-			}
-		}).error(function(err) {
+		api.logout().then(function(msg) {
+			alert.success(msg);
+			$scope.getUser();
+		}, function(err) {
 			alert.danger(err);
 		});
 	};

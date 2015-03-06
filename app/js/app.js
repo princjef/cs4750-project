@@ -51,22 +51,17 @@ angular.module('scoreApp', ['ui.bootstrap', 'ngCookies', 'ngRoute'])
 		$locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 
-angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, $http, $modal, $rootScope, $location, user, alert) {
+angular.module('scoreApp').controller('NavbarCtrl', ['$scope', 'api', '$modal', '$rootScope', '$location', 'user', 'alert', function($scope, api, $modal, $rootScope, $location, user, alert) {
 	$scope.user = {};
 
 	$scope.getUser = function() {
 		user.current().then(function(user) {
 			$scope.user = user;
-			if(user.username) {
-				$http({
-					method: 'GET',
-					url: '/account/' + user.username + '/organizations'
-				}).success(function(organizations) {
-					$scope.user.organizations = organizations;
-				}).error(function(err) {
-					alert.danger(err);
-				});
-			}
+			api.getUserOrganizations(user).then(function(organizations) {
+				$scope.user.organizations = organizations;
+			}, function(err) {
+				alert.danger(err);
+			});
 		});
 	};
 
@@ -92,18 +87,10 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 	};
 
 	$scope.logout = function() {
-		$http({
-			method: 'POST',
-			url: '/account/logout'
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged out');
-				$scope.getUser();
-			}
-			else {
-				alert.danger('Logout not successful');
-			}
-		}).error(function(err) {
+		api.logout().then(function(msg) {
+			alert.success(msg);
+			$scope.getUser();
+		}, function(err) {
 			alert.danger(err);
 		});
 	};
@@ -127,6 +114,7 @@ angular.module('scoreApp').controller('NavbarCtrl', ['$scope', '$http', '$modal'
 		});
 	};
 }]);
+
 angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 
 	$http({
@@ -141,51 +129,34 @@ angular.module('scoreApp').controller('PageCtrl', ['$scope', '$rootScope', '$htt
 }]);
 angular.module('scoreApp').controller('SplashCtrl', ['$scope', function($scope) {
 }]);
+
 angular.module('scoreApp').controller('AccountCreateCtrl',
-	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+	['$scope', 'api', 'alert', 'user', function($scope, api, alert, user) {
 
 	$scope.form = {};
 
 	$scope.createAccount = function() {
-		$http({
-			method: 'POST',
-			url: '/account/create',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully created account!');
-				user.current();	// Update current user.
-			}
-			else {
-				alert.danger('Account creation not successful!');
-			}
-		}).error(function(err) {
+		api.createAccount($scope.form).then(function(msg) {
+			alert.success(msg);
+		}, function(err) {
 			alert.danger(err);
 		});
 	};
 }]);
+
 angular.module('scoreApp').controller('AccountLoginCtrl',
-	['$scope', '$rootScope', '$http', '$modalInstance', 'alert', 'user',
-		function($scope, $rootScope, $http, $modalInstance, alert, user) {
+	['$scope', '$rootScope', 'api', '$modalInstance', 'alert', 'user',
+		function($scope, $rootScope, api, $modalInstance, alert, user) {
 	
 	$scope.form = {};
 
 	$scope.login = function() {
-		$http({
-			method: 'POST',
-			url: '/account/login',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged in!');
-				user.current().then(function(res) {
-					$modalInstance.close();
-				});
-			}
-			else {
-				alert.danger('Invalid login!');
-			}
-		}).error(function(err) {
+		api.login($scope.form).then(function(msg) {
+			alert.success(msg);
+			user.current().then(function(res) {
+				$modalInstance.close();
+			});
+		}, function(err) {
 			alert.danger(err);
 		});
 	};
@@ -196,71 +167,46 @@ angular.module('scoreApp').controller('AccountLoginCtrl',
 
 }]);
 
-angular.module('scoreApp').controller('AccountLoginPageCtrl', ['$scope', '$http', '$location', '$routeParams', '$rootScope', 'alert', function($scope, $http, $location, $routeParams, $rootScope, alert) {
+angular.module('scoreApp').controller('AccountLoginPageCtrl', ['$scope', 'api', '$location', '$routeParams', '$rootScope', 'alert', function($scope, api, $location, $routeParams, $rootScope, alert) {
 	$scope.form = {};
 
 	$scope.login = function() {
-		$http({
-			method: 'POST',
-			url: '/account/login',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully logged in!');
-				if($routeParams.redirect) {
-					$location.url($routeParams.redirect);
-				} else {
-					console.log('no redirect :(');
-				}
-				$rootScope.$emit('login');
+		api.login($scope.form).then(function(msg) {
+			if ($routeParams.redirect) {
+				$location.url($routeParams.redirect);
+			} else {
+				console.log('no redirect :(');
 			}
-			else {
-				alert.danger('Invalid login!');
-			}
-		}).error(function(err) {
+			$rootScope.$emit('login');
+		}, function(err) {
 			alert.danger(err);
 		});
 	};
+
 }]);
+
 angular.module('scoreApp').controller('AccountUpdateCtrl',
-	['$scope', '$http', 'alert', 'user', function($scope, $http, alert, user) {
+	['$scope', 'api', 'alert', 'user', function($scope, api, alert, user) {
 
 	$scope.form = {};
 
 	$scope.updatePassword = function() {
-		$http({
-			method: 'POST',
-			url: '/account/updatePassword',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully updated password!');
-			}
-			else {
-				alert.danger('Password update not successful!');
-			}
-		}).error(function(err) {
-			alert.danger(err);
+		api.updatePassword($scope.form).then(function(msg) {
+			alert.success(msg);
+		}, function(err) {
+			alert.error(err);
 		});
 	};
 
 	$scope.updateEmail = function() {
-		$http({
-			method: 'POST',
-			url: '/account/updateEmail',
-			data: $scope.form
-		}).success(function(res) {
-			if (res.status) {
-				alert.success('Successfully updated email!');
-			}
-			else {
-				alert.danger('Email update not successful!');
-			}
-		}).error(function(err) {
+		api.updateEmail($scope.form).then(function(msg) {
+			alert.success(msg);
+		}, function(err) {
 			alert.danger(err);
 		});
 	};
 }]);
+
 angular.module('scoreApp').controller('EventListingCtrl', ['$scope', '$http', '$routeParams', '$filter', '$modal', '$window', 'alert', 'tournament', function($scope, $http, $routeParams, $filter, $modal, $window, alert, tournament) {
 	$http({
 		method: 'GET',
@@ -654,7 +600,7 @@ angular.module('scoreApp').controller('OrganizationUpdateCtrl', ['$scope', '$roo
 		$modalInstance.dismiss('cancel');
 	};
 }]);
-angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$routeParams', '$q', 'tournament', function($scope, $http, $routeParams, $q, tournament) {
+angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$routeParams', '$q', 'tournament', 'api', function($scope, $routeParams, $q, tournament, api) {
 	var element = document.getElementById("slide");
 
 	$scope.events = {};
@@ -670,11 +616,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 
 	$scope.inProgress = true;
 
-	$http({
-		method: 'GET',
-		url: '/tournament/' + $routeParams.tournamentID + '/info'
-	}).success(function(data) {
-		$scope.tournament = data;
+	api.getTournamentInfo($routeParams.tournamentID).then(function(tournamentInfo) {
+		$scope.tournament = tournamentInfo;
 
 		$scope.placesLength = $scope.tournament.eventMedalCount;
 
@@ -684,9 +627,7 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		tournament.set($scope.tournament);
 
 		$scope.nextEvent();
-	}).error(function(err) {
-		console.log('Error getting tournament info');
-	});
+	}, function(err) {});
 
 	var containsEvent = function(arr, evt, remove) {
 		var foundEvent = false;
@@ -704,22 +645,6 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		} else {
 			return false;
 		}
-	};
-
-	var getEvents = function() {
-		var d = $q.defer();
-		$http({
-			method: 'GET',
-			url: '/tournament/' + $routeParams.tournamentID + '/events'
-		}).success(function(data) {
-			manageEventStatuses(data);
-			d.resolve();
-		}).error(function(err) {
-			console.log('Error getting tournament events');
-			d.reject(err);
-		});
-
-		return d.promise;
 	};
 
 	var manageEventStatuses = function(events) {
@@ -759,7 +684,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 	};
 
 	$scope.nextEvent = function() {
-		getEvents().then(function() {
+		api.getEvents($routeParams.tournamentID).then(function(events) {
+			manageEventStatuses(events);
 			console.log("got events", $scope.events, "divisions", divisions);
 			var iterations = 0;
 			if(!$scope.currentevent) {
@@ -797,7 +723,22 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 				}
 			}
 			if($scope.currentevent !== null) {
-				getCurrentEventScores();
+				api.getEventScores($routeParams.tournamentID, $scope.currentevent.division, $scope.currentevent.eventName).then(function(evt) {
+					evt.participators.sort(function(a, b) {
+						if(a.place < b.place) {
+							return -1;
+						} else if(a.place > b.place) {
+							return 1;
+						} else {
+							return 0;
+						}
+					});
+					$scope.currentevent.topTeams = [];
+					for(var i = 0; i < Number($scope.tournament.eventMedalCount); i++) {
+						evt.participators[i].revealed = false;
+						$scope.currentevent.topTeams.unshift(evt.participators[i]);
+					}
+				}, function(err) {});
 			} else {
 				var unfinished = false;
 				for(var division in $scope.events) {
@@ -819,41 +760,14 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		});
 	};
 
-	var getCurrentEventScores = function() {
-		$http({
-			method: 'GET',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + $scope.currentevent.division + '/' + $scope.currentevent.eventName + '/participators'
-		}).success(function(data) {
-			data.participators.sort(function(a, b) {
-				if(a.place < b.place) {
-					return -1;
-				} else if(a.place > b.place) {
-					return 1;
-				} else {
-					return 0;
-				}
-			});
-			$scope.currentevent.topTeams = [];
-			for(var i = 0; i < Number($scope.tournament.eventMedalCount); i++) {
-				data.participators[i].revealed = false;
-				$scope.currentevent.topTeams.unshift(data.participators[i]);
-			}
-		}).error(function(err) {
-			console.log('Error fetching event scores');
-		});
-	};
-
 	var finalScores = function(division, setCurrent) {
-		$http({
-			method: 'GET',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + division + '/ranks'
-		}).success(function(data) {
+		api.getOverallTeamRankings($routeParams.tournamentID, division).then(function(rankings) {
 			$scope.results[division] = {};
 			$scope.results[division].eventName = "Overall Results";
 			$scope.results[division].division = division;
 			$scope.results[division].currentIndex = 0;
 			$scope.results[division].teams = [];
-			data.forEach(function(entry) {
+			rankings.forEach(function(entry) {
 				if($scope.results[division].teams[entry.team.number] === undefined) {
 					$scope.results[division].teams.push({
 						name: entry.team.name,
@@ -922,7 +836,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 				$scope.currentevent = $scope.results[division];
 				console.log($scope.currentevent);
 			}
-		});
+
+		}, function(err) {});
 	};
 
 	$scope.launchFullscreen = function() {
@@ -968,6 +883,7 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		console.log($scope.currentevent);
 	};
 }]);
+
 angular.module('scoreApp').controller('EventScoringCtrl', ['$scope', '$http', '$routeParams', '$location', '$window', '$q', 'alert', 'dropdowns', 'underscore', function($scope, $http, $routeParams, $location, $window, $q, alert, dropdowns, underscore) {
 	$scope.form = {};
 
@@ -2186,6 +2102,186 @@ angular.module('scoreApp').service('alert', ['$rootScope', '$timeout', function(
 		}
 	};
 }]);
+angular.module('scoreApp').factory('api', ['$q', '$http', 'user', function($q, $http, user) {
+
+    return {
+
+		login: function(formData) {
+			var d = $q.defer();
+			$http({
+				method: 'POST',
+				url: '/account/login/',
+				data: formData
+			}).success(function(res) {
+				if (res.status) {
+					d.resolve('Successfully logged in');
+				} else {
+					d.reject('Invalid login!');
+				}
+			}).error(function(err) {
+				d.reject(err);
+			});
+
+			return d.promise;
+		},
+
+		logout: function() {
+			var d = $q.defer();
+			$http({
+				method: 'POST',
+				url: '/account/logout'
+			}).success(function(res) {
+				if (res.status) {
+					d.resolve('Successfully logged out');
+				} else {
+					d.reject('Logout not successful');
+				}
+			}).error(function(err) {
+				d.reject(err);
+			});
+
+			return d.promise;
+		},
+
+		createAccount: function(formData) {
+			var d = $q.defer();
+			$http({
+				method: 'POST',
+				url: '/account/create',
+				data: formData
+			}).success(function(res) {
+				if (res.status) {
+					user.current(); // Update current user.
+					d.resolve('Successfully created account!');
+				} else {
+					d.reject('Account creation not successful!');
+				}
+			}).error(function(err) {
+				d.reject(err);
+			});
+
+			return d.promise;
+		},
+
+		updatePassword: function(formData) {
+			var d = $q.defer();
+			$http({
+				method: 'POST',
+				url: '/account/updatePassword',
+				data: formData
+			}).success(function(res) {
+				if (res.status) {
+					d.resolve('Successfully updated password!');
+				} else {
+					d.reject('Password update not successful!');
+				}
+			}).error(function(err) {
+				d.reject(err);
+			});
+
+			return d.promise;
+		},
+
+		updateEmail: function(formData) {
+			var d = $q.defer();
+			$http({
+				method: 'POST',
+				url: '/account/updateEmail',
+				data: formData
+			}).success(function(res) {
+				if (res.status) {
+					d.resolve('Successfully updated email!');
+				} else {
+					d.reject('Email update not successful');
+				}
+			}).error(function(err) {
+				d.reject(err);
+			});
+		},
+
+		getUserOrganizations: function(user) {
+			var d = $q.defer();
+			if (user.username) {
+				$http({
+					method: 'GET',
+					url: '/account/' + user.username + '/organizations'
+				}).success(function(organizations) {
+					d.resolve(organizations);
+				}).error(function(err) {
+					console.log('Error getting user organizations')
+					d.reject(err);
+				});
+			} else {
+				d.resolve([]);
+			}
+
+			return d.promise;
+		},
+
+        getEvents: function(tournamentID) {
+            var d = $q.defer();
+            $http({
+                method: 'GET',
+                url: '/tournament/' + tournamentID + '/events'
+            }).success(function(events) {
+                d.resolve(events);
+            }).error(function(err) {
+                console.log('Error getting tournament events');
+                d.reject(err);
+            });
+
+            return d.promise;
+        },
+
+        getEventScores: function(tournamentID, division, eventName) {
+            var d = $q.defer();
+            $http({
+                method: 'GET',
+                url: '/scoring/' + tournamentID + '/' + division + '/' + eventName + '/participators'
+            }).success(function(scores) {
+                d.resolve(scores);
+            }).error(function(err) {
+                console.log('Error fetching event scores');
+                d.reject(err);
+            });
+
+            return d.promise;
+        },
+
+        getOverallTeamRankings: function(tournamentID, division) {
+            var d = $q.defer();
+            $http({
+                method: 'GET',
+                url: '/scoring/' + tournamentID + '/' + division + '/ranks'
+            }).success(function(rankings) {
+                d.resolve(rankings);
+            }).error(function(err) {
+                console.log('Error fetching team rankings');
+                d.reject(err);
+            });
+
+            return d.promise;
+        },
+
+        getTournamentInfo: function(tournamentID) {
+            var d = $q.defer();
+            $http({
+                method: 'GET',
+                url: '/tournament/' + tournamentID + '/info'
+            }).success(function(tournament) {
+                d.resolve(tournament);
+            }).error(function(err) {
+                console.log('Error getting tournament info');
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
+    };
+
+}]);
+
 angular.module('scoreApp').factory('authInterceptor', ['$rootScope', '$location', '$q', 'alert', 'userCache', function($rootScope, $location, $q, alert, userCache) {
 	return function(promise) {
 		return promise.then(

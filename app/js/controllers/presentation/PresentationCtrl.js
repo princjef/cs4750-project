@@ -1,4 +1,4 @@
-angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$routeParams', '$q', 'tournament', function($scope, $http, $routeParams, $q, tournament) {
+angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$routeParams', '$q', 'tournament', 'api', function($scope, $routeParams, $q, tournament, api) {
 	var element = document.getElementById("slide");
 
 	$scope.events = {};
@@ -14,11 +14,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 
 	$scope.inProgress = true;
 
-	$http({
-		method: 'GET',
-		url: '/tournament/' + $routeParams.tournamentID + '/info'
-	}).success(function(data) {
-		$scope.tournament = data;
+	api.getTournamentInfo($routeParams.tournamentID).then(function(tournamentInfo) {
+		$scope.tournament = tournamentInfo;
 
 		$scope.placesLength = $scope.tournament.eventMedalCount;
 
@@ -28,9 +25,7 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		tournament.set($scope.tournament);
 
 		$scope.nextEvent();
-	}).error(function(err) {
-		console.log('Error getting tournament info');
-	});
+	}, function(err) {});
 
 	var containsEvent = function(arr, evt, remove) {
 		var foundEvent = false;
@@ -48,22 +43,6 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		} else {
 			return false;
 		}
-	};
-
-	var getEvents = function() {
-		var d = $q.defer();
-		$http({
-			method: 'GET',
-			url: '/tournament/' + $routeParams.tournamentID + '/events'
-		}).success(function(data) {
-			manageEventStatuses(data);
-			d.resolve();
-		}).error(function(err) {
-			console.log('Error getting tournament events');
-			d.reject(err);
-		});
-
-		return d.promise;
 	};
 
 	var manageEventStatuses = function(events) {
@@ -103,7 +82,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 	};
 
 	$scope.nextEvent = function() {
-		getEvents().then(function() {
+		api.getEvents($routeParams.tournamentID).then(function(events) {
+			manageEventStatuses(events);
 			console.log("got events", $scope.events, "divisions", divisions);
 			var iterations = 0;
 			if(!$scope.currentevent) {
@@ -141,7 +121,22 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 				}
 			}
 			if($scope.currentevent !== null) {
-				getCurrentEventScores();
+				api.getEventScores($routeParams.tournamentID, $scope.currentevent.division, $scope.currentevent.eventName).then(function(evt) {
+					evt.participators.sort(function(a, b) {
+						if(a.place < b.place) {
+							return -1;
+						} else if(a.place > b.place) {
+							return 1;
+						} else {
+							return 0;
+						}
+					});
+					$scope.currentevent.topTeams = [];
+					for(var i = 0; i < Number($scope.tournament.eventMedalCount); i++) {
+						evt.participators[i].revealed = false;
+						$scope.currentevent.topTeams.unshift(evt.participators[i]);
+					}
+				}, function(err) {});
 			} else {
 				var unfinished = false;
 				for(var division in $scope.events) {
@@ -163,41 +158,14 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 		});
 	};
 
-	var getCurrentEventScores = function() {
-		$http({
-			method: 'GET',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + $scope.currentevent.division + '/' + $scope.currentevent.eventName + '/participators'
-		}).success(function(data) {
-			data.participators.sort(function(a, b) {
-				if(a.place < b.place) {
-					return -1;
-				} else if(a.place > b.place) {
-					return 1;
-				} else {
-					return 0;
-				}
-			});
-			$scope.currentevent.topTeams = [];
-			for(var i = 0; i < Number($scope.tournament.eventMedalCount); i++) {
-				data.participators[i].revealed = false;
-				$scope.currentevent.topTeams.unshift(data.participators[i]);
-			}
-		}).error(function(err) {
-			console.log('Error fetching event scores');
-		});
-	};
-
 	var finalScores = function(division, setCurrent) {
-		$http({
-			method: 'GET',
-			url: '/scoring/' + $routeParams.tournamentID + '/' + division + '/ranks'
-		}).success(function(data) {
+		api.getOverallTeamRankings($routeParams.tournamentID, division).then(function(rankings) {
 			$scope.results[division] = {};
 			$scope.results[division].eventName = "Overall Results";
 			$scope.results[division].division = division;
 			$scope.results[division].currentIndex = 0;
 			$scope.results[division].teams = [];
-			data.forEach(function(entry) {
+			rankings.forEach(function(entry) {
 				if($scope.results[division].teams[entry.team.number] === undefined) {
 					$scope.results[division].teams.push({
 						name: entry.team.name,
@@ -266,7 +234,8 @@ angular.module('scoreApp').controller('PresentationCtrl', ['$scope', '$http', '$
 				$scope.currentevent = $scope.results[division];
 				console.log($scope.currentevent);
 			}
-		});
+
+		}, function(err) {});
 	};
 
 	$scope.launchFullscreen = function() {
