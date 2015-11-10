@@ -4,10 +4,10 @@
   "version": "0.0.1",
   "private": "true",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "express": "3.4.4",
     "mysql": "2.0.0-alpha9",
-    "passport": "~0.1.17",
-    "bcrypt": "~0.7.7"
+    "passport": "~0.1.17"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
