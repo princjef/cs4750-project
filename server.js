@@ -121,5 +121,6 @@ app.all('/*', function(req, res) {
 	res.sendfile('./app/index.html');
 });
 
-app.listen(80);
-console.log('Listening on port 80');
+var port = process.env.PORT || 8080;
+app.listen(port);
+console.log('Listening on port ' + port);
