@@ -183,7 +183,7 @@ Account.getByUsername = function(username, callback) {
 
 Account.hashSaltPass = function(password, callback) {
 	bcrypt.genSalt(10, function(err, salt) {
-		bcrypt.hash(password, salt, function(err, hash) {
+		bcrypt.hash(password, salt, null, function(err, hash) {
 			callback(err, hash);
 		});
 	});
